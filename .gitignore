@@ -1,5 +1,9 @@
 target/
 .idea/
+.project
+.settings/
+.classpath
 *.iml
 *.pdf
 *.bak
+*.sav

@@ -8,12 +8,6 @@ In addition to the clustering, more detailed information about each individual p
 The visualisation allows users to explore different perspectives on their data, such as general sentiment, relevance and relationships between feedback categories.\
 **TODO:** Add detailed description. 
 
-## NLP Approaches
-
-* Naive approach: Use k most frequent _Content Words?_ as category. _Modifiers?_ related to Content Words as attributes.
-* Approach A: Transform feedback into vector representation. Cluster into groups (Graph Clustering, RBF Nets?). Run _Keyword Extraction?_ on clusters to get _Category_. (Run sentiment analysis on feedback 
-
-
 ## Scratchpad
 
 * Read paper from NLP Highlights. _More research? Existing Neural Models?_
