@@ -6,6 +6,11 @@ public class Comment {
     private Sentiment sentiment;
     private String text;
 
+    public Comment(Sentiment sentiment, String text) {
+        this.sentiment = sentiment;
+        this.text = text;
+    }
+
     public Sentiment getSentiment() {
         return sentiment;
     }
@@ -20,5 +25,13 @@ public class Comment {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "sentiment=" + sentiment +
+                ", text='" + text + '\'' +
+                '}';
     }
 }
