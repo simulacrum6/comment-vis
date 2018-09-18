@@ -1,17 +1,17 @@
 package awkwardrobots.data;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Aspect {
-    private ArrayList<Attribute> attributes;
+    private List<Attribute> attributes;
     private int mentions;
     private String name;
 
-    public ArrayList<Attribute> getAttributes() {
+    public List<Attribute> getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(ArrayList<Attribute> attributes) {
+    public void setAttributes(List<Attribute> attributes) {
         this.attributes = attributes;
     }
 

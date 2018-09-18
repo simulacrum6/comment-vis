@@ -1,9 +1,11 @@
 package awkwardrobots.data;
 
+import java.util.List;
+
 public class Attribute {
     private int mentions;
     private String name;
-    private Comment origin;
+    private List<Comment> origin;
 
     public int getMentions() {
         return mentions;
@@ -21,11 +23,11 @@ public class Attribute {
         this.name = name;
     }
 
-    public Comment getOrigin() {
+    public List<Comment> getOrigin() {
         return origin;
     }
 
-    public void setOrigin(Comment origin) {
+    public void setOrigin(List<Comment> origin) {
         this.origin = origin;
     }
 }
