@@ -4,6 +4,4 @@ target/
 .settings/
 .classpath
 *.iml
-*.pdf
-*.bak
-*.sav
+styles.css
