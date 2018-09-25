@@ -2,9 +2,10 @@ package awkwardrobots.tests;
 
 import awkwardrobots.data.Comment;
 import awkwardrobots.util.MockCommentProvider;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class MockCommentProviderTest {
 
@@ -16,12 +17,6 @@ public class MockCommentProviderTest {
         int validAmount = 10;
         comments = MockCommentProvider.getComments(validAmount);
         assertEquals(validAmount, comments.length);
-    }
-
-    @Test
-    public void testReadTooLowAmount() {
-        int weirdAmount = -4151;
-        assertThrows(IllegalArgumentException.class, () -> MockCommentProvider.getComments(weirdAmount));
     }
 
     @Test
