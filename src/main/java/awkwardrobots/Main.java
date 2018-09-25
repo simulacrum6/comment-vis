@@ -4,6 +4,7 @@ import awkwardrobots.UI.DashboardView;
 import awkwardrobots.UI.UploadView;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
@@ -19,6 +20,12 @@ import javax.servlet.annotation.WebServlet;
  */
 @Theme("mytheme")
 public class Main extends UI {
+
+    private Navigator navigator = new Navigator(this, this);
+
+    public Navigator getNavigator() {
+        return navigator;
+    }
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
