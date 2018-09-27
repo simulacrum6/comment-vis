@@ -25,7 +25,7 @@ public class UploadView extends VerticalLayout implements View {
         Upload.Receiver receiver = (Upload.Receiver) (filename, mimeType) -> null;
         Upload upload = new Upload(null, receiver);
         upload.setButtonCaption("Choose file...");
-        upload.addStyleName(ValoTheme.BUTTON_PRIMARY);
+        upload.setButtonStyleName("v-button v-button-primary");
         addComponent(upload);
         setComponentAlignment(upload, Alignment.MIDDLE_CENTER);
     }
