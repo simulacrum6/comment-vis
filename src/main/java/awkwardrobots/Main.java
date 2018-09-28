@@ -25,19 +25,23 @@ public class Main extends UI {
 
     private VerticalLayout rootLayout = new VerticalLayout();
     private Navigator navigator = new Navigator(this, rootLayout);
+    private UploadView uploadView = new UploadView();
+    private DashboardView dashboardView = new DashboardView();
 
     public Navigator getNavigator() {
         return navigator;
+    }
+
+    public DashboardView getDashboardView() {
+        return dashboardView;
     }
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         setContent(rootLayout);
         rootLayout.setMargin(false);
+        rootLayout.setSizeFull();
         rootLayout.setDefaultComponentAlignment(Alignment.TOP_CENTER);
-
-        UploadView uploadView = new UploadView();
-        DashboardView dashboardView = new DashboardView();
 
         getNavigator().addView("", uploadView);
         getNavigator().addView("Upload", uploadView);

@@ -34,5 +34,7 @@ $v-background-color: hsl(195, 0%, 98%);
 @mixin mytheme {
   @include valo;
 
-  // Insert your own theme rules here
+  .justify {
+    text-align: justify;
+  }
 }

@@ -1,5 +1,6 @@
 package awkwardrobots.UI;
 
+import awkwardrobots.util.FeedbackUploader;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.Alignment;
@@ -19,11 +20,13 @@ public class UploadView extends VerticalLayout implements View {
         addComponent(label);
 
         Label fileFormatInfo = new Label("Iusto rerum quisquam repellendus et. Nihil corporis veniam quos distinctio officiis. Rem id consequatur tempora rem. Expedita voluptates consequuntur culpa dolorem reprehenderit.");
-        addComponent(fileFormatInfo);
         fileFormatInfo.setSizeFull();
+        fileFormatInfo.addStyleName("justify");
+        addComponent(fileFormatInfo);
 
-        Upload.Receiver receiver = (Upload.Receiver) (filename, mimeType) -> null;
+        FeedbackUploader receiver = new FeedbackUploader();
         Upload upload = new Upload(null, receiver);
+        upload.addSucceededListener(receiver);
         upload.setButtonCaption("Choose file...");
         upload.setButtonStyleName("v-button v-button-primary");
         addComponent(upload);
