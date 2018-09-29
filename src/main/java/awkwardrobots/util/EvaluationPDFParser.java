@@ -15,38 +15,46 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EvaluationPDFParser implements CommentParser {
+    private static final String REPETITIONS = "Wiederholungen";
+    private static final String POSITIVE_FEEDBACK = "Positive Resonanz";
+    private static final String IMPROVEMENTS = "Verbesserungsvorschläge";
+    private static final String NEWLINE = System.lineSeparator();
+    private static final String END_OF_QUESTION_HEADER = "Anz";
+    private static final String END_OF_COMMENTS = "Summe";
+
+    private Matcher feedbackQuestions = Pattern.compile("" +
+            "(" + REPETITIONS + ")|" +
+            "(" + POSITIVE_FEEDBACK + ")|" +
+            "(" + IMPROVEMENTS + ")")
+            .matcher("");
 
     @Override
     public List<Comment> parse(InputStream inputStream) {
         List<Comment> comments = null;
+
         try {
             PDFParser parser = new PDFParser(inputStream);
             parser.parse();
             PDDocument pdf = new PDDocument(parser.getDocument());
             PDFTextStripper pdfStripper = new PDFTextStripper();
 
-            String text = pdfStripper.getText(pdf);
-
-            List<String> lines = Arrays.asList(text.split(System.lineSeparator()));
-            Iterator<String> iterator = lines.iterator();
+            Iterator<String> iterator = Arrays
+                    .asList(pdfStripper.getText(pdf).split(NEWLINE))
+                    .iterator();
 
             comments = new ArrayList<>();
-            Pattern relevant = Pattern.compile("" +
-                    "(Positive Resonanz)|" +
-                    "(Wiederholungen)|" +
-                    "(Verbesserungsvorschläge)");
-            Matcher finder = relevant.matcher("");
-
 
             while (iterator.hasNext()) {
                 String line = iterator.next();
-                finder.reset(line);
-                if (finder.matches()) {
-                    Sentiment sentiment = getSentiment(line);
-                    comments.addAll(getComments(iterator, sentiment));
+                feedbackQuestions.reset(line);
+                if (feedbackQuestions.matches()) {
+                    comments.addAll(getComments(iterator, getSentiment(line)));
                 }
             }
+
+            pdf.close();
             inputStream.close();
+
             return comments;
         } catch (IOException e) {
             System.err.println("Could not parse document.");
@@ -57,13 +65,13 @@ public class EvaluationPDFParser implements CommentParser {
     }
 
     private Sentiment getSentiment(String line) {
-        if (line.equals("Wiederholungen"))
+        if (line.equals(REPETITIONS))
             return Sentiment.UNCLEAR;
 
-        if (line.equals("Positive Resonanz"))
+        if (line.equals(POSITIVE_FEEDBACK))
             return Sentiment.POSITIVE;
 
-        if (line.equals("Verbesserungsvorschläge"))
+        if (line.equals(IMPROVEMENTS))
             return Sentiment.NEGATIVE;
 
         throw new IllegalArgumentException("Line must be the start of a feedback question. Was: " + line);
@@ -74,14 +82,14 @@ public class EvaluationPDFParser implements CommentParser {
         String line = "";
 
         // skip irrelevant lines;
-        while (!line.equals("Anz"))
+        while (!line.equals(END_OF_QUESTION_HEADER))
             line = iterator.next();
 
         while (iterator.hasNext()) {
             line = iterator.next();
 
             // break if end of list is reached
-            if (line.startsWith("Summe"))
+            if (line.startsWith(END_OF_COMMENTS))
                 break;
 
             // separate comment from number of mentions
