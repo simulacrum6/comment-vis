@@ -29,37 +29,27 @@ public class EvaluationPDFParser implements CommentParser {
             .matcher("");
 
     @Override
-    public List<Comment> parse(InputStream inputStream) {
-        List<Comment> comments = null;
+    public List<Comment> parse(InputStream inputStream) throws IOException {
+        PDFParser parser = new PDFParser(inputStream);
+        parser.parse();
+        PDDocument pdf = new PDDocument(parser.getDocument());
+        PDFTextStripper pdfStripper = new PDFTextStripper();
 
-        try {
-            PDFParser parser = new PDFParser(inputStream);
-            parser.parse();
-            PDDocument pdf = new PDDocument(parser.getDocument());
-            PDFTextStripper pdfStripper = new PDFTextStripper();
+        List<Comment> comments = new ArrayList<>();
+        Iterator<String> iterator = Arrays
+                .asList(pdfStripper.getText(pdf).split(NEWLINE))
+                .iterator();
 
-            Iterator<String> iterator = Arrays
-                    .asList(pdfStripper.getText(pdf).split(NEWLINE))
-                    .iterator();
-
-            comments = new ArrayList<>();
-
-            while (iterator.hasNext()) {
-                String line = iterator.next();
-                feedbackQuestions.reset(line);
-                if (feedbackQuestions.matches()) {
-                    comments.addAll(getComments(iterator, getSentiment(line)));
-                }
+        while (iterator.hasNext()) {
+            String line = iterator.next();
+            feedbackQuestions.reset(line);
+            if (feedbackQuestions.matches()) {
+                comments.addAll(getComments(iterator, getSentiment(line)));
             }
-
-            pdf.close();
-            inputStream.close();
-
-            return comments;
-        } catch (IOException e) {
-            System.err.println("Could not parse document.");
-            e.printStackTrace();
         }
+
+        pdf.close();
+        inputStream.close();
 
         return comments;
     }

@@ -1,7 +1,6 @@
 package awkwardrobots.util;
 
 import awkwardrobots.data.Comment;
-import com.vaadin.ui.Notification;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
@@ -11,7 +10,7 @@ import java.util.List;
 public class TXTCommentParser implements CommentParser {
 
     @Override
-    public List<Comment> parse(InputStream inputStream) {
+    public List<Comment> parse(InputStream inputStream) throws IOException {
         ArrayList<Comment> comments = new ArrayList<>();
         try (Reader reader = new InputStreamReader(inputStream);
              BufferedReader bufferedReader = new BufferedReader(reader)) {
@@ -23,14 +22,6 @@ public class TXTCommentParser implements CommentParser {
                 comments.add(new Comment(sentiment, line.substring(0, line.indexOf('\t'))));
             }
             return comments;
-        } catch (IOException e) {
-            e.printStackTrace();
-            Notification.show("Something went wrong with the upload", Notification.Type.ERROR_MESSAGE);
-            return null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            Notification.show("Something went wrong when parsing the file", Notification.Type.ERROR_MESSAGE);
-            return null;
         }
     }
 }

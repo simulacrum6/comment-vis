@@ -11,6 +11,8 @@ import com.vaadin.ui.themes.ValoTheme;
 
 public class UploadView extends VerticalLayout implements View {
 
+    public static final String ACCEPTED_MIME_TYPES = "application/pdf,text/plain";
+
     public UploadView() {
         setWidth("500px");
 
@@ -28,6 +30,7 @@ public class UploadView extends VerticalLayout implements View {
         Upload upload = new Upload(null, receiver);
         upload.addSucceededListener(receiver);
         upload.setButtonCaption("Choose file...");
+        upload.setAcceptMimeTypes(ACCEPTED_MIME_TYPES);
         upload.setButtonStyleName("v-button v-button-primary");
         addComponent(upload);
         setComponentAlignment(upload, Alignment.MIDDLE_CENTER);

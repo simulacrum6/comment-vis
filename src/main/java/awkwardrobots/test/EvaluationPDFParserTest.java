@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -25,13 +26,13 @@ public class EvaluationPDFParserTest {
     }
 
     @Test
-    public void testPDFParsing() {
+    public void testPDFParsing() throws IOException {
         List<Comment> comments = parser.parse(in);
         assertNotNull(comments);
     }
 
     @Test
-    public void testCommentExtraction() {
+    public void testCommentExtraction() throws IOException {
         List<Comment> comments = parser.parse(in);
         Comment first = comments.get(0);
         assertEquals("Keine Angabe", first.getText());
