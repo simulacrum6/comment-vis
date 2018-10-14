@@ -22,7 +22,7 @@ public class EvaluationPDFParserTest {
     @Before
     public void init() throws FileNotFoundException {
         parser = new EvaluationPDFParser();
-        in = new FileInputStream("src/main/resources/evaluations/sprachtechnologie.pdf");
+        in = new FileInputStream("src/main/resources/data/lecture_evaluations/sprachtechnologie.pdf");
     }
 
     @Test
