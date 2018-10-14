@@ -1,35 +1,33 @@
 package awkwardrobots.UI;
 
 import awkwardrobots.data.Comment;
-import com.vaadin.navigator.View;
-import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.VerticalLayout;
+import awkwardrobots.data.CommentList;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
+import com.vaadin.flow.router.Route;
 
-import java.util.List;
+@Route
+public class DashboardView extends VerticalLayout implements BeforeEnterObserver {
 
-public class DashboardView extends VerticalLayout implements View {
-
-    private List<Comment> comments;
     private Grid<Comment> commentGrid;
 
     public DashboardView() {
         setSizeFull();
         commentGrid = new Grid<>();
-        commentGrid.addColumn(Comment::getText).setCaption("Text");
-        commentGrid.addColumn(Comment::getSentiment).setCaption("Sentiment");
+        commentGrid.addColumn(Comment::getText).setHeader("Comment");
+        commentGrid.addColumn(Comment::getSentiment).setHeader("Sentiment");
         commentGrid.setSizeFull();
-        addComponent(commentGrid);
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
+        add(commentGrid);
     }
 
     @Override
-    public void enter(ViewChangeListener.ViewChangeEvent event) {
+    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
+        CommentList comments = UI.getCurrent().getSession().getAttribute(CommentList.class);
         if (comments == null || comments.isEmpty()) {
-            getUI().getNavigator().navigateTo("Upload");
+            beforeEnterEvent.rerouteTo(UploadView.class);
         } else {
             commentGrid.setItems(comments);
         }

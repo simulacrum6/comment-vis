@@ -1,17 +1,16 @@
 package awkwardrobots.util;
 
 import awkwardrobots.data.Comment;
+import awkwardrobots.data.CommentList;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TXTCommentParser implements CommentParser {
 
     @Override
-    public List<Comment> parse(InputStream inputStream) throws IOException {
-        ArrayList<Comment> comments = new ArrayList<>();
+    public CommentList parse(InputStream inputStream) throws IOException {
+        CommentList comments = new CommentList();
         try (Reader reader = new InputStreamReader(inputStream);
              BufferedReader bufferedReader = new BufferedReader(reader)) {
             String line;

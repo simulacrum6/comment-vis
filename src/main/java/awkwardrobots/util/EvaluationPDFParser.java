@@ -1,6 +1,7 @@
 package awkwardrobots.util;
 
 import awkwardrobots.data.Comment;
+import awkwardrobots.data.CommentList;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
@@ -29,13 +30,13 @@ public class EvaluationPDFParser implements CommentParser {
             .matcher("");
 
     @Override
-    public List<Comment> parse(InputStream inputStream) throws IOException {
+    public CommentList parse(InputStream inputStream) throws IOException {
         PDFParser parser = new PDFParser(inputStream);
         parser.parse();
         PDDocument pdf = new PDDocument(parser.getDocument());
         PDFTextStripper pdfStripper = new PDFTextStripper();
 
-        List<Comment> comments = new ArrayList<>();
+        CommentList comments = new CommentList();
         Iterator<String> iterator = Arrays
                 .asList(pdfStripper.getText(pdf).split(NEWLINE))
                 .iterator();

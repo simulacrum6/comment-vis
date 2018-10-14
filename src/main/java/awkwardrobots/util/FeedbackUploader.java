@@ -1,39 +1,39 @@
 package awkwardrobots.util;
 
-import awkwardrobots.Main;
-import awkwardrobots.data.Comment;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.Upload;
+import awkwardrobots.UI.DashboardView;
+import awkwardrobots.data.CommentList;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.upload.Receiver;
+import com.vaadin.flow.component.upload.SucceededEvent;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
 
-public class FeedbackUploader implements Upload.Receiver, Upload.SucceededListener {
-
+public class FeedbackUploader implements Receiver, ComponentEventListener<SucceededEvent> {
     private String mimeType;
     private ByteArrayOutputStream outputStream;
 
     @Override
-    public OutputStream receiveUpload(String filename, String mimeType) {
+    public OutputStream receiveUpload(String fileName, String mimeType) {
         this.mimeType = mimeType;
         return outputStream = new ByteArrayOutputStream();
     }
 
     @Override
-    public void uploadSucceeded(Upload.SucceededEvent event) {
+    public void onComponentEvent(SucceededEvent succeededEvent) {
         try {
             CommentParser commentParser = findMatchingParser();
-            List<Comment> comments = commentParser.parse(new ByteArrayInputStream(outputStream.toByteArray()));
-            ((Main) UI.getCurrent()).getDashboardView().setComments(comments);
-            UI.getCurrent().getNavigator().navigateTo("Dashboard");
+            CommentList comments = commentParser.parse(new ByteArrayInputStream(outputStream.toByteArray()));
+            UI.getCurrent().getSession().setAttribute(CommentList.class, comments);
+            UI.getCurrent().navigate(DashboardView.class);
         } catch (IOException e) {
-            Notification.show("Could not upload file. Please try again and pray it works!", Notification.Type.ERROR_MESSAGE);
+            Notification.show("Could not upload file. Please try again and pray it works!");
         } catch (Exception e) {
-            Notification.show("Error while parsing file. Please check the format of your file.", Notification.Type.ERROR_MESSAGE);
+            Notification.show("Error while parsing file. Please check the format of your file.");
         }
     }
 

@@ -1,42 +1,25 @@
 package awkwardrobots.UI;
 
 import awkwardrobots.util.FeedbackUploader;
-import com.vaadin.navigator.View;
-import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Upload;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
+import com.vaadin.flow.router.Route;
 
-public class UploadView extends VerticalLayout implements View {
-
-    public static final String ACCEPTED_MIME_TYPES = "application/pdf,text/plain";
+@Route
+public class UploadView extends VerticalLayout implements BeforeEnterObserver {
 
     public UploadView() {
-        setWidth("500px");
-
-        Label label = new Label("Upload your feedback data to visualize it.");
-        label.addStyleNames(ValoTheme.LABEL_BOLD, ValoTheme.LABEL_HUGE, ValoTheme.LABEL_COLORED);
-        label.setSizeFull();
-        addComponent(label);
-
-        Label fileFormatInfo = new Label("Iusto rerum quisquam repellendus et. Nihil corporis veniam quos distinctio officiis. Rem id consequatur tempora rem. Expedita voluptates consequuntur culpa dolorem reprehenderit.");
-        fileFormatInfo.setSizeFull();
-        fileFormatInfo.addStyleName("justify");
-        addComponent(fileFormatInfo);
-
-        FeedbackUploader receiver = new FeedbackUploader();
-        Upload upload = new Upload(null, receiver);
-        upload.addSucceededListener(receiver);
-        upload.setButtonCaption("Choose file...");
-        upload.setAcceptMimeTypes(ACCEPTED_MIME_TYPES);
-        upload.setButtonStyleName("v-button v-button-primary");
-        addComponent(upload);
-        setComponentAlignment(upload, Alignment.MIDDLE_CENTER);
+        setSizeFull();
+        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        FeedbackUploader feedbackUploader = new FeedbackUploader();
+        Upload upload = new Upload(feedbackUploader);
+        upload.addSucceededListener(feedbackUploader);
+        add(upload);
     }
 
     @Override
-    public void enter(ViewChangeListener.ViewChangeEvent event) {
+    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
     }
 }
