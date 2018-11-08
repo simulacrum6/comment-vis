@@ -84,12 +84,17 @@ public class EvaluationPDFParser implements CommentParser {
                 break;
 
             // separate comment from number of mentions
-            int lastSpace = line.lastIndexOf(' ');
-            String comment = line.substring(0, lastSpace);
-            int mentions = Integer.parseInt(line.substring(lastSpace + 1));
+            try {
+                int lastSpace = line.lastIndexOf(' ');
+                String comment = line.substring(0, lastSpace);
+                int mentions = Integer.parseInt(line.substring(lastSpace + 1));
 
-            for (int i = 0; i < mentions; i++)
-                comments.add(new Comment(sentiment, comment));
+                for (int i = 0; i < mentions; i++)
+                    comments.add(new Comment(sentiment, comment));
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.err.println("Culprit: " + line);
+            }
         }
 
         return comments;

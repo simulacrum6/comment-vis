@@ -1,11 +1,18 @@
 package awkwardrobots.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Attribute {
     private int mentions;
     private String name;
     private List<Comment> origin;
+
+    public Attribute(String name) {
+        this.name = name;
+        this.mentions = 1;
+        this.origin = new ArrayList<>();
+    }
 
     public int getMentions() {
         return mentions;

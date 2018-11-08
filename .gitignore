@@ -5,3 +5,6 @@ target/
 .classpath
 *.iml
 styles.css
+*.pdf
+*.comment.csv
+!*_all.comment.csv
