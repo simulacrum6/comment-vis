@@ -1,7 +1,8 @@
-package awkwardrobots.util;
+package awkwardrobots.io;
 
 import awkwardrobots.data.Comment;
 import awkwardrobots.data.CommentList;
+import awkwardrobots.util.Sentiment;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;

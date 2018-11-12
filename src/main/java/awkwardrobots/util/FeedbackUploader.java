@@ -2,6 +2,9 @@ package awkwardrobots.util;
 
 import awkwardrobots.UI.DashboardView;
 import awkwardrobots.data.CommentList;
+import awkwardrobots.io.CommentParser;
+import awkwardrobots.io.EvaluationPDFParser;
+import awkwardrobots.io.TXTCommentParser;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.notification.Notification;

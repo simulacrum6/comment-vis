@@ -3,7 +3,7 @@ package awkwardrobots.analysis;
 import awkwardrobots.data.Aspect;
 import awkwardrobots.data.Attribute;
 import awkwardrobots.data.Comment;
-import awkwardrobots.util.CommentReader;
+import awkwardrobots.io.CommentReader;
 import awkwardrobots.util.CommentToJCas;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;

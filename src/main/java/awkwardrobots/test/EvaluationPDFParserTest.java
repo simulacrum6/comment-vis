@@ -1,8 +1,8 @@
 package awkwardrobots.test;
 
 import awkwardrobots.data.Comment;
-import awkwardrobots.util.CommentParser;
-import awkwardrobots.util.EvaluationPDFParser;
+import awkwardrobots.io.CommentParser;
+import awkwardrobots.io.EvaluationPDFParser;
 import org.junit.Before;
 import org.junit.Test;
 

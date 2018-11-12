@@ -1,7 +1,7 @@
 package awkwardrobots.test;
 
 import awkwardrobots.data.Comment;
-import awkwardrobots.util.DatasetLoader;
+import awkwardrobots.io.DatasetLoader;
 import org.junit.Test;
 
 import java.io.File;

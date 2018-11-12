@@ -1,4 +1,4 @@
-package awkwardrobots.util;
+package awkwardrobots.io;
 
 import awkwardrobots.data.Comment;
 

@@ -1,6 +1,7 @@
-package awkwardrobots.util;
+package awkwardrobots.io;
 
 import awkwardrobots.data.Comment;
+import awkwardrobots.util.Sentiment;
 
 import java.io.IOException;
 import java.nio.file.Files;

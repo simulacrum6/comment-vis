@@ -1,9 +1,9 @@
 package awkwardrobots.scripts;
 
 import awkwardrobots.data.Comment;
-import awkwardrobots.util.CommentParser;
-import awkwardrobots.util.CommentWriter;
-import awkwardrobots.util.EvaluationPDFParser;
+import awkwardrobots.io.CommentParser;
+import awkwardrobots.io.CommentWriter;
+import awkwardrobots.io.EvaluationPDFParser;
 
 import java.io.File;
 import java.io.FileInputStream;
