@@ -32,7 +32,7 @@ public class CommentToJCas {
         StringBuilder stringBuilder = new StringBuilder();
         for (Comment comment : comments) {
             stringBuilder.append(comment.getText());
-            stringBuilder.append(" ");
+            stringBuilder.append(". ");
         }
 
         //TODO: Annotate Sentiment.
