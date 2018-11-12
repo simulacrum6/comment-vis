@@ -36,11 +36,11 @@ public class SimpleAspectExtractor {
     }
 
     public static void main(String[] args) throws Exception {
-        String path = "src/main/resources/data/lecture_evaluations/_all.comment.csv";
+        String path = "src/main/resources/data/kotzias2015/_all.comment.csv";
         List<Comment> comments = new CommentReader().read(path);
 
         SimpleAspectExtractor extractor = new SimpleAspectExtractor();
-        extractor.language = "de";
+        extractor.language = "en";
         extractor.extract(comments);
     }
 

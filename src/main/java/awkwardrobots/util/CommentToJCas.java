@@ -30,15 +30,28 @@ public class CommentToJCas {
      */
     public static JCas convert(List<Comment> comments, String language) throws UIMAException {
         StringBuilder stringBuilder = new StringBuilder();
+
         for (Comment comment : comments) {
-            stringBuilder.append(comment.getText());
-            stringBuilder.append(". ");
+            stringBuilder.append(comment.getText() + " ");
         }
 
-        //TODO: Annotate Sentiment.
         JCas jcas = JCasFactory.createJCas();
         jcas.setDocumentLanguage(language);
         jcas.setDocumentText(stringBuilder.toString());
+
+        int start = -1;
+        int end = -1;
+        for (Comment comment : comments) {
+            start += 1;
+            end = start + comment.getText().length();
+
+            awkwardrobots.dkpro.types.Comment annotation = new awkwardrobots.dkpro.types.Comment(jcas, start, end);
+            annotation.setSentiment(comment.getSentiment().toString());
+            annotation.addToIndexes(jcas);
+
+            start = end;
+        }
+
         return jcas;
     }
 

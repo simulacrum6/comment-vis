@@ -119,6 +119,13 @@
             <artifactId>slf4j-simple</artifactId>
         </dependency>
 
+        <!-- UIMA JCas Type Generator -->
+        <dependency>
+            <groupId>org.apache.uima</groupId>
+            <artifactId>jcasgen-maven-plugin</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
         <!-- DKPro Components -->
         <dependency>
             <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
@@ -138,14 +145,6 @@
         </dependency>
 
         <!-- DKPro Models -->
-        <dependency>
-            <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-            <artifactId>de.tudarmstadt.ukp.dkpro.core.treetagger-model-chunker-de-le</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-            <artifactId>de.tudarmstadt.ukp.dkpro.core.treetagger-model-chunker-en-iso8859-le</artifactId>
-        </dependency>
     </dependencies>
 
 	<build>
