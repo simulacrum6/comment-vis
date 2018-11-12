@@ -6,15 +6,15 @@ import awkwardrobots.io.DatasetLoader;
 
 import java.util.List;
 
-public class WriteEvaluations2Comments {
+public class WriteReviews2Comments {
     public static void main(String[] args) throws Exception {
         String root = DatasetLoader.ROOT_PATH;
-        String dataset = "lecture_evaluations";
-        String out = root + dataset + "/_all.comment.csv";
+        String dataset = "kotzias2015";
+        String outFile = root + dataset + "/_all.comment.csv";
 
         List<Comment> comments = DatasetLoader.loadComments(dataset, null);
         CommentWriter writer = new CommentWriter();
 
-        writer.write(comments, out);
+        writer.write(comments, outFile);
     }
 }
