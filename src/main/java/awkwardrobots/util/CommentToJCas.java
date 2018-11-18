@@ -1,6 +1,7 @@
 package awkwardrobots.util;
 
 import awkwardrobots.data.Comment;
+import awkwardrobots.dkpro.types.CommentAnnotation;
 import org.apache.uima.UIMAException;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
@@ -45,7 +46,7 @@ public class CommentToJCas {
             start += 1;
             end = start + comment.getText().length();
 
-            awkwardrobots.dkpro.types.Comment annotation = new awkwardrobots.dkpro.types.Comment(jcas, start, end);
+            CommentAnnotation annotation = new CommentAnnotation(jcas, start, end);
             annotation.setSentiment(comment.getSentiment().toString());
             annotation.addToIndexes(jcas);
 

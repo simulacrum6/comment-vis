@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,17 +48,34 @@ public class DatasetLoader {
     }
 
     public static List<Comment> loadComments(String dataset, String subset) throws IOException {
-        File[] files = DatasetLoader.findFiles(dataset, subset);
+        String commentFilePath = DatasetLoader.getCommentFile(dataset, subset);
+        
+        if (commentFilePath == null) {
+        	File[] files = DatasetLoader.findFiles(dataset, subset);
 
-        CommentParser parser = dataset.equalsIgnoreCase("lecture_evaluations") ?
-                new EvaluationPDFParser() :
-                new TXTCommentParser();
+            CommentParser parser = dataset.equalsIgnoreCase("lecture_evaluations") ?
+                    new EvaluationPDFParser() :
+                    new TXTCommentParser();
 
-        List<Comment> comments = new ArrayList<>();
-        for (File file : files) {
-            comments.addAll(parser.parse(new FileInputStream(file)));
+            List<Comment> comments = new ArrayList<>();
+            for (File file : files) {
+                comments.addAll(parser.parse(new FileInputStream(file)));
+            }
+            
+            return comments;
         }
-
-        return comments;
+    	
+    	return new CommentReader().read(commentFilePath);
+    }
+    
+    private static String getCommentFile(String dataset, String subset) throws IOException {
+    	String filename = subset == null ? "_all" : subset;
+    	String extension = ".comment.csv";
+    	String commentFile = DatasetLoader.ROOT_PATH + dataset + "/" + filename + extension;
+    	
+    	if (Files.exists(Paths.get(commentFile)))
+    		return commentFile;
+    	
+    	return null;
     }
 }

@@ -6,7 +6,7 @@
     <vendor/>
     <types>
         <typeDescription>
-            <name>awkwardrobots.dkpro.types.Comment</name>
+            <name>awkwardrobots.dkpro.types.CommentAnnotation</name>
             <description/>
             <supertypeName>uima.tcas.Annotation</supertypeName>
             <features>
