@@ -37,4 +37,9 @@ public class Attribute {
     public void setOrigin(List<Comment> origin) {
         this.origin = origin;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

@@ -30,4 +30,13 @@ public class Aspect {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "Aspect{" +
+                "attributes=" + attributes +
+                ", mentions=" + mentions +
+                ", name='" + name + '\'' +
+                "}\n";
+    }
 }

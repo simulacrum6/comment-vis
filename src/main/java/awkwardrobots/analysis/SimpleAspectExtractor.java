@@ -3,13 +3,12 @@ package awkwardrobots.analysis;
 import awkwardrobots.data.Aspect;
 import awkwardrobots.data.Attribute;
 import awkwardrobots.data.Comment;
+import awkwardrobots.dkpro.types.CommentAnnotation;
 import awkwardrobots.io.CommentReader;
 import awkwardrobots.util.CommentToJCas;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -17,7 +16,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Extracts Aspects and Attributes using simple rule-based approaches.
@@ -26,9 +24,6 @@ public class SimpleAspectExtractor {
 
     private String language = "en";
     private AnalysisConfig config;
-
-    private List<Aspect> aspects = new ArrayList<>();
-    private List<Attribute> attributes = new ArrayList<>();
 
 
     public SimpleAspectExtractor() throws ResourceInitializationException {
@@ -41,43 +36,43 @@ public class SimpleAspectExtractor {
 
         SimpleAspectExtractor extractor = new SimpleAspectExtractor();
         extractor.language = "en";
-        extractor.extract(comments);
+        System.out.println(extractor.extract(comments));
     }
 
-    public void extract(List<Comment> comments) throws UIMAException {
+    public List<Aspect> extract(List<Comment> comments) throws UIMAException {
         // create JCas
         JCas jcas = CommentToJCas.convert(comments, language);
 
         // annotate JCas
-        AnalysisEngine analysisEngine = AnalysisEngineFactory.createEngine(config.getConfig());
+        AnalysisEngine analysisEngine = config.getEngine();
         analysisEngine.process(jcas);
 
         // extract
-        for (Sentence sentence : JCasUtil.select(jcas, Sentence.class)) {
-            Collection<POS> tags = JCasUtil.selectCovered(jcas, POS.class, sentence.getBegin(), sentence.getEnd());
-            List<Attribute> chunkAttributes = tags.stream()
-                    .filter(pos -> pos.getPosValue().startsWith("JJ")) // adjective
-                    .map(pos -> new Attribute(pos.getCoveredText()))
-                    .collect(Collectors.toList());
+        List<Aspect> aspects = new ArrayList<>();
+        for (CommentAnnotation comment : JCasUtil.select(jcas, CommentAnnotation.class)) {
+            Collection<POS> tags = JCasUtil.selectCovered(jcas, POS.class, comment.getBegin(), comment.getEnd());
 
-            Aspect aspect = new Aspect();
+            Aspect aspect = null;
+            List<Attribute> attributes = new ArrayList<>();
+
             for (POS tag : tags) {
                 if (tag.getPosValue().startsWith("NN")) {
-                    aspect.setName(sentence.getCoveredText());
-                    System.out.println("\t  ASPECT " + aspect.getName());
-                    aspect.setAttributes(chunkAttributes);
+                    aspect = new Aspect();
+                    aspect.setName(tag.getCoveredText());
                     aspects.add(aspect);
+                } else if (tag.getPosValue().startsWith("JJ")) {
+                    Attribute attribute = new Attribute(tag.getCoveredText());
+                    attributes.add(attribute);
                 }
             }
+
+            if (aspect != null) {
+                aspect.setAttributes(attributes);
+                aspects.add(aspect);
+            }
         }
-    }
 
-    public List<Aspect> getAspects() {
-        return this.aspects;
-    }
-
-    public List<Attribute> getAttributes() {
-        return this.attributes;
+        return aspects;
     }
 
 }
