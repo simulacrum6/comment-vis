@@ -1,5 +1,7 @@
 package awkwardrobots.data;
 
+import awkwardrobots.util.Sentiment;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,11 +9,13 @@ public class Attribute {
     private int mentions;
     private String name;
     private List<Comment> origin;
+    private Sentiment sentiment;
 
     public Attribute(String name) {
         this.name = name;
         this.mentions = 1;
         this.origin = new ArrayList<>();
+        this.sentiment = Sentiment.UNCLEAR;
     }
 
     public int getMentions() {
@@ -36,6 +40,14 @@ public class Attribute {
 
     public void setOrigin(List<Comment> origin) {
         this.origin = origin;
+    }
+
+    public Sentiment getSentiment() {
+        return sentiment;
+    }
+
+    public void setSentiment(Sentiment sentiment) {
+        this.sentiment = sentiment;
     }
 
     @Override

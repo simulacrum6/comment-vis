@@ -1,6 +1,10 @@
 package awkwardrobots.data;
 
+import awkwardrobots.util.Sentiment;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Aspect {
     private List<Attribute> attributes;
@@ -13,6 +17,30 @@ public class Aspect {
 
     public void setAttributes(List<Attribute> attributes) {
         this.attributes = attributes;
+    }
+
+    public void addAttributes(List<Attribute> attributes) {
+        if (this.attributes == null) {
+            this.attributes = attributes;
+        } else {
+            this.attributes.addAll(attributes);
+        }
+    }
+
+    public List<Attribute> getPositiveAttributes() {
+        if (attributes == null)
+            return new ArrayList<>();
+        return attributes.stream()
+                .filter(attribute -> attribute.getSentiment() == Sentiment.POSITIVE)
+                .collect(Collectors.toList());
+    }
+
+    public List<Attribute> getNegativeAttributes() {
+        if (attributes == null)
+            return new ArrayList<>();
+        return attributes.stream()
+                .filter(attribute -> attribute.getSentiment() == Sentiment.NEGATIVE)
+                .collect(Collectors.toList());
     }
 
     public int getMentions() {

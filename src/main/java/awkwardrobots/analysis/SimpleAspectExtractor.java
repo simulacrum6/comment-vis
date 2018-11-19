@@ -6,6 +6,7 @@ import awkwardrobots.data.Comment;
 import awkwardrobots.dkpro.types.CommentAnnotation;
 import awkwardrobots.io.CommentReader;
 import awkwardrobots.util.CommentToJCas;
+import awkwardrobots.util.Sentiment;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -57,18 +58,28 @@ public class SimpleAspectExtractor {
 
             for (POS tag : tags) {
                 if (tag.getPosValue().startsWith("NN")) {
-                    aspect = new Aspect();
-                    aspect.setName(tag.getCoveredText());
-                    aspects.add(aspect);
+                    String coveredText = tag.getCoveredText();
+                    for (Aspect anotherAspect : aspects) {
+                        if (coveredText.equalsIgnoreCase(anotherAspect.getName())) {
+                            aspect = anotherAspect;
+                            aspect.setMentions(aspect.getMentions() + 1);
+                            break;
+                        }
+                    }
+                    if (aspect == null) {
+                        aspect = new Aspect();
+                        aspect.setName(tag.getCoveredText());
+                        aspects.add(aspect);
+                    }
                 } else if (tag.getPosValue().startsWith("JJ")) {
                     Attribute attribute = new Attribute(tag.getCoveredText());
+                    attribute.setSentiment(Sentiment.fromString(comment.getSentiment()));
                     attributes.add(attribute);
                 }
             }
 
             if (aspect != null) {
-                aspect.setAttributes(attributes);
-                aspects.add(aspect);
+                aspect.addAttributes(attributes);
             }
         }
 
