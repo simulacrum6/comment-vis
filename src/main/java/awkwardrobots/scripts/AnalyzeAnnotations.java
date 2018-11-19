@@ -5,6 +5,7 @@ import awkwardrobots.data.Comment;
 import awkwardrobots.dkpro.types.CommentAnnotation;
 import awkwardrobots.io.DatasetLoader;
 import awkwardrobots.util.CommentToJCas;
+import awkwardrobots.util.Sentiment;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
@@ -87,10 +88,16 @@ public class AnalyzeAnnotations {
 	        Set<String> uniqueCommentAnnos = commentAnnos.stream()
 	        		.map(anno -> anno.getCoveredText())
 	        		.collect(Collectors.toSet());
+	        Long positiveComments = commentAnnos.stream()
+	        		.filter(comment -> comment.getSentiment().equals(Sentiment.POSITIVE.toString()))
+	        		.collect(Collectors.counting());
 	        features.put("comment_count", commentAnnos.size());
 	        features.put("unique_comment_count", uniqueCommentAnnos.size());
 	        features.put("unique_comment_ratio", new Double(uniqueCommentAnnos.size()) / new Double(commentAnnos.size()) );
-	
+	        features.put("token_comment_ratio", new Double(tokens.size()) / new Double(commentAnnos.size()));
+	        features.put("positive_rate", new Double(positiveComments) / new Double(commentAnnos.size()));
+	        
+	        
 	        // pos features
 	        List<POS> posAnnos = new ArrayList<>(JCasUtil.select(jcas, POS.class));
 	        Map<String, Integer> tagCounts = new HashMap<>();
