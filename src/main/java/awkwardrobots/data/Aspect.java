@@ -3,6 +3,7 @@ package awkwardrobots.data;
 import awkwardrobots.util.Sentiment;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,6 +11,51 @@ public class Aspect {
     private List<Attribute> attributes;
     private int mentions;
     private String name;
+
+    /**
+     * Creates a new Aspect by combining the given Aspects.
+     * <p>
+     * The name of the combined Aspect is equal to the first Aspect passed to the method,
+     * Attributes and mentions are concatenated.
+     */
+    public static Aspect combine(Aspect... aspects) {
+        Aspect combined = Aspect.fromAspect(aspects[0]);
+
+        if (aspects.length == 1) {
+            return combined;
+        }
+
+        for (int i = 1; i < aspects.length; i++) {
+            if (aspects[i] == null) {
+                continue;
+            }
+
+            Aspect aspect = aspects[i];
+
+            combined.addAttributes(aspect.getAttributes());
+            combined.addMentions(aspect.getMentions());
+        }
+
+        return combined;
+    }
+
+    public static Aspect combine(Collection<Aspect> aspects) {
+        Aspect[] array = new Aspect[aspects.size()];
+        return Aspect.combine(aspects.toArray(array));
+    }
+
+    /**
+     * Creates a new Aspect by copying all properties from the given Aspect.
+     * Note that attributes are deep copied.
+     */
+    public static Aspect fromAspect(Aspect aspect) {
+        Aspect copy = new Aspect();
+        copy.setName(aspect.getName());
+        copy.addAttributes(aspect.getAttributes());
+        copy.setMentions(aspect.getMentions());
+
+        return copy;
+    }
 
     public List<Attribute> getAttributes() {
         return attributes;
@@ -49,6 +95,10 @@ public class Aspect {
 
     public void setMentions(int mentions) {
         this.mentions = mentions;
+    }
+
+    public void addMentions(int mentions) {
+        this.mentions += mentions;
     }
 
     public String getName() {

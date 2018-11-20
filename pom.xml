@@ -102,15 +102,24 @@
             <artifactId>vaadin-charts-flow</artifactId>
             <version>6.0.0</version>
 		</dependency>
+
+        <!-- Unit Tests -->
 		<dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
 		</dependency>
+
+        <!-- Text Utils -->
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
             <version>1.8.15</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.6</version>
         </dependency>
 
         <!-- Logger -->
