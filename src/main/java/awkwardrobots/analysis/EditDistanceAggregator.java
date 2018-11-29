@@ -7,6 +7,10 @@ import org.apache.commons.text.similarity.LevenshteinDistance;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * Aggregates Aspects based on the edit distances of their text.
+ * Aspects are aggregated if their edit distance is below a set threshold.
+ */
 public class EditDistanceAggregator implements AspectAggregator {
     private static final Integer DEFAULT_THRESHOLD = 2;
     private static final EditDistance<Integer> DEFAULT_DISTANCE = new LevenshteinDistance(DEFAULT_THRESHOLD);
@@ -15,6 +19,10 @@ public class EditDistanceAggregator implements AspectAggregator {
 
     public EditDistanceAggregator() {
         this.distanceMeasure = DEFAULT_DISTANCE;
+    }
+
+    public EditDistanceAggregator(EditDistance<Integer> distanceMeasure) {
+        this.distanceMeasure = distanceMeasure;
     }
 
     @Override
@@ -32,11 +40,12 @@ public class EditDistanceAggregator implements AspectAggregator {
 
             Collection<Aspect> equivalents = new ArrayList<>();
 
+            // search rest of array for equivalent Aspects
             for (int j = i; j < array.length; j++) {
                 Aspect other = array[j];
                 if (other != null && areSimilar(aspect, other)) {
                     equivalents.add(other);
-                    array[j] = null;
+                    array[j] = null; // marks this aspect as consumed
                 }
             }
 
@@ -46,8 +55,12 @@ public class EditDistanceAggregator implements AspectAggregator {
         return aggregated;
     }
 
+    /**
+     * Checks, whether two Aspects are similar.
+     * Aspects are similar if their edit distance is below the given theshold.
+     */
     private boolean areSimilar(Aspect aspect, Aspect other) {
-        return this.distanceMeasure.apply(aspect.getName(), other.getName()) != -1;
+        return this.distanceMeasure.apply(aspect.getName(), other.getName()) != -1; // -1 is returned, when two texts are above the maximum edit distance.
     }
 
 }

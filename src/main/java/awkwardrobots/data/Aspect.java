@@ -21,11 +21,9 @@ public class Aspect {
     public static Aspect combine(Aspect... aspects) {
         Aspect combined = Aspect.fromAspect(aspects[0]);
 
-        if (aspects.length == 1) {
-            return combined;
-        }
-
+        // add all others
         for (int i = 1; i < aspects.length; i++) {
+            // skip if null
             if (aspects[i] == null) {
                 continue;
             }
@@ -39,6 +37,12 @@ public class Aspect {
         return combined;
     }
 
+    /**
+     * Creates a new Aspect by combining the given Aspects.
+     * <p>
+     * The name of the combined Aspect is equal to the first Aspect in the given Collection,
+     * Attributes and mentions are concatenated.
+     */
     public static Aspect combine(Collection<Aspect> aspects) {
         Aspect[] array = new Aspect[aspects.size()];
         return Aspect.combine(aspects.toArray(array));
@@ -53,7 +57,6 @@ public class Aspect {
         copy.setName(aspect.getName());
         copy.addAttributes(aspect.getAttributes());
         copy.setMentions(aspect.getMentions());
-
         return copy;
     }
 
