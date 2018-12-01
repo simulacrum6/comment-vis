@@ -9,3 +9,5 @@ styles.css
 *.comment.csv
 !*_all.comment.csv
 /.metadata/
+node_modules/
+package-lock.json
