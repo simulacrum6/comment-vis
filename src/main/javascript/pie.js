@@ -110,9 +110,11 @@ class Donut {
     this.data = data || [];
     this.container = container || 'body';
     this.options = options || {};
-    this.constructing = true;
+    this._constructing = true;
 
     this.id = id;
+
+    const donut = this;
 
     // graphic
     const graphic = d3.select(container).append('svg')
@@ -123,7 +125,16 @@ class Donut {
       .attr('class', 'center')
       .attr('transform', `translate(${options.center},${options.center})`)
 
-    const centerLabel = graphic.append('text').text(options.aspect);
+    const centerCircle = graphic.append('g')
+        .attr('class', 'center-circle')
+        
+    const circle = centerCircle.append('circle')
+        .attr('r', this.options.innerRadius)
+        .style('fill', 'white')
+
+    const centerLabel = centerCircle.append('text')
+        .text(this.options.aspect)
+        .attr('text-anchor', 'middle');
 
     this.update(data);
   }
@@ -144,6 +155,14 @@ class Donut {
     return this.getElement().select('.center')
   }
 
+  getCenterCircle() {
+    return this.getCenter().select('.center-circle');
+  }
+
+  getCenterLabel() {
+    return this.getCenterCircle().select('text');
+  }
+
   getSegments() {
     return this.getCenter().selectAll('.segment')
   }
@@ -154,10 +173,6 @@ class Donut {
 
   getLabels() {
     return this.getSegments().select('text');
-  }
-
-  getCenterLabel() {
-    return this.getCenter().select('text');
   }
 
   update(d) {
@@ -171,18 +186,20 @@ class Donut {
       .sort(null) // do not sort
       .value(data => data.y) // use property y as values
     
+    // update old elements
     const segments = donut.getSegments().data(pie(d));
 
     const updatedSlices = segments.select('path')
       .attr('d', arc)
       .each(slice => slice.outerRadius = donut.options.radius);
 
-    const updatedLabels = this.getLabels()
+    const updatedLabels = donut.getLabels()
       .attr('transform', (slice) => `translate(${arc.centroid(slice)})`)
       .text((slice) => slice.data.x);
 
+    // handle new elements
     const newSegments = segments.enter()
-      .append('g') // add new node
+      .append('g')
       .attr('class', 'segment')
 
     const newSlices = newSegments.append('path')
@@ -193,6 +210,7 @@ class Donut {
         const segment = d3.select(d3.event.target);
         growAnimation(segment, arc, donut.options.padRadius);
       })
+      .on('mousemove', (slice, i) => console.log(d3.mouse(d3.event.target)))
       .on('mouseleave', (slice, i) => {
         const segment = d3.select(d3.event.target)
         shrinkAnimation(segment, arc, donut.options.radius);
@@ -202,19 +220,20 @@ class Donut {
       .attr('transform', (slice) => `translate(${arc.centroid(slice)})`)
       .text((slice) => slice.data.x);
 
+    // delete obsolete elements
     const obsoleteSegments = segments.exit().remove();
 
     // animations
-    const oldSlices = pie(this.data);
+    const oldSlices = pie(donut.data);
     fitToNewSizeAnimation(updatedSlices, arc, oldSlices);
-    spinInAnimation(newSlices, arc, donut.constructing);
+    spinInAnimation(newSlices, arc, donut._constructing);
     vectorize(fadeInAnimation)(updatedLabels, newSliceLabels);
-    if (donut.constructing) {
-      fadeInAnimation(this.getCenterLabel());
-      donut.constructing = false;
+    if (donut._constructing) {
+      fadeInAnimation(donut.getCenterLabel());
+      donut._constructing = false;
     }
 
-    this.data = d;
+    donut.data = d;
   }
 }
 
