@@ -110,8 +110,22 @@ class Donut {
     this.data = data || [];
     this.container = container || 'body';
     this.options = options || {};
+    this.constructing = true;
 
     this.id = id;
+
+    // graphic
+    const graphic = d3.select(container).append('svg')
+      .attr('width', options.width)
+      .attr('height', options.height)
+      .attr('id', id)
+      .append('g')
+      .attr('class', 'center')
+      .attr('transform', `translate(${options.center},${options.center})`)
+
+    const centerLabel = graphic.append('text').text(options.aspect);
+
+    this.update(data);
   }
 
   getContainerElement() {
@@ -153,12 +167,9 @@ class Donut {
       .innerRadius(donut.options.innerRadius)
       .padRadius(donut.options.padRadius)
 
-    // pie generator
     const pie = d3.pie()
       .sort(null) // do not sort
       .value(data => data.y) // use property y as values
-
-    const oldSlices = pie(this.data);
     
     const segments = donut.getSegments().data(pie(d));
 
@@ -193,9 +204,15 @@ class Donut {
 
     const obsoleteSegments = segments.exit().remove();
 
+    // animations
+    const oldSlices = pie(this.data);
     fitToNewSizeAnimation(updatedSlices, arc, oldSlices);
-    spinInAnimation(newSlices, arc, false);
+    spinInAnimation(newSlices, arc, donut.constructing);
     vectorize(fadeInAnimation)(updatedLabels, newSliceLabels);
+    if (donut.constructing) {
+      fadeInAnimation(this.getCenterLabel());
+      donut.constructing = false;
+    }
 
     this.data = d;
   }
@@ -203,7 +220,7 @@ class Donut {
 
 class DonutFactory {
 
-  static create(data, options) {
+  static create(data, container, options) {
 
     options = options || {
       aspect: "Node",
@@ -217,55 +234,11 @@ class DonutFactory {
       colors: DEFAULTS.pallette
     }
 
-    let id = generateId().slice(0, 8)
-    // arc generator
-    const arc = d3.arc()
-      .innerRadius(options.innerRadius)
-      .padRadius(options.padRadius)
+    let id = generateId();
 
-    // pie generator
-    const pie = d3.pie()
-      .sort(null) // do not sort
-      .value(data => data.y) // use property y as values
+    container = container || 'body';
 
-    // graphic
-    const graphic = d3.select('body').append('svg')
-      .attr('width', options.width)
-      .attr('height', options.height)
-      .attr('id', id)
-      .append('g')
-      .attr('class', 'center')
-      .attr('transform', `translate(${options.center},${options.center})`)
-
-    const nodeText = graphic.append('text')
-      .text(options.aspect)
-
-    const segments = graphic.selectAll('.segment')
-      .data(pie(data))
-      .enter().append('g') // add new node
-      .attr('class', 'segment')
-
-    const slices = segments.append('path') // add slice
-      .attr('d', arc) // set angle, using arc generator: f(data) -> path 
-      .each(slice => slice.outerRadius = options.radius)
-      .style('fill', (slice, i) => colors(i))
-      .on('mouseenter', (slice) => {
-        const segment = d3.select(d3.event.target);
-        growAnimation(segment, arc, options.padRadius);
-      })
-      .on('mouseleave', (slice, i) => {
-        const segment = d3.select(d3.event.target)
-        shrinkAnimation(segment, arc, options.radius);
-      })
-
-
-    const sliceLabels = segments.append('text') // add label
-      .attr('transform', (slice) => `translate(${arc.centroid(slice)})`)
-      .text((slice) => slice.data.x);
-
-    spinInAnimation(slices, arc);
-    vectorize(fadeInAnimation)(nodeText, sliceLabels);
-    return new Donut(data, 'body', id, options);
+    return new Donut(data, container, id, options);
   }
 
   static bake(data, container, id, options) {
