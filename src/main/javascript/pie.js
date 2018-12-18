@@ -1,26 +1,30 @@
+// TODO: write javadoc
+
 d3.select('*').__proto__.pipe = selectionPipe;
 
-const data = [
-  { x: 'Pet', y: 3 },
-  { x: 'Bet', y: 4 },
-  { x: 'Mett', y: 9 }
-]
-
-
-const newData = [
-  { x: 'Foo', y: 4 },
-  { x: 'Bar', y: 9 },
-  { x: 'Baz', y: 3 },
-  { x: 'lel', y: 6 },
-  { x: 'whet', y: 13 },
-]
-
+// TODO: harmonize 
 const DEFAULTS = {
   radius: 500,
   cutout: 0.6,
   extension: 1.05,
-  pallette: d3.scaleOrdinal(d3.schemePaired)
+  palette: d3.scaleOrdinal(d3.schemePaired),
+  colors: {
+    positive: d3.schemeGreens,
+    negative: d3.schemeReds
+  }
 };
+
+const DEFAULT_CONFIG = {
+  aspect: "Node",
+  width: 500 * 1.2,
+  height: 500 * 1.2,
+  center: 500 / 2 * 1.2,
+  radius: 500 / 2,
+  innerRadius: 500 / 2 * 0.6,
+  padRadius: 500 / 2 * 1.2,
+  extension: 500 / 2 * 1.2 - 500 / 2,
+  colors: DEFAULTS.palette
+}
 
 const generateId = (length) => {
   length = length || 8;
@@ -62,7 +66,7 @@ const fadeInAnimation = (selection) => {
 }
 
 const spinInAnimation = (selection, arc, spinRight = true) => {
-  let startPoint = spinRight ? { startAngle: 0, endAngle: 0 } : { startAngle: (Math.PI * 2), endAngle: (Math.PI * 2) }; 
+  let startPoint = spinRight ? { startAngle: 0, endAngle: 0 } : { startAngle: (Math.PI * 2), endAngle: (Math.PI * 2) };
   return selection
     .transition(entryTransition)
     .attrTween('d', (slice) => {
@@ -81,15 +85,12 @@ const fitToNewSizeAnimation = (selection, arc, oldSlices) => {
 }
 
 const growAnimation = (selection, arc, radius) => {
-  console.log('growAnimation called')
   selection
     .transition(growTransition)
     .attrTween('d', (slice) => {
-      console.log(`\tgrowing from ${slice.outerRadius} to ${radius}`)
       var interpolator = d3.interpolate(slice.outerRadius, radius);
       return (t) => {
         slice.outerRadius = interpolator(t);
-        console.log('\t' + slice.outerRadius);
         return arc(slice);
       };
     });
@@ -106,36 +107,38 @@ const shrinkAnimation = (selection, arc, radius) => {
 
 class Donut {
 
-  constructor(data, container, id, options) {
-    this.data = data || [];
-    this.container = container || 'body';
-    this.options = options || {};
+  constructor(data = [], container = 'body', options = DEFAULT_CONFIG) {
+    // initialize all fields
+    this.data = data;
+    this.container = container;
+    this.options = { ...DEFAULT_CONFIG, ...options };
+    this.id = this.options.id || generateId();
     this._constructing = true;
-
-    this.id = id;
 
     const donut = this;
 
-    // graphic
+    // create svg in container element
     const graphic = d3.select(container).append('svg')
-      .attr('width', options.width)
-      .attr('height', options.height)
-      .attr('id', id)
+      .attr('width', donut.options.width)
+      .attr('height', donut.options.height)
+      .attr('id', donut.id)
       .append('g')
-      .attr('class', 'center')
-      .attr('transform', `translate(${options.center},${options.center})`)
+        .attr('class', 'center')
+        .attr('transform', `translate(${donut.options.center},${donut.options.center})`)
 
+    // create center circle and label
     const centerCircle = graphic.append('g')
-        .attr('class', 'center-circle')
-        
+      .attr('class', 'center-circle')
+
     const circle = centerCircle.append('circle')
-        .attr('r', this.options.innerRadius)
-        .style('fill', 'white')
+      .attr('r', donut.options.innerRadius)
+      .style('fill', 'white')
 
     const centerLabel = centerCircle.append('text')
-        .text(this.options.aspect)
-        .attr('text-anchor', 'middle');
+      .text(donut.options.aspect)
+      .attr('text-anchor', 'middle');
 
+    // create slices around center
     this.update(data);
   }
 
@@ -175,19 +178,20 @@ class Donut {
     return this.getSegments().select('text');
   }
 
-  update(d) {
+  update(data) {
     const donut = this;
 
+    // generators for pie charts
     const arc = d3.arc()
       .innerRadius(donut.options.innerRadius)
       .padRadius(donut.options.padRadius)
 
     const pie = d3.pie()
-      .sort(null) // do not sort
-      .value(data => data.y) // use property y as values
-    
-    // update old elements
-    const segments = donut.getSegments().data(pie(d));
+      .sort(null)
+      .value(data => data.y) // property y determines size of pie slice
+
+    // update existing elements
+    const segments = donut.getSegments().data(pie(data));
 
     const updatedSlices = segments.select('path')
       .attr('d', arc)
@@ -197,7 +201,7 @@ class Donut {
       .attr('transform', (slice) => `translate(${arc.centroid(slice)})`)
       .text((slice) => slice.data.x);
 
-    // handle new elements
+    // add new elements
     const newSegments = segments.enter()
       .append('g')
       .attr('class', 'segment')
@@ -210,7 +214,6 @@ class Donut {
         const segment = d3.select(d3.event.target);
         growAnimation(segment, arc, donut.options.padRadius);
       })
-      .on('mousemove', (slice, i) => console.log(d3.mouse(d3.event.target)))
       .on('mouseleave', (slice, i) => {
         const segment = d3.select(d3.event.target)
         shrinkAnimation(segment, arc, donut.options.radius);
@@ -225,51 +228,33 @@ class Donut {
 
     // animations
     const oldSlices = pie(donut.data);
+
     fitToNewSizeAnimation(updatedSlices, arc, oldSlices);
     spinInAnimation(newSlices, arc, donut._constructing);
-    vectorize(fadeInAnimation)(updatedLabels, newSliceLabels);
+    fadeInAnimation(updatedLabels);
+    fadeInAnimation(newSliceLabels);
+    
+    // animate center label if changed
     if (donut._constructing) {
       fadeInAnimation(donut.getCenterLabel());
       donut._constructing = false;
     }
 
-    donut.data = d;
+    // update data
+    donut.data = data;
   }
 }
 
 class DonutFactory {
 
-  static create(data, container, options) {
-
-    options = options || {
-      aspect: "Node",
-      width: 500 * 1.2,
-      height: 500 * 1.2,
-      center: 500 / 2 * 1.2,
-      radius: 500 / 2,
-      innerRadius: 500 / 2 * 0.6,
-      padRadius: 500 / 2 * 1.2,
-      extension: 500 / 2 * 1.2 - 500 / 2,
-      colors: DEFAULTS.pallette
-    }
-
-    let id = generateId();
-
-    container = container || 'body';
-
-    return new Donut(data, container, id, options);
+  static create(data) {
+    return new Donut(data);
   }
 
-  static bake(data, container, id, options) {
-    return DonutFactory.create(data, container, id, options);
+  static bake(data) {
+    return DonutFactory.create(data);
   }
 }
-
-
-let donut = DonutFactory.create(data);
-let other = DonutFactory.create(newData);
-setTimeout(() => donut.update(newData), 1500)
-
 
 /**
  * Returns the composition of the given functions.
@@ -310,3 +295,25 @@ function curry(f, ...xs) {
 function vectorize(f) {
   return (...xs) => xs.map(x => f(x));
 }
+
+/**
+ * Test Stuff
+ */
+
+const data = [
+  { x: 'Pet', y: 3 },
+  { x: 'Bet', y: 4 },
+  { x: 'Mett', y: 9 }
+]
+
+const newData = [
+  { x: 'Foo', y: 4 },
+  { x: 'Bar', y: 9 },
+  { x: 'Baz', y: 3 },
+  { x: 'lel', y: 6 },
+  { x: 'whet', y: 13 },
+]
+
+let donut = DonutFactory.bake(data);
+let other = DonutFactory.bake(newData);
+setTimeout(() => donut.update(newData), 1500)
