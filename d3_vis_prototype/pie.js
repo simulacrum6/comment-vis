@@ -1,5 +1,5 @@
 // TODO: write javadoc
-// TODO: refactor transitions1
+// TODO: refactor transitions
 
 d3.select('*').__proto__.pipe = selectionPipe;
 
@@ -125,6 +125,7 @@ const Animations = {
     }
 }
 
+// TODO: decancerize
 class Donut {
     constructor(data = [], container = 'body', options = DEFAULT_CONFIG) {
         // initialize all fields
@@ -280,6 +281,9 @@ class DonutFactory {
         return DonutFactory.create(data);
     }
 }
+
+
+// TODO: move to utils. Or use a proper library...
 
 /**
  * Returns the composition of the given functions.
