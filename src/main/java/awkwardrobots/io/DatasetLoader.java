@@ -10,6 +10,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class for loading datasets either line by line or as list of comments.
+ */
 public class DatasetLoader {
 
     public static final String ROOT_PATH = "src/main/resources/data/";

@@ -1,9 +1,10 @@
 package awkwardrobots.test;
 
 import awkwardrobots.data.Comment;
+import awkwardrobots.data.Sentiment;
 import awkwardrobots.io.CommentParser;
 import awkwardrobots.io.SemEvalXMLParser;
-import awkwardrobots.util.Sentiment;
+
 import org.junit.Before;
 import org.junit.Test;
 

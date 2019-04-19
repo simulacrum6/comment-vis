@@ -1,7 +1,5 @@
 package awkwardrobots.data;
 
-import awkwardrobots.util.Sentiment;
-
 import java.util.ArrayList;
 import java.util.List;
 

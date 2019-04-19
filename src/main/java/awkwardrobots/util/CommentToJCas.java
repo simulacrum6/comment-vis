@@ -10,16 +10,17 @@ import java.util.List;
 
 public class CommentToJCas {
 
-    private static final String UNKNOWN_LANGUAGE = "en";
+    private static final String DEFAULT_LANGUAGE = "en";
 
+    //TODO: annotate Sentiment.
     /**
      * Turns a given list of comments into a JCas object.
      *
      * @param comments the list of comments to be converted.
-     * @return the converted JCas. //TODO: Annotate Sentiment.
+     * @return the converted JCas.
      */
     public static JCas convert(List<Comment> comments) throws UIMAException {
-        return convert(comments, UNKNOWN_LANGUAGE);
+        return convert(comments, DEFAULT_LANGUAGE);
     }
 
     /**

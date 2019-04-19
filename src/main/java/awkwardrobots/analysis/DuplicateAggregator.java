@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Aggregates Aspects by combining duplicate Aspects.
- * Duplicate Aspects are identified by name.
+ * Aggregates Aspects by combining duplicate Aspects into a single one.
+ * Duplicate Aspects are identified by their name.
  */
 public class DuplicateAggregator implements AspectAggregator {
 

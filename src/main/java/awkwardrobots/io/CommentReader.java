@@ -1,7 +1,7 @@
 package awkwardrobots.io;
 
 import awkwardrobots.data.Comment;
-import awkwardrobots.util.Sentiment;
+import awkwardrobots.data.Sentiment;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,6 +13,7 @@ public class CommentReader {
 
     private static final String DEFAULT_SEPARATOR = "\t";
 
+    //TODO: move to scripts
     public static void main(String[] args) throws Exception {
         String path = "src/main/resources/data/lecture_evaluations/_all.comment.csv";
         CommentReader reader = new CommentReader();

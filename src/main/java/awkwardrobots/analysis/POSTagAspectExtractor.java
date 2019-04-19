@@ -3,10 +3,10 @@ package awkwardrobots.analysis;
 import awkwardrobots.data.Aspect;
 import awkwardrobots.data.Attribute;
 import awkwardrobots.data.Comment;
+import awkwardrobots.data.Sentiment;
 import awkwardrobots.dkpro.types.CommentAnnotation;
 import awkwardrobots.io.CommentReader;
 import awkwardrobots.util.CommentToJCas;
-import awkwardrobots.util.Sentiment;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -19,33 +19,43 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Extracts Aspects and Attributes using simple rule-based approaches.
+ * A class for extracting Aspects and Attributes using simple rules for POS Tags.
+ * Very simple. This is supposed to be a really bad baseline.
  */
-public class SimpleAspectExtractor {
+public class POSTagAspectExtractor {
 
     private String language = "en";
     private AnalysisConfig config;
 
 
-    public SimpleAspectExtractor() throws ResourceInitializationException {
+    public POSTagAspectExtractor() throws ResourceInitializationException {
         config = new POSOnlyConfig();
     }
 
+    //TODO: move to scripts
     public static void main(String[] args) throws Exception {
         String path = "src/main/resources/data/kotzias2015/_all.comment.csv";
         List<Comment> comments = new CommentReader().read(path);
 
-        SimpleAspectExtractor extractor = new SimpleAspectExtractor();
+        POSTagAspectExtractor extractor = new POSTagAspectExtractor();
         extractor.language = "en";
         System.out.println(extractor.extract(comments));
     }
 
+    /**
+     * Extracts aspects and attributes from a given list of comments.
+     * Every noun in a comment is an aspect, every adjective is an attribute.
+     * 
+     * @param comments the comments to extract aspects and attributes for.
+     * @return a list of aspects for the given comments.
+     * @throws UIMAException if some DKPro component fails.
+     */
     public List<Aspect> extract(List<Comment> comments) throws UIMAException {
         // create JCas
         JCas jcas = CommentToJCas.convert(comments, language);
 
         // annotate JCas
-        AnalysisEngine analysisEngine = config.getEngine();
+        AnalysisEngine analysisEngine = config.createEngine();
         analysisEngine.process(jcas);
 
         // extract
@@ -57,8 +67,10 @@ public class SimpleAspectExtractor {
             List<Attribute> attributes = new ArrayList<>();
 
             for (POS tag : tags) {
+            	// extract as aspect, if word is a noun.
                 if (tag.getPosValue().startsWith("NN")) {
                     String coveredText = tag.getCoveredText();
+                    // check if aspect already exists
                     for (Aspect anotherAspect : aspects) {
                         if (coveredText.equalsIgnoreCase(anotherAspect.getName())) {
                             aspect = anotherAspect;
@@ -66,11 +78,13 @@ public class SimpleAspectExtractor {
                             break;
                         }
                     }
+                    // create new one, if aspect does not yet exist.
                     if (aspect == null) {
                         aspect = new Aspect();
                         aspect.setName(tag.getCoveredText());
                         aspects.add(aspect);
                     }
+                // extract as attribute, if word is an adjective.
                 } else if (tag.getPosValue().startsWith("JJ")) {
                     Attribute attribute = new Attribute(tag.getCoveredText());
                     attribute.setSentiment(Sentiment.fromString(comment.getSentiment()));
@@ -78,8 +92,10 @@ public class SimpleAspectExtractor {
                 }
             }
 
+            // FIXME: only attributes, found so far are added to the aspect. 
+            // all aspects should get all attributes within the same comment. 
             if (aspect != null) {
-                aspect.addAttributes(attributes);
+                aspect.addAttributes(attributes); 
             }
         }
 

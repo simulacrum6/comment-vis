@@ -2,10 +2,10 @@ package awkwardrobots.scripts;
 
 import awkwardrobots.analysis.POSOnlyConfig;
 import awkwardrobots.data.Comment;
+import awkwardrobots.data.Sentiment;
 import awkwardrobots.dkpro.types.CommentAnnotation;
 import awkwardrobots.io.DatasetLoader;
 import awkwardrobots.util.CommentToJCas;
-import awkwardrobots.util.Sentiment;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+//TODO: clean up
 public class AnalyzeAnnotations {
 
     public static void main(String[] args) throws Exception {
@@ -47,7 +48,7 @@ public class AnalyzeAnnotations {
     		
 	        // analyze
 	        JCas jcas = CommentToJCas.convert(comments, datasetLanguage.get(datasetName));
-	        AnalysisEngine engine = new POSOnlyConfig().getEngine();
+	        AnalysisEngine engine = new POSOnlyConfig().createEngine();
 	        engine.process(jcas);
 	        
 	        // calculate stats

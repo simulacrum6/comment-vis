@@ -6,6 +6,9 @@ import awkwardrobots.io.DatasetLoader;
 
 import java.util.List;
 
+/**
+ * Converts Lecture Evaluation PDFs to a csv of comments with sentiments.
+ */
 public class WriteEvaluations2Comments {
     public static void main(String[] args) throws Exception {
         String root = DatasetLoader.ROOT_PATH;

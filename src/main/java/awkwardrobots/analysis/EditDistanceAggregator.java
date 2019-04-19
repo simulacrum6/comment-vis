@@ -12,15 +12,21 @@ import java.util.Collection;
  * Aspects are aggregated if their edit distance is below a set threshold.
  */
 public class EditDistanceAggregator implements AspectAggregator {
-    private static final Integer DEFAULT_THRESHOLD = 2;
+    public static final Integer DEFAULT_THRESHOLD = 2;
     private static final EditDistance<Integer> DEFAULT_DISTANCE = new LevenshteinDistance(DEFAULT_THRESHOLD);
 
     private EditDistance<Integer> distanceMeasure;
 
+    /**
+     * Creates a new EditDistanceAggregator, using Levenshtein Distance with a maximum distance of 2.
+     */
     public EditDistanceAggregator() {
         this.distanceMeasure = DEFAULT_DISTANCE;
     }
 
+    /**
+     * Creates a new EditDistanceAggregator, using the given EditDistance.
+     */
     public EditDistanceAggregator(EditDistance<Integer> distanceMeasure) {
         this.distanceMeasure = distanceMeasure;
     }
@@ -29,7 +35,7 @@ public class EditDistanceAggregator implements AspectAggregator {
     public Collection<Aspect> aggregate(Collection<Aspect> aspects) {
         Aspect[] array = aspects.toArray(new Aspect[]{});
 
-        Collection<Aspect> aggregated = new ArrayList<>();
+        Collection<Aspect> aggregates = new ArrayList<>();
 
         for (int i = 0; i < array.length; i++) {
             Aspect aspect = array[i];
@@ -49,15 +55,15 @@ public class EditDistanceAggregator implements AspectAggregator {
                 }
             }
 
-            aggregated.add(Aspect.combine(equivalents));
+            aggregates.add(Aspect.combine(equivalents));
         }
 
-        return aggregated;
+        return aggregates;
     }
 
     /**
-     * Checks, whether two Aspects are similar.
-     * Aspects are similar if their edit distance is below the given theshold.
+     * Checks whether two Aspects are similar.
+     * Aspects are similar if their edit distance is below the EditDistanceMeasure's threshold.
      */
     private boolean areSimilar(Aspect aspect, Aspect other) {
         return this.distanceMeasure.apply(aspect.getName(), other.getName()) != -1; // -1 is returned, when two texts are above the maximum edit distance.

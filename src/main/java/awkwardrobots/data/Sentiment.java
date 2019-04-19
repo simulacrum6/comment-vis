@@ -1,4 +1,4 @@
-package awkwardrobots.util;
+package awkwardrobots.data;
 
 public enum Sentiment {
     POSITIVE, NEGATIVE, UNCLEAR;

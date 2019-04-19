@@ -1,12 +1,11 @@
 package awkwardrobots.data;
 
-import awkwardrobots.util.Sentiment;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// TODO: Decouple Aspects and Attributes?
 public class Aspect {
     private List<Attribute> attributes;
     private int mentions;
@@ -50,7 +49,6 @@ public class Aspect {
 
     /**
      * Creates a new Aspect by copying all properties from the given Aspect.
-     * Note that attributes are deep copied.
      */
     public static Aspect fromAspect(Aspect aspect) {
         Aspect copy = new Aspect();

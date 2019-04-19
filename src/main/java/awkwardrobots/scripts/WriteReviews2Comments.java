@@ -6,6 +6,9 @@ import awkwardrobots.io.DatasetLoader;
 
 import java.util.List;
 
+/**
+ * Converts reviews (yelp, amazon, imdb) to csv, containing comments and sentiments.
+ */
 public class WriteReviews2Comments {
     public static void main(String[] args) throws Exception {
         String root = DatasetLoader.ROOT_PATH;

@@ -2,7 +2,8 @@ package awkwardrobots.io;
 
 import awkwardrobots.data.Comment;
 import awkwardrobots.data.CommentList;
-import awkwardrobots.util.Sentiment;
+import awkwardrobots.data.Sentiment;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;

@@ -2,7 +2,8 @@ package awkwardrobots.io;
 
 import awkwardrobots.data.Comment;
 import awkwardrobots.data.CommentList;
-import awkwardrobots.util.Sentiment;
+import awkwardrobots.data.Sentiment;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;

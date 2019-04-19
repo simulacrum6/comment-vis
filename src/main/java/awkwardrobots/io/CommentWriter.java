@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * A class writing {@code Comment}s to disk.
+ * A class writing Comments to the spinning data marry go round storage disk.
  *
  * @see awkwardrobots.data.Comment
  */
