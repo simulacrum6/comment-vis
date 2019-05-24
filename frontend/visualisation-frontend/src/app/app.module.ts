@@ -4,13 +4,19 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MaterialModule } from './modules/material.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { UploadComponent } from './pages/upload/upload.component';
+import { VisualisationComponent } from './pages/visualisation/visualisation.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    UploadComponent,
+    VisualisationComponent
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     MaterialModule
   ],
