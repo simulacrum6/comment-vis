@@ -7,12 +7,14 @@ import { MaterialModule } from './modules/material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UploadComponent } from './pages/upload/upload.component';
 import { VisualisationComponent } from './pages/visualisation/visualisation.component';
+import { BarComponent } from './pages/visualisation/bar/bar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     UploadComponent,
-    VisualisationComponent
+    VisualisationComponent,
+    BarComponent
   ],
   imports: [
     BrowserModule,

@@ -1,7 +1,12 @@
 <mat-tab-group>
-    <mat-tab label="Graph"> 
-        <!-- ng-template with matTabContent enables lazyloading.
-            probably a good idea, once visualisations get expensive. -->
+    <mat-tab label="Bar">
+      <!-- ng-template with matTabContent enables lazyloading.
+          probably a good idea, once visualisations get expensive. -->
+        <ng-template matTabContent>
+            <app-bar></app-bar>
+        </ng-template>
+    </mat-tab>
+    <mat-tab label="Graph">
         <ng-template matTabContent>
             coming soon...
         </ng-template>
