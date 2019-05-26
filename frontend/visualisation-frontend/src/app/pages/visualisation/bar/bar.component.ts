@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {Aspect} from './model';
+import mockData from '../mock.json';
 
 @Component({
   selector: 'app-bar',
@@ -7,7 +9,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BarComponent implements OnInit {
 
-  constructor() { }
+  aspects: Aspect[];
+
+  constructor() {
+      this.generateAspectsFromMock();
+  }
+
+  generateAspectsFromMock() {
+      this.aspects = Aspect.fromJson(mockData);
+  }
 
   ngOnInit() {
   }
