@@ -2,6 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {Aspect} from './model';
 import mockData from '../mock.json';
 import { Chart } from 'chart.js';
+declare function require (name: string): any;
 const Color = require('color');
 
 @Component({

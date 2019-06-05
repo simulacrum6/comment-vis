@@ -8,6 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UploadComponent } from './pages/upload/upload.component';
 import { VisualisationComponent } from './pages/visualisation/visualisation.component';
 import { BarComponent } from './pages/visualisation/bar/bar.component';
+import { ChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { BarComponent } from './pages/visualisation/bar/bar.component';
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    MaterialModule
+    MaterialModule,
+    ChartsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
