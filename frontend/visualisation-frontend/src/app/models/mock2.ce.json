@@ -1,0 +1,56 @@
+[
+    {   
+        "comment": "bar baz", 
+        "aspect": { "text": "bar", "group": "bar" }, 
+        "attribute": { "text": "baz", "group": "bar" }, 
+        "sentiment": "positive"
+    },
+    {   
+        "comment": "baar baz", 
+        "aspect": { "text": "baar", "group": "bar" }, 
+        "attribute": { "text": "baz", "group": "bar" }, 
+        "sentiment": "positive"
+    },
+    { 
+        "comment": "bar zam", 
+        "aspect": { "text": "bar", "group": "bar" }, 
+        "attribute": { "text": "zam", "group": "zam" },
+        "sentiment": "positive"
+    },
+    { 
+        "comment": "bli baz", 
+        "aspect": { "text": "bli", "group": "bli" }, 
+        "attribute": { "text": "bar", "group": "bar" }, 
+        "sentiment": "positive" 
+    },
+    { 
+        "comment": "bli foo", 
+        "aspect": { "text": "bli", "group": "bli" }, 
+        "attribute": { "text": "foo", "group": "foo" },
+        "sentiment": "negative" 
+    },
+    { 
+        "comment": "bli pam", 
+        "aspect": { "text": "bli", "group": "bli" },
+        "attribute": { "text": "pam", "group": "pam" },
+        "sentiment": "neutral" 
+    },
+    { 
+        "comment": "bli oof", 
+        "aspect": { "text": "bli", "group": "bli" },
+        "attribute": { "text": "oof", "group": "foo" },
+        "sentiment": "neutral" 
+    },
+    { 
+        "comment": "gub bli oof", 
+        "aspect": { "text": "bli", "group": "bli" },
+        "attribute": { "text": "oof", "group": "foo" },
+        "sentiment": "neutral"
+    },        
+    {
+        "comment": "gub bli oof", 
+        "aspect": { "text": "bli", "group": "bli" },
+        "attribute": { "text": "gub", "group": "gub" },
+        "sentiment": "positive" 
+    }
+]
