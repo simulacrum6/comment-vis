@@ -2,27 +2,28 @@ import { Sentiment, mapToSentiment, SentimentCount } from './sentiment';
 
 export interface StringMap<V> {
     [key: string]: V;
-};
+}
 
 export interface Facet {
-    text: string,
-    group: string
+    text: string;
+    group: string;
 }
 
 export interface Extraction {
-    comment: string,
-    aspect: Facet,
-    attribute: Facet,
-    sentiment: Sentiment
+    comment: string;
+    aspect: Facet;
+    attribute: Facet;
+    sentiment: Sentiment;
 }
+
 export const Extraction = function ExtractionConstructor(): Extraction {
     return {
         comment: '',
         aspect: { text: '', group: '' },
         attribute: { text: '', group: '' },
         sentiment: Sentiment.Unknown
-    }
-}
+    };
+};
 
 export interface FacetGroup {
     name: string;
@@ -36,7 +37,7 @@ export interface NestedFacet {
     readonly type: 'aspect' | 'attribute';
     children: Facet[];
     extractions: Extraction[];
-    sentiment: SentimentCount;
+    sentimentCount: SentimentCount;
     comments: string[];
 }
 
@@ -59,15 +60,15 @@ class NestedFacetBase implements NestedFacet {
     }
 
     get children(): Facet[] {
-      return this.group.extractions.map(extraction => extraction[this.childrenType])
+      return this.group.extractions.map(extraction => extraction[this.childrenType]);
     }
 
     get extractions(): Extraction[] {
         return this.group.extractions;
     }
 
-    get sentiment(): SentimentCount {
-        let sentiments: Sentiment[] = this.group.extractions.map(e => e.sentiment);
+    get sentimentCount(): SentimentCount {
+        const sentiments: Sentiment[] = this.group.extractions.map(e => e.sentiment);
         return SentimentCount.fromArray(sentiments);
     }
 
@@ -116,12 +117,12 @@ export class Model {
     }
 
     get aspectGroups(): FacetGroup[] {
-        let index = this.aspectGroupIndex;
+        const index = this.aspectGroupIndex;
         return Object.keys(index).map(key => index[key]);
     }
 
     get attributeGroups(): FacetGroup[] {
-        let index = this.attributeGroupIndex;
+        const index = this.attributeGroupIndex;
         return Object.keys(index).map(key => index[key]);
     }
 
@@ -148,14 +149,16 @@ export class Model {
     }
 
     public sentiment(comment: string, aspect: string, attribute: string, notFound: any = null): Sentiment {
-        let extraction: Extraction = this.extractions.find(extraction => {
+        const extraction: Extraction = this.extractions.find(extraction => {
             return (comment === extraction.comment)
                 && (aspect === extraction.aspect.text)
-                && (attribute === extraction.attribute.text)
+                && (attribute === extraction.attribute.text);
         });
         return extraction ? extraction.sentiment : notFound;
     }
 }
+
+/** Json **/
 
 export function parseJson(json: any[]): Extraction[] {
     return json.map(toExtraction);
@@ -167,5 +170,5 @@ function toExtraction(json: any): Extraction {
         aspect: json.aspect,
         attribute: json.attribute,
         sentiment: mapToSentiment(json.sentiment)
-    }
+    };
 }

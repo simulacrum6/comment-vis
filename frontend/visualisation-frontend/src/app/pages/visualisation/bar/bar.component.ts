@@ -1,8 +1,12 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import { Chart } from 'chart.js';
 import Color from 'color';
-import {ModelService} from '../../../services/model.service';
-import {Aspect, FacetGroup} from '../../../models/canonical';
+import { ModelService} from '../../../services/model.service';
+import { Aspect } from './model';
+import mockData from '../mock.json';
+
+/*import {Aspect, Extraction, Facet, FacetGroup} from '../../../models/canonical';
+import {Sentiment, SentimentCount} from '../../../models/sentiment';*/
 
 @Component({
   selector: 'app-bar',
@@ -13,8 +17,8 @@ export class BarComponent implements OnInit {
   aspects: Aspect[];
   @ViewChild('barChart') private chartRef;
   chart: any;
-
-  @Input('group') group: FacetGroup;
+  dataSets: any = [];
+  labels = [];
 
   sortOptions: any = [
       {value: 'noone', viewValue: 'No Sorting'},
@@ -35,21 +39,39 @@ export class BarComponent implements OnInit {
   };
 
   constructor(private modelService: ModelService) {
+    this.generateAspectsFromMock();
+  }
+
+  generateAspectsFromMock() {
+    this.aspects = Aspect.fromJson(mockData);
   }
 
   ngOnInit() {
-    const aspect = this.modelService.model.aspects[0];
-    
-    const labels = [];
-    const dataSets = [];
+/*    const aspect = this.modelService.model.aspects[0];
+    const attributes: Facet[] = aspect.children;
+    const sentimentCount: SentimentCount = aspect.sentimentCount;
+    const extractions: Extraction[] = aspect.extractions;*/
 
     const positiveSentiments = [];
     const neutralSentiments = [];
     const negativeSentiments = [];
+    const unknownSentiments = [];
+
+
+/*
+    extractions.forEach((extraction) => {
+      labels.push(extraction.attribute.group);
+      switch(extraction.sentiment) {
+        case Sentiment.Positive: positiveSentiments.push()
+      }
+
+            positiveSentiments.push(extraction.sentiment)
+    });
+*/
 
     this.aspects.forEach((aspect) => {
       aspect.bars.forEach((bar) => {
-        labels.push(bar.attributeDescription);
+        this.labels.push(bar.attributeDescription);
         positiveSentiments.push(bar.positiveSentimentCount);
         neutralSentiments.push(bar.neutralSentimentCount);
         negativeSentiments.push(bar.negativeSentimentCount);
@@ -79,14 +101,14 @@ export class BarComponent implements OnInit {
       dataSet.backgroundColor = Color(borderColor).alpha(0.3).string();
       dataSet.label = label;
       dataSet.data = data;
-      dataSets.push(dataSet);
+      this.dataSets.push(dataSet);
     }
 
     this.chart = new Chart(this.chartRef.nativeElement, {
       type: 'horizontalBar',
       data: {
-        datasets: dataSets,
-        labels: labels
+        datasets: this.dataSets,
+        labels: this.labels
       },
       options: {
         legend: {

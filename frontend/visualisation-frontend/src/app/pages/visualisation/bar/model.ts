@@ -21,7 +21,7 @@ export class Aspect {
             if (!jsonAttribute.commentIds.includes(jsonComment.id)) {
                continue;
             }
-            const sentiment: string = jsonComment.sentiment;
+            const sentiment: string = jsonComment.sentimentCount;
             switch (sentiment) {
               case 'positive': {
                 positiveSentimentCount++;
@@ -38,7 +38,7 @@ export class Aspect {
             }
             const comment = new Comment();
             comment.text = jsonComment.text;
-            comment.sentiment = jsonComment.sentiment;
+            comment.sentiment = jsonComment.sentimentCount;
             comments[comments.length] = comment;
             bar.comments = comments;
         }
