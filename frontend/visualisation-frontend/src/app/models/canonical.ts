@@ -4,9 +4,9 @@ export interface StringMap<V> {
     [key: string]: V;
 };
 
-export interface Facet { 
-    text: string, 
-    group: string 
+export interface Facet {
+    text: string,
+    group: string
 }
 
 export interface Extraction {
@@ -16,17 +16,17 @@ export interface Extraction {
     sentiment: Sentiment
 }
 export const Extraction = function ExtractionConstructor(): Extraction {
-    return { 
-        comment: '', 
-        aspect: { text: '', group: '' }, 
-        attribute: { text: '', group: '' }, 
-        sentiment: Sentiment.Unknown 
+    return {
+        comment: '',
+        aspect: { text: '', group: '' },
+        attribute: { text: '', group: '' },
+        sentiment: Sentiment.Unknown
     }
 }
 
-export interface FacetGroup { 
+export interface FacetGroup {
     name: string;
-    type: 'aspect' | 'attribute'; 
+    type: 'aspect' | 'attribute';
     members: Facet[];
     extractions: Extraction[];
 }
@@ -35,7 +35,7 @@ export interface NestedFacet {
     readonly name: string;
     readonly type: 'aspect' | 'attribute';
     children: Facet[];
-    sources: Extraction[];
+    extractions: Extraction[];
     sentiment: SentimentCount;
     comments: string[];
 }
@@ -43,13 +43,13 @@ export interface NestedFacet {
 // no need for export
 class NestedFacetBase implements NestedFacet {
     public readonly name: string;
-    public readonly type: "aspect" | "attribute";
-    
+    public readonly type: 'aspect' | 'attribute';
+
     private group: FacetGroup;
     private childrenType: 'aspect' | 'attribute';
 
     constructor(group: FacetGroup, type: 'aspect' | 'attribute') {
-        if(group.type !== type) {
+        if (group.type !== type) {
             throw new Error(`Illegal input. group.type must be ${this.type}, but was ${group.type}`);
         }
         this.name = group.name;
@@ -62,7 +62,7 @@ class NestedFacetBase implements NestedFacet {
         return this.group.extractions.map(extraction => extraction[this.childrenType])
     }
 
-    get sources(): Extraction[] {
+    get extractions(): Extraction[] {
         return this.group.extractions;
     }
 
@@ -89,21 +89,29 @@ export class Attribute extends NestedFacetBase implements NestedFacet {
 }
 
 export class Model {
-    constructor(private _extractions: Extraction[]) { }
+    constructor(private extractions: Extraction[]) { }
 
-    get aspects(): { text: string, group: string }[] { 
-        return this._extractions.map(extraction => extraction.aspect); 
+    get rawAspects(): Facet[] {
+        return this.extractions.map(extraction => extraction.aspect);
     }
 
-    get attributes(): { text: string, group: string }[] {
-        return this._extractions.map(extraction => extraction.attribute);
+    get rawAttributes(): Facet[] {
+        return this.extractions.map(extraction => extraction.attribute);
     }
 
-    get aspectGroupIndex(): StringMap<FacetGroup>{
+    get rawComments(): string[] {
+        return this.extractions.map(extraction => extraction.comment);
+    }
+
+    get rawSentiments(): Sentiment[] {
+        return this.extractions.map(extraction => extraction.sentiment);
+    }
+
+    get aspectGroupIndex(): StringMap<FacetGroup> {
         return this.getGroupIndex('aspect');
     }
 
-    get attributeGroupIndex(): StringMap<FacetGroup>{
+    get attributeGroupIndex(): StringMap<FacetGroup> {
         return this.getGroupIndex('attribute');
     }
 
@@ -111,23 +119,23 @@ export class Model {
         let index = this.aspectGroupIndex;
         return Object.keys(index).map(key => index[key]);
     }
-    
+
     get attributeGroups(): FacetGroup[] {
         let index = this.attributeGroupIndex;
         return Object.keys(index).map(key => index[key]);
     }
 
-    public getByAspect(): Aspect[] {
+    get aspects(): Aspect[] {
         return this.aspectGroups.map(group => new Aspect(group));
     }
 
-    public getByAttribute(): Attribute[] {
+    get attributes(): Attribute[] {
         return this.attributeGroups.map(group => new Attribute(group));
     }
 
     private getGroupIndex(type: 'aspect' | 'attribute'): StringMap<FacetGroup> {
         let groupIndex: StringMap<FacetGroup> = {};
-        for (let extraction of this._extractions) {
+        for (let extraction of this.extractions) {
             let facet = extraction[type]
             let groupName = facet.group;
             if (!(groupName in groupIndex)) {
@@ -140,9 +148,9 @@ export class Model {
     }
 
     public sentiment(comment: string, aspect: string, attribute: string, notFound: any = null): Sentiment {
-        let extraction: Extraction = this._extractions.find(extraction => {
+        let extraction: Extraction = this.extractions.find(extraction => {
             return (comment === extraction.comment)
-                && (aspect === extraction.aspect.text) 
+                && (aspect === extraction.aspect.text)
                 && (attribute === extraction.attribute.text)
         });
         return extraction ? extraction.sentiment : notFound;

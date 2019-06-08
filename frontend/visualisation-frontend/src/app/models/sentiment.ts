@@ -5,13 +5,6 @@ export enum Sentiment {
     Unknown = 'unknown'
 }
 
-export const Sentiments = [
-    Sentiment.Positive,
-    Sentiment.Negative,
-    Sentiment.Neutral,
-    Sentiment.Unknown
-]
-
 export class SentimentCount {
     public positive: number = 0;
     public negative: number = 0;
