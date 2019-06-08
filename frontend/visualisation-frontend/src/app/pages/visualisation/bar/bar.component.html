@@ -1,3 +1,32 @@
-<div>
+<div class="chart">
   <canvas #barChart>{{ chart }}</canvas>
+</div>
+
+<div class="settings_container">
+  <p class="settings_title">
+    Settings
+  </p>
+
+  <div class="settings_content" fxLayout="row" fxLayoutAlign="space-between">
+    <div>
+      <mat-form-field>
+        <mat-label>Sort</mat-label>
+        <mat-select [value]="sortOptions[0].value">
+          <mat-option *ngFor="let options of sortOptions" [value]="options.value">
+            {{options.viewValue}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="settings_sort_order">
+      <mat-form-field>
+        <mat-label>Order</mat-label>
+        <mat-select [value]="sortOrderOptions[0].value">
+          <mat-option *ngFor="let options of sortOrderOptions" [value]="options.value">
+            {{options.viewValue}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
 </div>

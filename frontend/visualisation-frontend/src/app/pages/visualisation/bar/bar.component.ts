@@ -1,9 +1,8 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {Aspect} from './model';
-import mockData from '../mock.json';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import { Chart } from 'chart.js';
-declare function require (name: string): any;
-const Color = require('color');
+import Color from 'color';
+import {ModelService} from '../../../services/model.service';
+import {Aspect, FacetGroup} from '../../../models/canonical';
 
 @Component({
   selector: 'app-bar',
@@ -15,21 +14,32 @@ export class BarComponent implements OnInit {
   @ViewChild('barChart') private chartRef;
   chart: any;
 
+  @Input('group') group: FacetGroup;
+
+  sortOptions: any = [
+      {value: 'noone', viewValue: 'No Sorting'},
+      {value: 'positive', viewValue: 'Positive Sentiments'},
+      {value: 'neutral', viewValue: 'Neutral Sentiments'},
+      {value: 'negative', viewValue: 'Negative Sentiments'}
+    ];
+
+  sortOrderOptions: any = [
+    {value: 'ascending', viewValue: 'ascending'},
+    {value: 'descending', viewValue: 'descending'},
+  ];
+
   chartColors = {
     red: 'rgb(255, 0, 0)',
     yellow: 'rgb(255, 205, 86)',
     green: 'rgb(0, 163, 51)',
   };
 
-  constructor() {
-      this.generateAspectsFromMock();
-  }
-
-  generateAspectsFromMock() {
-      this.aspects = Aspect.fromJson(mockData);
+  constructor(private modelService: ModelService) {
   }
 
   ngOnInit() {
+    const aspect = this.modelService.model.aspects[0];
+    
     const labels = [];
     const dataSets = [];
 
@@ -79,11 +89,13 @@ export class BarComponent implements OnInit {
         labels: labels
       },
       options: {
+        legend: {
+          position: 'right'
+        },
         tooltips: {
           mode: 'index',
           intersect: false
         },
-        responsive: true,
         scales: {
           yAxes: [{
             stacked: true

@@ -59,7 +59,7 @@ class NestedFacetBase implements NestedFacet {
     }
 
     get children(): Facet[] {
-        return this.group.extractions.map(extraction => extraction[this.childrenType])
+      return this.group.extractions.map(extraction => extraction[this.childrenType])
     }
 
     get extractions(): Extraction[] {

@@ -1,0 +1,34 @@
+.chart {
+  height: 100%;
+  width: 70%;
+  position: fixed;
+  z-index: 1;
+}
+
+.settings_container {
+  height: 100%;
+  width: 30%;
+  position: fixed;
+  z-index: 0.8;
+  right: 0;
+  background-color: rgba(245, 245, 220, 0.5);
+  padding: 10px;
+  padding-left: 100px;
+}
+
+.settings_title {
+  text-align: center;
+}
+
+.settings_content {
+  padding-left: 20px;
+  padding-top: 10px;
+}
+
+.settings_sort_order {
+  padding-left: 10px;
+}
+
+
+
+
