@@ -16,7 +16,9 @@ export class ModelTransformation {
     this.parentComponent = parentComponent;
   }
 
-  buildChartData(aspects: Aspect[]): void {
+  buildChartData(aspects: Aspect[], sort: string = this.parentComponent.sortOptions[0].toString(),
+                 sortOrder: string = this.parentComponent.sortOrderOptions[0].toString(),
+                 prevalence: string = this.parentComponent.prevalenceOptions[0].toString()): void {
     this.parentComponent.chartData = [];
     this.parentComponent.chartLabels = [];
 
