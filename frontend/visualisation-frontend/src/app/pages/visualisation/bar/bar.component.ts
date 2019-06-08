@@ -1,14 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {ChartOptions, ChartType} from 'chart.js';
+import {ChartDataSets, ChartOptions, ChartType} from 'chart.js';
 import {ModelService} from '../../../services/model.service';
 import {Aspect} from './model';
 import mockData from '../mock.json';
 import {Label} from 'ng2-charts';
 import {ModelTransformation} from './modeltransformation';
-
-
-/*import {Aspect, Extraction, Facet, FacetGroup} from '../../../models/canonical';
-import {Sentiment, SentimentCount} from '../../../models/sentiment';*/
 
 @Component({
   selector: 'app-bar',
@@ -19,7 +15,7 @@ export class BarComponent implements OnInit {
   private aspects: Aspect[];
   private modelTransformation: ModelTransformation;
 
-  public chartData: any = [];
+  public chartData: ChartDataSets[] = [];
   public chartType: ChartType = 'horizontalBar';
   public chartLabels: Label[] = [];
   public chartOptions: ChartOptions = {

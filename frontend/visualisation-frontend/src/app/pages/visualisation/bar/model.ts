@@ -3,7 +3,7 @@ export class Aspect {
   bars: Bar[];
 
   static fromJson(json: any[]): Aspect[] {
-    const result: Aspect[] = new Array(json.length);
+    const result: Aspect[] = [];
     json.forEach((jsonAspectRoot, rootAspectIndex) => {
       const aspect = new Aspect();
       aspect.name = jsonAspectRoot.aspect.name;
@@ -15,13 +15,13 @@ export class Aspect {
           let positiveSentimentCount = 0;
           let neutralSentimentCount = 0;
           let negativeSentimentCount = 0;
-          const comments: Comment[] = Array();
+          const comments: Comment[] = [];
           for (let commentIndex = 0; commentIndex < jsonAspectRoot.comments.length; commentIndex++) {
             const jsonComment = jsonAspectRoot.comments[commentIndex];
             if (!jsonAttribute.commentIds.includes(jsonComment.id)) {
                continue;
             }
-            const sentiment: string = jsonComment.sentimentCount;
+            const sentiment: string = jsonComment.sentiment;
             switch (sentiment) {
               case 'positive': {
                 positiveSentimentCount++;
@@ -38,8 +38,9 @@ export class Aspect {
             }
             const comment = new Comment();
             comment.text = jsonComment.text;
-            comment.sentiment = jsonComment.sentimentCount;
-            comments[comments.length] = comment;
+            comment.sentiment = jsonComment.sentiment;
+            comment.sentiment = jsonComment.sentiment;
+            comments.push(comment);
             bar.comments = comments;
         }
 

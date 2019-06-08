@@ -16,8 +16,10 @@ export class ModelTransformation {
     this.parentComponent = parentComponent;
   }
 
-
   buildChartData(aspects: Aspect[]): void {
+    this.parentComponent.chartData = [];
+    this.parentComponent.chartLabels = [];
+
     const positiveSentiments = [];
     const neutralSentiments = [];
     const negativeSentiments = [];
