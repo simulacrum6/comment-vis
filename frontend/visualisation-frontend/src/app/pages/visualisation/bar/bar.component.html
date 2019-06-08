@@ -13,22 +13,34 @@
     Settings
   </p>
 
-  <div class="settings_content" fxLayout="row" fxLayoutAlign="space-between">
-    <div>
-      <mat-form-field>
-        <mat-label>Sort</mat-label>
-        <mat-select [value]="sortOptions[0].value">
-          <mat-option *ngFor="let options of sortOptions" [value]="options.value">
-            {{options.viewValue}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+  <div class="settings_content" >
+    <div class="settings_sort_container" fxLayout="row" fxLayoutAlign="space-between">
+      <div>
+        <mat-form-field>
+          <mat-label>Sort</mat-label>
+          <mat-select [value]="sortOptions[0].value">
+            <mat-option *ngFor="let options of sortOptions" [value]="options.value">
+              {{options.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="settings_sort_order">
+        <mat-form-field>
+          <mat-label>Order</mat-label>
+          <mat-select [value]="sortOrderOptions[0].value">
+            <mat-option *ngFor="let options of sortOrderOptions" [value]="options.value">
+              {{options.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
     </div>
-    <div class="settings_sort_order">
+    <div class="settings_prevalence">
       <mat-form-field>
-        <mat-label>Order</mat-label>
-        <mat-select [value]="sortOrderOptions[0].value">
-          <mat-option *ngFor="let options of sortOrderOptions" [value]="options.value">
+        <mat-label>Prevalence</mat-label>
+        <mat-select [value]="prevalenceOptions[0].value">
+          <mat-option *ngFor="let options of prevalenceOptions" [value]="options.value">
             {{options.viewValue}}
           </mat-option>
         </mat-select>

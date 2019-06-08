@@ -55,6 +55,10 @@ export class BarComponent implements OnInit {
     {value: 'descending', viewValue: 'descending'},
   ];
 
+  prevalenceOptions: any = [
+    {value: 'absolute', viewValue: 'absolute'},
+    {value: 'relative', viewValue: 'relative'},
+  ];
 
   constructor(private modelService: ModelService) {
     this.modelTransformation = new ModelTransformation(this);

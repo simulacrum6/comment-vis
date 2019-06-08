@@ -17,18 +17,22 @@
 }
 
 .settings_title {
-  text-align: center;
+  text-align: left;
+  padding-left: 20px;
 }
 
 .settings_content {
   padding-left: 20px;
-  padding-top: 10px;
+  padding-right: 20px;
+}
+
+.settings_sort_container {
+  display: flex;
 }
 
 .settings_sort_order {
   padding-left: 10px;
 }
-
 
 
 
