@@ -46,7 +46,7 @@ export class BarComponent implements OnInit, AfterViewInit {
   };
 
   sortOptions: any = [
-    {value: 'noone', viewValue: 'No Sorting'},
+    {value: 'all', viewValue: 'All'},
     {value: 'positive', viewValue: 'Positive Sentiments'},
     {value: 'neutral', viewValue: 'Neutral Sentiments'},
     {value: 'negative', viewValue: 'Negative Sentiments'}
@@ -79,12 +79,11 @@ export class BarComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    
+
   }
 
   rebuildChartData() {
-    this.modelTransformation.buildChartData(this.aspects, this.sortValue, this.sortOrderValue,
-      this.prevalenceValue);
+    this.modelTransformation.buildChartData(this.aspects, this.sortValue, this.sortOrderValue, this.prevalenceValue);
   }
 
 }

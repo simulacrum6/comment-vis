@@ -16,9 +16,7 @@ export class ModelTransformation {
     this.parentComponent = parentComponent;
   }
 
-  buildChartData(aspects: Aspect[], sort: string = this.parentComponent.sortOptions[0].toString(),
-                 sortOrder: string = this.parentComponent.sortOrderOptions[0].toString(),
-                 prevalence: string = this.parentComponent.prevalenceOptions[0].toString()): void {
+  buildChartData(aspects: Aspect[], sort: any, sortOrder: any, prevalence: any): void {
     this.parentComponent.chartData = [];
     this.parentComponent.chartLabels = [];
 
@@ -26,6 +24,32 @@ export class ModelTransformation {
     const neutralSentiments = [];
     const negativeSentiments = [];
     const unknownSentiments = [];
+
+    // Sort
+    aspects.forEach((aspect) => {
+      aspect.bars.sort((a, b) => {
+        let countA = 0;
+        let countB = 0;
+        switch (sort.value) {
+          case 'positive':
+            countA = a.positiveSentimentCount;
+            countB = b.positiveSentimentCount;
+            break;
+          case 'neutral':
+            countA = a.neutralSentimentCount;
+            countB = b.neutralSentimentCount;
+            break;
+          case 'negative':
+            countA = a.negativeSentimentCount;
+            countB = b.negativeSentimentCount;
+            break;
+          default:
+            countA = a.count;
+            countB = b.count;
+        }
+        return -1;
+      });
+    });
 
     aspects.forEach((aspect) => {
       aspect.bars.forEach((bar) => {
