@@ -53,13 +53,13 @@ export class BarComponent implements OnInit, AfterViewInit {
   ];
 
   sortOrderOptions: any = [
-    {value: 'ascending', viewValue: 'Ascending'},
     {value: 'descending', viewValue: 'Descending'},
+    {value: 'ascending', viewValue: 'Ascending'}
   ];
 
   prevalenceOptions: any = [
     {value: 'absolute', viewValue: 'Absolute'},
-    {value: 'relative', viewValue: 'Relative'},
+    {value: 'relative', viewValue: 'Relative'}
   ];
 
   constructor(private modelService: ModelService) {

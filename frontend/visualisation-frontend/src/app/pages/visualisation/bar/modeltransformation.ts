@@ -47,7 +47,11 @@ export class ModelTransformation {
             countA = a.count;
             countB = b.count;
         }
-        return -1;
+        if (sortOrder.value === 'ascending') {
+          return countA - countB;
+        } else {
+          return countB - countA;
+        }
       });
     });
 
