@@ -5,21 +5,21 @@ import {Aspect} from './model';
 import mockData from '../mock.json';
 import {Label} from 'ng2-charts';
 import {ModelTransformation} from './modeltransformation';
-import {MatOption} from '@angular/material';
+import {MatOption, MatSelect} from '@angular/material';
 
 @Component({
   selector: 'app-bar',
   templateUrl: './bar.component.html',
   styleUrls: ['./bar.component.scss']
 })
-export class BarComponent implements OnInit {
+export class BarComponent implements OnInit, AfterViewInit {
 
   private aspects: Aspect[];
   private modelTransformation: ModelTransformation;
 
-  @ViewChild('sortValue') sortValue: MatOption;
-  @ViewChild('sortOrderValue') sortOrderValue: MatOption;
-  @ViewChild('prevalenceValue') prevalenceValue: MatOption;
+  private sortValue: string;
+  private sortOrderValue: string;
+  private prevalenceValue: string;
 
   public chartData: ChartDataSets[] = [];
   public chartType: ChartType = 'horizontalBar';
@@ -65,6 +65,9 @@ export class BarComponent implements OnInit {
   constructor(private modelService: ModelService) {
     this.modelTransformation = new ModelTransformation(this);
     this.generateAspectsFromMock();
+    this.sortValue = this.sortOptions[0];
+    this.sortOrderValue = this.sortOrderOptions[0];
+    this.prevalenceValue = this.prevalenceOptions[0];
   }
 
   generateAspectsFromMock() {
@@ -75,15 +78,13 @@ export class BarComponent implements OnInit {
     this.rebuildChartData();
   }
 
+  ngAfterViewInit() {
+    
+  }
+
   rebuildChartData() {
-    // This is dumb, but for some reason ngAfterViewInit throws exceptions so we go with this...
-    if (this.sortValue === undefined || this.sortOrderValue === undefined || this.prevalenceValue === undefined) {
-      this.modelTransformation.buildChartData(this.aspects);
-    } else {
-      this.modelTransformation.buildChartData(this.aspects, this.sortValue.value.toString(), this.sortOrderValue.value.toString(),
-        this.prevalenceValue.value.toString());
-    }
-    // this.modelTransformation.buildChartData(this.aspects, );
+    this.modelTransformation.buildChartData(this.aspects, this.sortValue, this.sortOrderValue,
+      this.prevalenceValue);
   }
 
 }

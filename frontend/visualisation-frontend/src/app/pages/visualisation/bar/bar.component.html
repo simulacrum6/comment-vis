@@ -17,8 +17,8 @@
       <div>
         <mat-form-field>
           <mat-label>Sort</mat-label>
-          <mat-select [value]="sortOptions[0].value">
-            <mat-option #sortValue *ngFor="let options of sortOptions" [value]="options.value" (click)="rebuildChartData()">
+          <mat-select [(value)]="sortOptions" (selectionChange)="rebuildChartData()">
+            <mat-option *ngFor="let options of sortOptions" [value]="options.value">
               {{options.viewValue}}
             </mat-option>
           </mat-select>
@@ -27,8 +27,8 @@
       <div class="settings_sort_order">
         <mat-form-field>
           <mat-label>Order</mat-label>
-          <mat-select [value]="sortOrderOptions[0].value">
-            <mat-option #sortOrderValue *ngFor="let options of sortOrderOptions" [value]="options.value" (click)="rebuildChartData()">
+          <mat-select [(value)]="sortOrderOptions" (selectionChange)="rebuildChartData()">
+            <mat-option *ngFor="let options of sortOrderOptions" [value]="options.value">
               {{options.viewValue}}
             </mat-option>
           </mat-select>
@@ -38,8 +38,8 @@
     <div class="settings_prevalence">
       <mat-form-field>
         <mat-label>Prevalence</mat-label>
-        <mat-select [value]="prevalenceOptions[0].value">
-          <mat-option #prevalenceValue *ngFor="let options of prevalenceOptions" [value]="options.value" (click)="rebuildChartData()">
+        <mat-select [(value)]="prevalenceOptions" (selectionChange)="rebuildChartData()">
+          <mat-option *ngFor="let options of prevalenceOptions" [value]="options.value">
             {{options.viewValue}}
           </mat-option>
         </mat-select>
