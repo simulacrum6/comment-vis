@@ -5,14 +5,13 @@ import {Aspect} from './model';
 import mockData from '../mock.json';
 import {Label} from 'ng2-charts';
 import {ModelTransformation} from './modeltransformation';
-import {MatOption, MatSelect} from '@angular/material';
 
 @Component({
   selector: 'app-bar',
   templateUrl: './bar.component.html',
   styleUrls: ['./bar.component.scss']
 })
-export class BarComponent implements OnInit, AfterViewInit {
+export class BarComponent implements OnInit {
 
   private aspects: Aspect[];
   private modelTransformation: ModelTransformation;
@@ -76,10 +75,6 @@ export class BarComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.rebuildChartData();
-  }
-
-  ngAfterViewInit() {
-
   }
 
   rebuildChartData() {

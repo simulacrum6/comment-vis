@@ -1,16 +1,11 @@
 import {Aspect} from './model';
 import Color from 'color';
 import {BarComponent} from './bar.component';
+import {SentimentColors} from '../../../../environments/constants';
 
 export class ModelTransformation {
 
   private parentComponent: BarComponent;
-
-  private chartColors = {
-    red: 'rgb(255, 0, 0)',
-    gray: 'rgb(169, 169, 169)',
-    green: 'rgb(0, 163, 51)',
-  };
 
   constructor(parentComponent: BarComponent) {
     this.parentComponent = parentComponent;
@@ -69,15 +64,15 @@ export class ModelTransformation {
     let data = [];
     for (let i = 0; i < 3; i++) {
       if (i === 0) {
-        borderColor = this.chartColors.green;
+        borderColor = SentimentColors.positive;
         label = 'Positive';
         data = positiveSentiments;
       } else if (i === 1) {
-        borderColor = this.chartColors.gray;
+        borderColor = SentimentColors.neutral;
         label = 'Neutral';
         data = neutralSentiments;
       } else {
-        borderColor = this.chartColors.red;
+        borderColor = SentimentColors.negative;
         label = 'Negative';
         data = negativeSentiments;
       }
