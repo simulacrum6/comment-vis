@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ChartDataSets, ChartOptions, ChartType} from 'chart.js';
 import {ModelService} from '../../../services/model.service';
 import {Aspect} from './model';
@@ -12,7 +12,7 @@ import {ModelTransformation} from './modeltransformation';
   styleUrls: ['./bar.component.scss']
 })
 export class BarComponent implements OnInit {
-
+  @Input('aspectname') aspectname: string;
   private aspects: Aspect[];
   private modelTransformation: ModelTransformation;
 
@@ -40,7 +40,7 @@ export class BarComponent implements OnInit {
           stepSize: 1
         },
         stacked: true
-      }]
+      }],
     }
   };
 
@@ -73,6 +73,18 @@ export class BarComponent implements OnInit {
 
   rebuildChartData() {
     this.modelTransformation.buildChartData(this.aspects, this.sortValue, this.sortOrderValue);
+  }
+
+  handleBarClick(event: any) {
+    if (event.active.length > 0) {
+      const chart = event.active[0]._chart;
+      const activePoints = chart.getElementAtEvent(event.event);
+      if (activePoints.length > 0) {
+        const clickedElementIndex = activePoints[0]._index;
+        const label = chart.data.labels[clickedElementIndex];
+
+      }
+    }
   }
 
 }

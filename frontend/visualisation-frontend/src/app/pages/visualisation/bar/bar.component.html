@@ -1,9 +1,11 @@
 <div class="chart">
-  <canvas baseChart
+  <canvas #chartRef baseChart
           [datasets]="chartData"
           [labels]="chartLabels"
           [options]="chartOptions"
-          [chartType]="chartType">
+          [chartType]="chartType"
+          (chartClick)="handleBarClick($event)"
+  >
   </canvas>
 </div>
 
