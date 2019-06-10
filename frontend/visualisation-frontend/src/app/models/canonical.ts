@@ -4,12 +4,6 @@ export interface StringMap<V> {
   [key: string]: V;
 }
 
-export const StringMap = function StringMapConstructor<V>(keys: Set<string>, initValue: V): StringMap<V> {
-  const map: StringMap<V> = {};
-  keys.forEach(key => map[key] = initValue); // broken with reference datatypes
-  return map;
-};
-
 export class Facet {
   text: '';
   group: '';
@@ -23,7 +17,8 @@ export class Extraction {
 }
 
 export const Extractions = {
-  groupBy
+  groupBy,
+  groupByFlat
 };
 
 function groupBy(extractions: Extraction[], property: 'comment' | 'aspect' | 'attribute' | 'sentiment',
@@ -58,14 +53,12 @@ function groupBy(extractions: Extraction[], property: 'comment' | 'aspect' | 'at
   }
 }
 
-export const Extraction = function ExtractionConstructor(): Extraction {
-  return {
-    comment: '',
-    aspect: {text: '', group: ''},
-    attribute: {text: '', group: ''},
-    sentiment: Sentiment.Unknown
-  };
-};
+function groupByFlat(extractions: Extraction[],
+                     property: 'comment' | 'aspect' | 'attribute' | 'sentiment',
+                     subProperty: 'text' | 'group' = 'group'): Extraction[][] {
+  const groupMap = groupBy(extractions, property, subProperty);
+  return Object.keys(groupMap).map(key => groupMap[key]);
+}
 
 export class Model {
   constructor(private extractions: Extraction[]) {
