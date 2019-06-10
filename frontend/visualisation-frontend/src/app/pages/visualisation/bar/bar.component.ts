@@ -1,25 +1,23 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ChartDataSets, ChartOptions, ChartType} from 'chart.js';
 import {ModelService} from '../../../services/model.service';
 import {Aspect} from './model';
 import mockData from '../mock.json';
 import {Label} from 'ng2-charts';
 import {ModelTransformation} from './modeltransformation';
-import {MatOption, MatSelect} from '@angular/material';
 
 @Component({
   selector: 'app-bar',
   templateUrl: './bar.component.html',
   styleUrls: ['./bar.component.scss']
 })
-export class BarComponent implements OnInit, AfterViewInit {
-
+export class BarComponent implements OnInit {
+  @Input('aspectname') aspectname: string;
   private aspects: Aspect[];
   private modelTransformation: ModelTransformation;
 
   private sortValue: string;
   private sortOrderValue: string;
-  private prevalenceValue: string;
 
   public chartData: ChartDataSets[] = [];
   public chartType: ChartType = 'horizontalBar';
@@ -39,9 +37,10 @@ export class BarComponent implements OnInit, AfterViewInit {
       xAxes: [{
         ticks: {
           beginAtZero: true,
+          stepSize: 1
         },
         stacked: true
-      }]
+      }],
     }
   };
 
@@ -53,21 +52,15 @@ export class BarComponent implements OnInit, AfterViewInit {
   ];
 
   sortOrderOptions: any = [
-    {value: 'ascending', viewValue: 'Ascending'},
     {value: 'descending', viewValue: 'Descending'},
-  ];
-
-  prevalenceOptions: any = [
-    {value: 'absolute', viewValue: 'Absolute'},
-    {value: 'relative', viewValue: 'Relative'},
+    {value: 'ascending', viewValue: 'Ascending'}
   ];
 
   constructor(private modelService: ModelService) {
     this.modelTransformation = new ModelTransformation(this);
     this.generateAspectsFromMock();
-    this.sortValue = this.sortOptions[0];
-    this.sortOrderValue = this.sortOrderOptions[0];
-    this.prevalenceValue = this.prevalenceOptions[0];
+    this.sortValue = this.sortOptions[0].value;
+    this.sortOrderValue = this.sortOrderOptions[0].value;
   }
 
   generateAspectsFromMock() {
@@ -78,12 +71,20 @@ export class BarComponent implements OnInit, AfterViewInit {
     this.rebuildChartData();
   }
 
-  ngAfterViewInit() {
-
+  rebuildChartData() {
+    this.modelTransformation.buildChartData(this.aspects, this.sortValue, this.sortOrderValue);
   }
 
-  rebuildChartData() {
-    this.modelTransformation.buildChartData(this.aspects, this.sortValue, this.sortOrderValue, this.prevalenceValue);
+  handleBarClick(event: any) {
+    if (event.active.length > 0) {
+      const chart = event.active[0]._chart;
+      const activePoints = chart.getElementAtEvent(event.event);
+      if (activePoints.length > 0) {
+        const clickedElementIndex = activePoints[0]._index;
+        const label = chart.data.labels[clickedElementIndex];
+
+      }
+    }
   }
 
 }

@@ -10,6 +10,7 @@ import { VisualisationComponent } from './pages/visualisation/visualisation.comp
 import { BarComponent } from './pages/visualisation/bar/bar.component';
 import { ChartsModule } from 'ng2-charts';
 import { PieComponent } from './pages/visualisation/pie/pie.component';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,8 @@ import { PieComponent } from './pages/visualisation/pie/pie.component';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    FormsModule,
+    ReactiveFormsModule,
     AppRoutingModule,
     MaterialModule,
     ChartsModule

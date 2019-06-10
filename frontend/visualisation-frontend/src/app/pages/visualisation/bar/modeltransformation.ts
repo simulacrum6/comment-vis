@@ -1,22 +1,17 @@
 import {Aspect} from './model';
 import Color from 'color';
 import {BarComponent} from './bar.component';
+import {SentimentColors} from '../../../../environments/constants';
 
 export class ModelTransformation {
 
   private parentComponent: BarComponent;
 
-  private chartColors = {
-    red: 'rgb(255, 0, 0)',
-    gray: 'rgb(169, 169, 169)',
-    green: 'rgb(0, 163, 51)',
-  };
-
   constructor(parentComponent: BarComponent) {
     this.parentComponent = parentComponent;
   }
 
-  buildChartData(aspects: Aspect[], sort: any, sortOrder: any, prevalence: any): void {
+  buildChartData(aspects: Aspect[], sort: string, sortOrder: string): void {
     this.parentComponent.chartData = [];
     this.parentComponent.chartLabels = [];
 
@@ -30,7 +25,7 @@ export class ModelTransformation {
       aspect.bars.sort((a, b) => {
         let countA = 0;
         let countB = 0;
-        switch (sort.value) {
+        switch (sort) {
           case 'positive':
             countA = a.positiveSentimentCount;
             countB = b.positiveSentimentCount;
@@ -47,7 +42,11 @@ export class ModelTransformation {
             countA = a.count;
             countB = b.count;
         }
-        return -1;
+        if (sortOrder === 'ascending') {
+          return countA - countB;
+        } else {
+          return countB - countA;
+        }
       });
     });
 
@@ -65,15 +64,15 @@ export class ModelTransformation {
     let data = [];
     for (let i = 0; i < 3; i++) {
       if (i === 0) {
-        borderColor = this.chartColors.green;
+        borderColor = SentimentColors.positive;
         label = 'Positive';
         data = positiveSentiments;
       } else if (i === 1) {
-        borderColor = this.chartColors.gray;
+        borderColor = SentimentColors.neutral;
         label = 'Neutral';
         data = neutralSentiments;
       } else {
-        borderColor = this.chartColors.red;
+        borderColor = SentimentColors.negative;
         label = 'Negative';
         data = negativeSentiments;
       }
