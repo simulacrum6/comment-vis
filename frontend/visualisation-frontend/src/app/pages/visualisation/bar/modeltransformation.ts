@@ -11,7 +11,7 @@ export class ModelTransformation {
     this.parentComponent = parentComponent;
   }
 
-  buildChartData(aspects: Aspect[], sort: any, sortOrder: any, prevalence: any): void {
+  buildChartData(aspects: Aspect[], sort: string, sortOrder: string): void {
     this.parentComponent.chartData = [];
     this.parentComponent.chartLabels = [];
 
@@ -25,7 +25,7 @@ export class ModelTransformation {
       aspect.bars.sort((a, b) => {
         let countA = 0;
         let countB = 0;
-        switch (sort.value) {
+        switch (sort) {
           case 'positive':
             countA = a.positiveSentimentCount;
             countB = b.positiveSentimentCount;
@@ -42,7 +42,7 @@ export class ModelTransformation {
             countA = a.count;
             countB = b.count;
         }
-        if (sortOrder.value === 'ascending') {
+        if (sortOrder === 'ascending') {
           return countA - countB;
         } else {
           return countB - countA;

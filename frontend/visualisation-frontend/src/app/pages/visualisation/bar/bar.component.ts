@@ -18,7 +18,6 @@ export class BarComponent implements OnInit {
 
   private sortValue: string;
   private sortOrderValue: string;
-  private prevalenceValue: string;
 
   public chartData: ChartDataSets[] = [];
   public chartType: ChartType = 'horizontalBar';
@@ -38,6 +37,7 @@ export class BarComponent implements OnInit {
       xAxes: [{
         ticks: {
           beginAtZero: true,
+          stepSize: 1
         },
         stacked: true
       }]
@@ -56,17 +56,11 @@ export class BarComponent implements OnInit {
     {value: 'ascending', viewValue: 'Ascending'}
   ];
 
-  prevalenceOptions: any = [
-    {value: 'absolute', viewValue: 'Absolute'},
-    {value: 'relative', viewValue: 'Relative'}
-  ];
-
   constructor(private modelService: ModelService) {
     this.modelTransformation = new ModelTransformation(this);
     this.generateAspectsFromMock();
-    this.sortValue = this.sortOptions[0];
-    this.sortOrderValue = this.sortOrderOptions[0];
-    this.prevalenceValue = this.prevalenceOptions[0];
+    this.sortValue = this.sortOptions[0].value;
+    this.sortOrderValue = this.sortOrderOptions[0].value;
   }
 
   generateAspectsFromMock() {
@@ -78,7 +72,7 @@ export class BarComponent implements OnInit {
   }
 
   rebuildChartData() {
-    this.modelTransformation.buildChartData(this.aspects, this.sortValue, this.sortOrderValue, this.prevalenceValue);
+    this.modelTransformation.buildChartData(this.aspects, this.sortValue, this.sortOrderValue);
   }
 
 }

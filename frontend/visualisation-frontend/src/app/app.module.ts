@@ -9,6 +9,7 @@ import { UploadComponent } from './pages/upload/upload.component';
 import { VisualisationComponent } from './pages/visualisation/visualisation.component';
 import { BarComponent } from './pages/visualisation/bar/bar.component';
 import { ChartsModule } from 'ng2-charts';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,8 @@ import { ChartsModule } from 'ng2-charts';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    FormsModule,
+    ReactiveFormsModule,
     AppRoutingModule,
     MaterialModule,
     ChartsModule
