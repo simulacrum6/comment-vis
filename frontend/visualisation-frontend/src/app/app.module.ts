@@ -9,13 +9,15 @@ import { UploadComponent } from './pages/upload/upload.component';
 import { VisualisationComponent } from './pages/visualisation/visualisation.component';
 import { BarComponent } from './pages/visualisation/bar/bar.component';
 import { ChartsModule } from 'ng2-charts';
+import { PieComponent } from './pages/visualisation/pie/pie.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     UploadComponent,
     VisualisationComponent,
-    BarComponent
+    BarComponent,
+    PieComponent
   ],
   imports: [
     BrowserModule,
