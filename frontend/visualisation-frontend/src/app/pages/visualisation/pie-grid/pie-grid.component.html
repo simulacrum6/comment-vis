@@ -1,0 +1,6 @@
+<div class='pie-wrapper'>
+  <app-pie *ngFor="let group of facetGroups"
+    [facetType]="facetType"
+    [name]="group.name"
+    [extractions]="group.extractions"></app-pie>
+</div>

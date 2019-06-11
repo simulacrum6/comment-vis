@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ModelService } from 'src/app/services/model.service';
-import { default as rawData } from '../../../models/mock2.ce.json';
-import { Aspect, Extraction, Extractions } from 'src/app/models/canonical.js';
+import { default as rawData } from 'src/app/models/mock2.ce.json';
+import { Extraction, Extractions, StringMap } from 'src/app/models/canonical.js';
 import { ChartOptions, ChartType } from 'chart.js';
 import { Label } from 'ng2-charts';
+import { Sentiment, Sentiments } from 'src/app/models/sentiment.js';
 
 const chartColors = {
   background: {
@@ -15,7 +16,7 @@ const chartColors = {
     negative: 'rgb(255, 0, 0)',
     neutral: 'rgb(169, 169, 169)',
     positive: 'rgb(0, 163, 51)'
-  } 
+  }
 };
 
 @Component({
@@ -24,39 +25,39 @@ const chartColors = {
   styleUrls: ['./pie.component.scss']
 })
 export class PieComponent implements OnInit {
-  public chartOptions: ChartOptions = {
+  @Input() facetType: 'aspect' | 'attribute';
+  @Input() name: string;
+  @Input() extractions: Extraction[];
+
+  private sentimentGroups: StringMap<Extraction[]>;
+
+  private chartOptions: ChartOptions = {
     responsive: true,
     legend: { position: 'top' },
   };
-  public chartLabels: Label[] = [];
-  public chartData: number[] = [];
-  public chartType: ChartType = 'pie';
-  public chartLegend = true;
-  public chartColors = [];
-  
-  private aspect: Aspect;
+  private chartLabels: Label[] = [];
+  private chartData: number[] = [];
+  private chartType: ChartType = 'pie';
+  private chartLegend = true;
+  private chartColors = [];
 
-  constructor(private model: ModelService) {
+  constructor(private modelService: ModelService) {
     // read mock data if model is empty
-    if (!model.model) {
-      model.generateModelFromJson(rawData);
+    if (!modelService.model) {
+      modelService.generateModelFromJson(rawData);
     }
-    this.aspect = model.model.aspects[1];
-    let aspectExtractions = Extractions.groupBy(model.model.rawExtractions, 'aspect', 'group');
-    console.log(aspectExtractions[this.aspect.name]);
-    console.log(this.aspect.extractions);
-    console.log(aspectExtractions);
-    console.log(model.model.rawExtractions)
-
   }
 
-  ngOnInit() { 
-    this.chartLabels = this.aspect.extractions.map(e => e.attribute.text);
-    this.chartColors = [{ 
-      backgroundColor: this.aspect.extractions.map(e => chartColors.background[e.sentiment]),
-      borderColor: this.aspect.extractions.map(e => chartColors.background[e.sentiment])
-    }]
-    this.chartData = this.aspect.extractions.map(e => 1);
+  ngOnInit() {
+    this.sentimentGroups = Extractions.groupBy(this.extractions, 'sentiment');
+
+    this.chartLabels = Sentiments;
+    this.chartColors = [{
+      backgroundColor: Sentiments.map(sentiment => chartColors.background[sentiment]),
+      borderColor: Sentiments.map(sentiment => chartColors.background[sentiment])
+    }];
+    this.chartData = Sentiments.map(sentiment => this.sentimentGroups[sentiment] || [])
+      .map(sentimentArray => sentimentArray.length);
   }
 
   // events

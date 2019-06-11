@@ -5,15 +5,17 @@ export enum Sentiment {
     Unknown = 'unknown'
 }
 
+export const Sentiments: string[] = Object.values(Sentiment);
+
 export class SentimentCount {
-    public positive: number = 0;
-    public negative: number = 0;
-    public neutral: number = 0;
-    public unknown: number = 0;
+    public positive = 0;
+    public negative = 0;
+    public neutral = 0;
+    public unknown = 0;
 
     public static fromArray(sentiments: Sentiment[]): SentimentCount {
-        let count: SentimentCount = new SentimentCount();
-        for (let sentiment of sentiments) {
+        const count = new SentimentCount();
+        for (const sentiment of sentiments) {
             count.inc(sentiment);
         }
         return count;

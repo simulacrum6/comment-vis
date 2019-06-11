@@ -11,6 +11,7 @@ import { BarComponent } from './pages/visualisation/bar/bar.component';
 import { ChartsModule } from 'ng2-charts';
 import { PieComponent } from './pages/visualisation/pie/pie.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { PieGridComponent } from './pages/visualisation/pie-grid/pie-grid.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     UploadComponent,
     VisualisationComponent,
     BarComponent,
-    PieComponent
+    PieComponent,
+    PieGridComponent
   ],
   imports: [
     BrowserModule,
