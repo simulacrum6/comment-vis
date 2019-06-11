@@ -1,56 +1,116 @@
 [
     {   
-        "comment": "bar baz", 
-        "aspect": { "text": "bar", "group": "bar" }, 
-        "attribute": { "text": "baz", "group": "bar" }, 
-        "sentiment": "positive"
+        "comment": "I think the teacher's performance was pretty underwhelming. He lacked clarity in his voice and did not respond to questions at all! Aside from this issue, the lecture was quite informative IF you could make sense of it.", 
+        "aspect": { "text": "teacher", "group": "Professor" }, 
+        "attribute": { "text": "underwhelming", "group": "underwhelming" }, 
+        "sentiment": "negative"
     },
     {   
-        "comment": "baar baz", 
-        "aspect": { "text": "baar", "group": "bar" }, 
-        "attribute": { "text": "baz", "group": "bar" }, 
+        "comment": "I think the teacher's performance was pretty underwhelming. He lacked clarity in his voice and did not respond to questions at all! Aside from this issue, the lecture was quite informative IF you could make sense of it.", 
+        "aspect": { "text": "voice", "group": "voice" }, 
+        "attribute": { "text": "clarity", "group": "Clarity" }, 
+        "sentiment": "negative"
+    },
+    {   
+        "comment": "I think the teacher's performance was pretty underwhelming. He lacked clarity in his voice and did not respond to questions at all! Aside from this issue, the lecture was quite informative IF you could make sense of it.", 
+        "aspect": { "text": "He", "group": "Professor" }, 
+        "attribute": { "text": "did not respond to questions", "group": "Questions" }, 
+        "sentiment": "negative"
+    },
+    {   
+        "comment": "I think the teacher's performance was pretty underwhelming. He lacked clarity in his voice and did not respond to questions at all! Aside from this issue, the lecture was quite informative IF you could make sense of it.", 
+        "aspect": { "text": "lecture", "group": "Course" }, 
+        "attribute": { "text": "informative", "group": "informative" }, 
         "sentiment": "positive"
     },
     { 
-        "comment": "bar zam", 
-        "aspect": { "text": "bar", "group": "bar" }, 
-        "attribute": { "text": "zam", "group": "zam" },
-        "sentiment": "positive"
-    },
-    { 
-        "comment": "bli baz", 
-        "aspect": { "text": "bli", "group": "bli" }, 
-        "attribute": { "text": "bar", "group": "bar" }, 
-        "sentiment": "positive" 
-    },
-    { 
-        "comment": "bli foo", 
-        "aspect": { "text": "bli", "group": "bli" }, 
-        "attribute": { "text": "foo", "group": "foo" },
+        "comment": "It stank in there!", 
+        "aspect": { "text": "It", "group": "Facilities" }, 
+        "attribute": { "text": "stank", "group": "smell" },
         "sentiment": "negative" 
     },
     { 
-        "comment": "bli pam", 
-        "aspect": { "text": "bli", "group": "bli" },
-        "attribute": { "text": "pam", "group": "pam" },
-        "sentiment": "neutral" 
-    },
-    { 
-        "comment": "bli oof", 
-        "aspect": { "text": "bli", "group": "bli" },
-        "attribute": { "text": "oof", "group": "foo" },
-        "sentiment": "neutral" 
-    },
-    { 
-        "comment": "gub bli oof", 
-        "aspect": { "text": "bli", "group": "bli" },
-        "attribute": { "text": "oof", "group": "foo" },
-        "sentiment": "neutral"
-    },        
-    {
-        "comment": "gub bli oof", 
-        "aspect": { "text": "bli", "group": "bli" },
-        "attribute": { "text": "gub", "group": "gub" },
+        "comment": "you always know when the prof is coming he smells so good.", 
+        "aspect": { "text": "prof", "group": "Professor" },
+        "attribute": { "text": "smells", "group": "smell" },
         "sentiment": "positive" 
+    },
+    { 
+        "comment": "Rooms could use some paint.", 
+        "aspect": { "text": "Rooms", "group": "Facilities" },
+        "attribute": { "text": "paint", "group": "paint" },
+        "sentiment": "negative" 
+    },
+    { 
+        "comment": "Couldn't focus on the lecture or tutorials at all! At first I thought 'oh damn! that lecturer is a sweetie!!' but when I saw the tutor I was like 'OMG, IS HE FROM HEAVEN?' so it would be nice if you could change staff or I wont pass", 
+        "aspect": { "text": "lecture", "group": "Lecture" },
+        "attribute": { "text": "focus", "group": "focus" },
+        "sentiment": "negative"
+    },        
+    { 
+        "comment": "Couldn't focus on the lecture or tutorials at all! At first I thought 'oh damn! that lecturer is a sweetie!!' but when I saw the tutor I was like 'OMG, IS HE FROM HEAVEN?' so it would be nice if you could change staff or I wont pass", 
+        "aspect": { "text": "tutorials", "group": "Exercise" },
+        "attribute": { "text": "focus", "group": "focus" },
+        "sentiment": "negative"
+    },        
+    { 
+        "comment": "Couldn't focus on the lecture or tutorials at all! At first I thought 'oh damn! that lecturer is a sweetie!!' but when I saw the tutor I was like 'OMG, IS HE FROM HEAVEN?' so it would be nice if you could change staff or I wont pass", 
+        "aspect": { "text": "lecturer", "group": "Professor" },
+        "attribute": { "text": "hot", "group": "hot" },
+        "sentiment": "positive"
+    },        
+    { 
+        "comment": "Couldn't focus on the lecture or tutorials at all! At first I thought 'oh damn! that lecturer is a sweetie!!' but when I saw the tutor I was like 'OMG, IS HE FROM HEAVEN?' so it would be nice if you could change staff or I wont pass", 
+        "aspect": { "text": "tutor", "group": "Tutor" },
+        "attribute": { "text": "hot", "group": "hot" },
+        "sentiment": "positive"
+    },        
+    { 
+        "comment": "Couldn't focus on the lecture or tutorials at all! At first I thought 'oh damn! that lecturer is a sweetie!!' but when I saw the tutor I was like 'OMG, IS HE FROM HEAVEN?' so it would be nice if you could change staff or I wont pass", 
+        "aspect": { "text": "staff", "group": "Staff" },
+        "attribute": { "text": "change", "group": "change" },
+        "sentiment": "neutral"
+    },
+    { 
+        "comment": "Same content as Philanthropy 201", 
+        "aspect": { "text": "content", "group": "Content" },
+        "attribute": { "text": "Philanthropy 201", "group": "Other Lecture" },
+        "sentiment": "neutral"
+    },
+    { 
+        "comment": "So boring, had the same in another lecture.", 
+        "aspect": { "text": "content", "group": "Content" },
+        "attribute": { "text": "Philanthropy 201", "group": "Other Lecture" },
+        "sentiment": "negative"
+    },
+    { 
+        "comment": "So boring, had the same in another lecture.", 
+        "aspect": { "text": "lecture", "group": "Course" },
+        "attribute": { "text": "boring", "group": "boring" },
+        "sentiment": "negative"
+    },
+    { 
+        "comment": "really interesting", 
+        "aspect": { "text": "", "group": "Course" },
+        "attribute": { "text": "interesting", "group": "interesting" },
+        "sentiment": "positive"
+    },
+    { 
+        "comment": "tutor was hot, otherwise I could not bear the exercise class", 
+        "aspect": { "text": "tutor", "group": "Tutor" },
+        "attribute": { "text": "hot", "group": "hot" },
+        "sentiment": "positive"
+    },
+    { 
+        "comment": "tutor was hot, otherwise I could not bear the exercise class", 
+        "aspect": { "text": "exercise class", "group": "Exercise" },
+        "attribute": { "text": "could not bear", "group": "boring" },
+        "sentiment": "negative"
+    },
+    { 
+        "comment": "tutor okay", 
+        "aspect": { "text": "tutor", "group": "Tutor" },
+        "attribute": { "text": "okay", "group": "okay" },
+        "sentiment": "neutral"
     }
 ]
