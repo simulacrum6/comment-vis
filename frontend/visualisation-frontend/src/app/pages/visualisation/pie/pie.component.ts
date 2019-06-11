@@ -33,12 +33,12 @@ export class PieComponent implements OnInit {
 
   private chartOptions: ChartOptions = {
     responsive: true,
-    legend: { position: 'top' },
+    legend: { position: 'bottom' },
   };
   private chartLabels: Label[] = [];
   private chartData: number[] = [];
   private chartType: ChartType = 'pie';
-  private chartLegend = true;
+  private chartLegend = false;
   private chartColors = [];
 
   constructor(private modelService: ModelService) {
