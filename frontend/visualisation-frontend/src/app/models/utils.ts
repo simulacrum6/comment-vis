@@ -13,3 +13,7 @@ export function valueCounts(values: string[], sort?: 'ascending' | 'descending' 
     }
     return counts;
 }
+
+export function sum(x: number, y: number): number {
+    return x + y;
+}

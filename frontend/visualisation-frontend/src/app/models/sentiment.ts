@@ -53,3 +53,12 @@ export function mapToSentiment(value: string | number): Sentiment {
         }
     }
 }
+
+export function mapToNumber(sentiment: Sentiment): number {
+    switch (sentiment) {
+        case Sentiment.Positive: return 1;
+        case Sentiment.Negative: return -1;
+        case Sentiment.Neutral:
+        case Sentiment.Unknown: return 0;
+    }
+}

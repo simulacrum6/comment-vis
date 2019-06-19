@@ -1,4 +1,5 @@
-import {Sentiment, mapToSentiment, SentimentCount} from './sentiment';
+import {Sentiment, mapToSentiment, SentimentCount, mapToNumber } from './sentiment';
+import { sum } from './utils';
 
 export interface StringMap<V> {
   [key: string]: V;
@@ -92,6 +93,17 @@ function groupByFlat(extractions: Extraction[],
                      facetProperty: FacetProperty = 'group'): Extraction[][] {
   const groupMap = groupBy(extractions, property, facetProperty);
   return Object.keys(groupMap).map(key => groupMap[key]);
+}
+
+/**
+ * Calculates the difference in Sentiment for the given extractions.
+ */
+export function sentimentDifferential(extractions: Extraction[], normalized: boolean = true): number {
+  const differential = extractions
+    .map(extraction => extraction.sentiment)
+    .map(mapToNumber)
+    .reduce(sum);
+  return normalized ? differential / extractions.length : differential;
 }
 
 export class Model {

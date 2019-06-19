@@ -14,6 +14,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { PieGridComponent } from './pages/visualisation/pie-grid/pie-grid.component';
 import { DatasetOverviewComponent } from './pages/dataset-overview/dataset-overview.component';
+import { TreeMapComponent } from './pages/visualisation/tree-map/tree-map.component';
+import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,8 @@ import { DatasetOverviewComponent } from './pages/dataset-overview/dataset-overv
     BarComponent,
     PieComponent,
     PieGridComponent,
-    DatasetOverviewComponent
+    DatasetOverviewComponent,
+    TreeMapComponent
   ],
   imports: [
     BrowserModule,
@@ -33,7 +36,8 @@ import { DatasetOverviewComponent } from './pages/dataset-overview/dataset-overv
     ReactiveFormsModule,
     AppRoutingModule,
     MaterialModule,
-    ChartsModule
+    ChartsModule,
+    Ng2GoogleChartsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
