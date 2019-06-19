@@ -3,7 +3,8 @@ import { GoogleChartInterface } from 'ng2-google-charts/google-charts-interfaces
 import { ModelService } from 'src/app/services/model.service';
 import { Extraction, Extractions, sentimentDifferential } from 'src/app/models/canonical';
 import { Sentiment, mapToNumber } from 'src/app/models/sentiment';
-import { SentimentColors, DefaultColorStrings } from 'src/environments/constants';
+import { DefaultColorStrings, SentimentColorObjects } from 'src/environments/constants';
+import { default as Color } from 'color';
 
 @Component({
   selector: 'app-tree-map',
@@ -30,6 +31,8 @@ export class TreeMapComponent implements OnInit {
       minColor: DefaultColorStrings.backgroundColor.negative,
       midColor: DefaultColorStrings.backgroundColor.neutral,
       maxColor: DefaultColorStrings.backgroundColor.positive,
+      maxDepth: 2,
+      hintOpacity: 0.9,
     },
   };
   public positives: GoogleChartInterface;
@@ -47,8 +50,6 @@ export class TreeMapComponent implements OnInit {
     this.resetData();
     this.data = this.data.concat(entries);
     this.chart.dataTable = this.data;
-    this.positives = this.getChartObject(this.data.filter(entry => entry[1] === 'positive'), 'positive');
-    this.negatives = this.getChartObject(this.data.filter(entry => entry[1] === 'negative'), 'negative');
   }
 
   private resetData() {
@@ -66,24 +67,18 @@ export class TreeMapComponent implements OnInit {
   private toTableEntry([name, extractions]): [string, string, number, number] {
     const differential = sentimentDifferential(extractions);
     const parent = differential < 0 ? 'negative' : 'positive';
-    return [name, parent, Math.abs(differential), Math.abs(differential)];
+    return [name, parent, Math.abs(differential), differential];
   }
 
-  private getChartObject(data, sentiment: 'positive' | 'negative'): GoogleChartInterface {
-    const table = [
-      ['Unit', 'Parent', 'Sentiment Difference', 'Color'],
-      [sentiment, null, 0, mapToNumber(Sentiment.Unknown)]
-    ];
-    console.log(data)
-    return {
-      chartType: 'TreeMap',
-      dataTable: table.concat(data),
-      //opt_firstRowIsData: true,
-      options: {
-        title: sentiment,
-        minColor: DefaultColorStrings.backgroundColor.neutral,
-        maxColor: DefaultColorStrings.backgroundColor[sentiment],
-      },
-    }
+  /**
+   * Google charts does not allow transparent fill colors.
+   * This is a workaround to harmonize the treemap with the chart.js colors.
+   */
+  private adjustColors() {
+    document.querySelectorAll('rect').forEach(node => {
+      const oldColor = node.getAttribute('fill');
+      node.setAttribute('fill', Color(oldColor).alpha(0.66).string());
+      node.setAttribute('stroke', oldColor);
+    });
   }
 }

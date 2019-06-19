@@ -12,39 +12,39 @@ export const SentimentColors = {
 };
 
 // TODO: delete once SentimentColors is adjusted
-const sentimentColors = {
+export const SentimentColorObjects: { positive: Color, negative: Color, neutral: Color, unknown: Color } = {
   positive: Color('rgb(0, 163, 51)'),
   negative: Color('rgb(255, 0, 0)'),
   neutral: Color('rgb(169, 169, 169)'),
   unknown: Color('rgba(255, 255, 255, 0)')
 };
 
-const backgroundAlpha = 0.3;
-const hoverBackgroundAlpha = 0.6;
+export const backgroundAlpha = 0.3;
+export const hoverBackgroundAlpha = 0.6;
 
 export const DefaultColorStrings = {
   backgroundColor: {
-    positive: sentimentColors.positive.alpha(backgroundAlpha).toString(),
-    negative: sentimentColors.negative.alpha(backgroundAlpha).toString(),
-    neutral: sentimentColors.neutral.alpha(backgroundAlpha).toString(),
-    unknown: sentimentColors.unknown.alpha(backgroundAlpha).toString()
+    positive: SentimentColorObjects.positive.alpha(backgroundAlpha).toString(),
+    negative: SentimentColorObjects.negative.alpha(backgroundAlpha).toString(),
+    neutral: SentimentColorObjects.neutral.alpha(backgroundAlpha).toString(),
+    unknown: SentimentColorObjects.unknown.alpha(backgroundAlpha).toString()
   },
   borderColor: {
-    positive: sentimentColors.positive.toString(),
-    negative: sentimentColors.negative.toString(),
-    neutral: sentimentColors.neutral.toString(),
-    unknown: sentimentColors.unknown.toString()
+    positive: SentimentColorObjects.positive.toString(),
+    negative: SentimentColorObjects.negative.toString(),
+    neutral: SentimentColorObjects.neutral.toString(),
+    unknown: SentimentColorObjects.unknown.toString()
   },
   hoverBackgroundColor: {
-    positive: sentimentColors.positive.alpha(hoverBackgroundAlpha).toString(),
-    negative: sentimentColors.negative.alpha(hoverBackgroundAlpha).toString(),
-    neutral: sentimentColors.neutral.alpha(hoverBackgroundAlpha).toString(),
-    unknown: sentimentColors.unknown.alpha(hoverBackgroundAlpha).toString()
+    positive: SentimentColorObjects.positive.alpha(hoverBackgroundAlpha).toString(),
+    negative: SentimentColorObjects.negative.alpha(hoverBackgroundAlpha).toString(),
+    neutral: SentimentColorObjects.neutral.alpha(hoverBackgroundAlpha).toString(),
+    unknown: SentimentColorObjects.unknown.alpha(hoverBackgroundAlpha).toString()
   },
   hoverBorderColor: {
-    positive: sentimentColors.positive.toString(),
-    negative: sentimentColors.negative.toString(),
-    neutral: sentimentColors.neutral.toString(),
-    unknown: sentimentColors.unknown.toString()
+    positive: SentimentColorObjects.positive.toString(),
+    negative: SentimentColorObjects.negative.toString(),
+    neutral: SentimentColorObjects.neutral.toString(),
+    unknown: SentimentColorObjects.unknown.toString()
   }
 };
