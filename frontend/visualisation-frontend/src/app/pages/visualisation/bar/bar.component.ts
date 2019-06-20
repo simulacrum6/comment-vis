@@ -1,8 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ChartDataSets, ChartOptions, ChartType} from 'chart.js';
 import {ModelService} from '../../../services/model.service';
-import {Aspect} from './model';
-import mockData from '../mock.json';
 import {Label} from 'ng2-charts';
 import {ModelTransformation} from './modeltransformation';
 
@@ -13,7 +11,6 @@ import {ModelTransformation} from './modeltransformation';
 })
 export class BarComponent implements OnInit {
   @Input('aspectname') aspectname: string;
-  private aspects: Aspect[];
   private modelTransformation: ModelTransformation;
 
   private sortValue: string;
@@ -56,15 +53,10 @@ export class BarComponent implements OnInit {
     {value: 'ascending', viewValue: 'Ascending'}
   ];
 
-  constructor(private modelService: ModelService) {
+  constructor(public modelService: ModelService) {
     this.modelTransformation = new ModelTransformation(this);
-    this.generateAspectsFromMock();
     this.sortValue = this.sortOptions[0].value;
     this.sortOrderValue = this.sortOrderOptions[0].value;
-  }
-
-  generateAspectsFromMock() {
-    this.aspects = Aspect.fromJson(mockData);
   }
 
   ngOnInit() {
@@ -72,7 +64,7 @@ export class BarComponent implements OnInit {
   }
 
   rebuildChartData() {
-    this.modelTransformation.buildChartData(this.aspects, this.sortValue, this.sortOrderValue);
+    this.modelTransformation.buildChartData(this.sortValue, this.sortOrderValue);
   }
 
   handleBarClick(event: any) {
@@ -82,7 +74,7 @@ export class BarComponent implements OnInit {
       if (activePoints.length > 0) {
         const clickedElementIndex = activePoints[0]._index;
         const label = chart.data.labels[clickedElementIndex];
-
+        console.log('bar clicked: ' + label);
       }
     }
   }

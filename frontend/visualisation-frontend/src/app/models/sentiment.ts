@@ -28,6 +28,11 @@ export class SentimentCount {
     public dec(sentiment: Sentiment, count: number = 1): void {
         this[sentiment] -= count;
     }
+
+    public getOverallCount(): number {
+      return this.positive + this.neutral + this.negative + this.unknown;
+    }
+
 }
 
 export function mapToSentiment(value: string | number): Sentiment {

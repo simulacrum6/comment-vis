@@ -1,7 +1,7 @@
-import {Aspect} from './model';
-import Color from 'color';
 import {BarComponent} from './bar.component';
 import {SentimentColors} from '../../../../environments/constants';
+import {Extraction, Extractions} from '../../../models/canonical';
+import {SentimentCount} from '../../../models/sentiment';
 
 export class ModelTransformation {
 
@@ -11,81 +11,91 @@ export class ModelTransformation {
     this.parentComponent = parentComponent;
   }
 
-  buildChartData(aspects: Aspect[], sort: string, sortOrder: string): void {
+  buildChartData(sort: string, sortOrder: string): void {
     this.parentComponent.chartData = [];
     this.parentComponent.chartLabels = [];
 
     const positiveSentiments = [];
     const neutralSentiments = [];
     const negativeSentiments = [];
-    const unknownSentiments = [];
 
-    // Sort
-    aspects.forEach((aspect) => {
-      aspect.bars.sort((a, b) => {
-        let countA = 0;
-        let countB = 0;
-        switch (sort) {
-          case 'positive':
-            countA = a.positiveSentimentCount;
-            countB = b.positiveSentimentCount;
-            break;
-          case 'neutral':
-            countA = a.neutralSentimentCount;
-            countB = b.neutralSentimentCount;
-            break;
-          case 'negative':
-            countA = a.negativeSentimentCount;
-            countB = b.negativeSentimentCount;
-            break;
-          default:
-            countA = a.count;
-            countB = b.count;
+    const model = this.parentComponent.modelService.model;
+    if (this.parentComponent.aspectname) {
+      const extractions: Extraction[] = model.aspectGroupMap[this.parentComponent.aspectname];
+      if (extractions) {
+        const extractionsByAttributeGroup: Extraction[][] = Extractions.groupByFlat(extractions, 'attribute');
+
+        extractionsByAttributeGroup.sort((a, b) => {
+          const sentimentMapA = a.map(attributeGroup => attributeGroup.sentiment);
+          const sentimentsA = SentimentCount.fromArray(sentimentMapA);
+          const sentimentMapB = b.map(attributeGroup => attributeGroup.sentiment);
+          const sentimentsB = SentimentCount.fromArray(sentimentMapB);
+
+          let countA = 0;
+          let countB = 0;
+          switch (sort) {
+            case 'positive':
+              countA = sentimentsA.positive;
+              countB = sentimentsB.positive;
+              break;
+            case 'neutral':
+              countA = sentimentsA.neutral;
+              countB = sentimentsB.neutral;
+              break;
+            case 'negative':
+              countA = sentimentsA.negative;
+              countB = sentimentsB.negative;
+              break;
+            default:
+              countA = sentimentsA.getOverallCount();
+              countB = sentimentsB.getOverallCount();
+          }
+          if (sortOrder === 'ascending') {
+            return countA - countB;
+          } else {
+            return countB - countA;
+          }
+        });
+
+        extractionsByAttributeGroup.forEach((attributeGroups) => {
+          this.parentComponent.chartLabels.push(attributeGroups[0].attribute.group);
+          const sentimentMap = attributeGroups.map(attributeGroup => attributeGroup.sentiment);
+          const sentiments = SentimentCount.fromArray(sentimentMap);
+          positiveSentiments.push(sentiments.positive);
+          neutralSentiments.push(sentiments.neutral);
+          negativeSentiments.push(sentiments.negative);
+        });
+
+        let color: SentimentColors;
+        let label: string;
+        let data = [];
+        for (let i = 0; i < 3; i++) {
+          if (i === 0) {
+            color = SentimentColors.positive;
+            label = 'Positive';
+            data = positiveSentiments;
+          } else if (i === 1) {
+            color = SentimentColors.neutral;
+            label = 'Neutral';
+            data = neutralSentiments;
+          } else {
+            color = SentimentColors.negative;
+            label = 'Negative';
+            data = negativeSentiments;
+          }
+          const dataSet: any = {};
+          dataSet.borderColor = color;
+          dataSet.borderWidth = 3;
+          dataSet.backgroundColor = color.alpha(0.3).string();
+          dataSet.hoverBorderColor = color.string();
+          dataSet.hoverBackgroundColor = color.alpha(0.6).string();
+          dataSet.label = label;
+          dataSet.data = data;
+          this.parentComponent.chartData.push(dataSet);
         }
-        if (sortOrder === 'ascending') {
-          return countA - countB;
-        } else {
-          return countB - countA;
-        }
-      });
-    });
 
-    aspects.forEach((aspect) => {
-      aspect.bars.forEach((bar) => {
-        this.parentComponent.chartLabels.push(bar.attributeDescription);
-        positiveSentiments.push(bar.positiveSentimentCount);
-        neutralSentiments.push(bar.neutralSentimentCount);
-        negativeSentiments.push(bar.negativeSentimentCount);
-      });
-    });
-
-    let borderColor: string;
-    let label: string;
-    let data = [];
-    for (let i = 0; i < 3; i++) {
-      if (i === 0) {
-        borderColor = SentimentColors.positive;
-        label = 'Positive';
-        data = positiveSentiments;
-      } else if (i === 1) {
-        borderColor = SentimentColors.neutral;
-        label = 'Neutral';
-        data = neutralSentiments;
-      } else {
-        borderColor = SentimentColors.negative;
-        label = 'Negative';
-        data = negativeSentiments;
+        console.log(extractions);
       }
-      const dataSet: any = {};
-      dataSet.borderColor = borderColor;
-      dataSet.borderWidth = 3;
-      dataSet.backgroundColor = Color(borderColor).alpha(0.3).string();
-      dataSet.hoverBorderColor = Color(borderColor).string();
-      dataSet.hoverBackgroundColor = Color(borderColor).alpha(0.6).string();
-      dataSet.label = label;
-      dataSet.data = data;
-      this.parentComponent.chartData.push(dataSet);
     }
   }
-
 }

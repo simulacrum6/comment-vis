@@ -3,7 +3,7 @@ import { GoogleChartInterface } from 'ng2-google-charts/google-charts-interfaces
 import { ModelService } from 'src/app/services/model.service';
 import { Extraction, Extractions, sentimentDifferential } from 'src/app/models/canonical';
 import { Sentiment, mapToNumber } from 'src/app/models/sentiment';
-import { DefaultColorStrings, SentimentColorObjects } from 'src/environments/constants';
+import { DefaultColorStrings, SentimentColors } from 'src/environments/constants';
 import { default as Color } from 'color';
 
 @Component({
