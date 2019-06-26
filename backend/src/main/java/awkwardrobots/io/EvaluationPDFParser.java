@@ -32,7 +32,7 @@ public class EvaluationPDFParser implements CommentParser {
             .matcher("");
 
     @Override
-    public CommentList parse(InputStream inputStream) throws IOException {
+    public CommentList parseComments(InputStream inputStream) throws IOException {
         PDFParser parser = new PDFParser(inputStream);
         parser.parse();
         PDDocument pdf = new PDDocument(parser.getDocument());

@@ -62,7 +62,7 @@ public class DatasetLoader {
 
             List<Comment> comments = new ArrayList<>();
             for (File file : files) {
-                comments.addAll(parser.parse(new FileInputStream(file)));
+                comments.addAll(parser.parseComments(new FileInputStream(file)));
             }
             
             return comments;

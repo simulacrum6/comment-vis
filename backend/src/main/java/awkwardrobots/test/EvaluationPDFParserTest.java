@@ -27,13 +27,13 @@ public class EvaluationPDFParserTest {
 
     @Test
     public void testPDFParsing() throws IOException {
-        List<Comment> comments = parser.parse(in);
+        List<Comment> comments = parser.parseComments(in);
         assertNotNull(comments);
     }
 
     @Test
     public void testCommentExtraction() throws IOException {
-        List<Comment> comments = parser.parse(in);
+        List<Comment> comments = parser.parseComments(in);
         Comment first = comments.get(0);
         assertEquals("Keine Angabe", first.getText());
 
