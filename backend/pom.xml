@@ -1,212 +1,199 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>awkwardrobots</groupId>
 	<artifactId>research-project</artifactId>
-    <name>research-project</name>
-    <version>1.0-SNAPSHOT</version>
+	<name>research-project</name>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <failOnMissingWebXml>false</failOnMissingWebXml>
-
-        <vaadin.version>11.0.0</vaadin.version>
-        <dkpro.core.version>1.10.0</dkpro.core.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<failOnMissingWebXml>false</failOnMissingWebXml>
+		<dkpro.core.version>1.10.0</dkpro.core.version>
+		<jackson.version>2.9.8</jackson.version>
 	</properties>
 
 	<repositories>
-        <!-- Repository used by many Vaadin add-ons -->
 		<repository>
-            <id>Vaadin Directory</id>
-			<url>http://maven.vaadin.com/vaadin-addons</url>
+			<id>ukp-oss-releases</id>
+			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-releases/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</repository>
-        <repository>
-            <id>ukp-oss-releases</id>
-            <url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-releases/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-                <checksumPolicy>warn</checksumPolicy>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>ukp-oss-snapshots</id>
-            <url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
+		<repository>
+			<id>ukp-oss-snapshots</id>
+			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
 
 	<dependencyManagement>
 		<dependencies>
-            <!-- DKPro Dependencies -->
-            <dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-                <artifactId>de.tudarmstadt.ukp.dkpro.core-asl</artifactId>
-                <version>${dkpro.core.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-                <artifactId>de.tudarmstadt.ukp.dkpro.core-gpl</artifactId>
-                <version>${dkpro.core.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-                <artifactId>de.tudarmstadt.ukp.dkpro.core.stanfordnlp-gpl</artifactId>
-                <version>${dkpro.core.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <!-- Vaadin Dependencies -->
-            <dependency>
-				<groupId>com.vaadin</groupId>
-				<artifactId>vaadin-bom</artifactId>
+			<!-- DKPro Dependencies -->
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.core-asl</artifactId>
+				<version>${dkpro.core.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
-                <version>${vaadin.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.core-gpl</artifactId>
+				<version>${dkpro.core.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.core.stanfordnlp-gpl</artifactId>
+				<version>${dkpro.core.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<dependencies>
-        <!-- Web App Dependencies -->
-        <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-core</artifactId>
-        </dependency>
-        <dependency>
+		<!-- Jackson Dependencies -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+
+		<!-- Web App Dependencies -->
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
+			<version>3.1.0</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<!-- Unit Tests -->
 		<dependency>
-			<groupId>com.vaadin</groupId>
-            <artifactId>vaadin-charts-flow</artifactId>
-            <version>6.0.0</version>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
 		</dependency>
 
-        <!-- Unit Tests -->
+		<!-- Text Utils -->
 		<dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>1.8.15</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>1.6</version>
 		</dependency>
 
-        <!-- Text Utils -->
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox</artifactId>
-            <version>1.8.15</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-text</artifactId>
-            <version>1.6</version>
-        </dependency>
+		<!-- UIMA JCas Type Generator -->
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>jcasgen-maven-plugin</artifactId>
+			<version>3.0.0</version>
+		</dependency>
 
-        <!-- Logger -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-        </dependency>
+		<!-- DKPro Components -->
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.tokit-asl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.stanfordnlp-gpl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.opennlp-asl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.treetagger-asl</artifactId>
+		</dependency>
 
-        <!-- UIMA JCas Type Generator -->
-        <dependency>
-            <groupId>org.apache.uima</groupId>
-            <artifactId>jcasgen-maven-plugin</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-
-        <!-- DKPro Components -->
-        <dependency>
-            <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-            <artifactId>de.tudarmstadt.ukp.dkpro.core.tokit-asl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-            <artifactId>de.tudarmstadt.ukp.dkpro.core.stanfordnlp-gpl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-            <artifactId>de.tudarmstadt.ukp.dkpro.core.opennlp-asl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-            <artifactId>de.tudarmstadt.ukp.dkpro.core.treetagger-asl</artifactId>
-        </dependency>
-
-        <!-- DKPro Models -->
-    </dependencies>
+		<!-- DKPro Models -->
+	</dependencies>
 
 	<build>
 		<plugins>
-            <!-- Jetty plugin for easy testing without a server -->
+			<!-- Jetty plugin for easy testing without a server -->
 			<plugin>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.4.11.v20180605</version>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>9.4.11.v20180605</version>
 				<configuration>
-                    <scanIntervalSeconds>1</scanIntervalSeconds>
+					<scanIntervalSeconds>1</scanIntervalSeconds>
 				</configuration>
 			</plugin>
-        </plugins>
-    </build>
+		</plugins>
+	</build>
 
-    <profiles>
-        <profile>
-            <!-- Production mode can be activated with either property or profile -->
-            <id>production-mode</id>
-            <activation>
-                <property>
-                    <name>vaadin.productionMode</name>
-                </property>
-            </activation>
-            <properties>
-                <vaadin.productionMode>true</vaadin.productionMode>
-            </properties>
+	<profiles>
+		<profile>
+			<!-- Production mode can be activated with either property or profile -->
+			<id>production-mode</id>
+			<activation>
+				<property>
+					<name>vaadin.productionMode</name>
+				</property>
+			</activation>
+			<properties>
+				<vaadin.productionMode>true</vaadin.productionMode>
+			</properties>
 
-            <dependencies>
-                <dependency>
-                    <groupId>com.vaadin</groupId>
-                    <artifactId>flow-server-production-mode</artifactId>
-                </dependency>
-            </dependencies>
+			<dependencies>
+				<dependency>
+					<groupId>com.vaadin</groupId>
+					<artifactId>flow-server-production-mode</artifactId>
+				</dependency>
+			</dependencies>
 
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.vaadin</groupId>
-                        <artifactId>vaadin-maven-plugin</artifactId>
-                        <version>${vaadin.version}</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>copy-production-files</goal>
-                                    <goal>package-for-production</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.vaadin</groupId>
+						<artifactId>vaadin-maven-plugin</artifactId>
+						<version>${vaadin.version}</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>copy-production-files</goal>
+									<goal>package-for-production</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 </project>
