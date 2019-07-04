@@ -1,3 +1,6 @@
-<div class="squared">
+<div class="squared" *ngIf="dataIsVisualisable; else noValidData">
   <google-chart [data]="chart" (chartReady)="adjustColors()"></google-chart>
 </div>
+<ng-template #noValidData>
+  <p>Sentiment is either fully positive or fully negative. Nothing to show here.</p>
+</ng-template>

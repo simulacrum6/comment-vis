@@ -15,12 +15,10 @@ export class TreeMapComponent implements OnInit {
 
   @Input() facetType: 'aspect' | 'attribute' = 'aspect';
 
-  public data = [
-    ['Unit', 'Parent', 'Sentiment Difference', 'Color'],
-    ['Root', null, 0, Sentiment.Unknown],
-    ['positive', 'Root', 1, mapToNumber(Sentiment.Positive)],
-    ['negative', 'Root', 1, mapToNumber(Sentiment.Negative)]
-  ];
+  /**
+   * Data Table containing the Sentiment Difference Values.
+   */
+  public data: any[][] = [];
 
   public chart: GoogleChartInterface = {
     chartType: 'TreeMap',
@@ -30,30 +28,37 @@ export class TreeMapComponent implements OnInit {
       minColor: DefaultColorStrings.backgroundColor.negative,
       midColor: DefaultColorStrings.backgroundColor.neutral,
       maxColor: DefaultColorStrings.backgroundColor.positive,
-      maxDepth: 2,
+      maxDepth: 3,
       hintOpacity: 0.9,
+      height: 420
     },
   };
-  public positives: GoogleChartInterface;
-  public negatives: GoogleChartInterface;
+
+  /**
+   * Indicates, whether data makes sense to visualise.
+   * E.g., if there is no Facet, which is mostly positive or mostly negative,
+   * this visualisation makes no sense to show.
+   */
+  private dataIsVisualisable = false;
 
   constructor(private modelService: ModelService) { }
 
   ngOnInit() {
+    this.resetData();
     const extractions = this.modelService.model.rawExtractions;
     const facetMap = Extractions.groupBy(extractions, this.facetType);
     const entries = Object.entries(facetMap).map(this.toTableEntry);
-    this.resetData();
     this.data = this.data.concat(entries);
     this.chart.dataTable = this.data;
+    this.dataIsVisualisable = true; // TODO: Change to function check.
   }
 
   private resetData() {
     this.data = [
       ['Unit', 'Parent', 'Sentiment Difference', 'Color'],
       ['Root', null, 0, mapToNumber(Sentiment.Unknown)],
-      ['positive', 'Root', 1, mapToNumber(Sentiment.Positive)],
-      ['negative', 'Root', 1, mapToNumber(Sentiment.Negative)]
+      ['positive', 'Root', 0, mapToNumber(Sentiment.Positive)],
+      ['negative', 'Root', 0, mapToNumber(Sentiment.Negative)]
     ];
   }
 
@@ -64,6 +69,17 @@ export class TreeMapComponent implements OnInit {
     const differential = sentimentDifferential(extractions);
     const parent = differential < 0 ? 'negative' : 'positive';
     return [name, parent, Math.abs(differential), differential];
+  }
+
+  /**
+   * Checks whether data makes sense to be visualised.
+   * Returns true if data is visualisable.
+   */
+  private checkIfVisualisable() {
+    this.chart.dataTable = this.data;
+    const negatives = this.data.filter(row => row[2] < 0);
+    const positives = this.data.filter(row => row[2] > 0);
+    return !(positives.length === 0 || negatives.length === 0);
   }
 
   /**
