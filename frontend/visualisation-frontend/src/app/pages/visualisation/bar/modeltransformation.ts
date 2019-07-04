@@ -2,6 +2,7 @@ import {BarComponent} from './bar.component';
 import {SentimentColors} from '../../../../environments/constants';
 import {Extraction, Extractions} from '../../../models/canonical';
 import {SentimentCount} from '../../../models/sentiment';
+import {default as Color} from 'color';
 
 export class ModelTransformation {
 
@@ -66,7 +67,7 @@ export class ModelTransformation {
           negativeSentiments.push(sentiments.negative);
         });
 
-        let color: SentimentColors;
+        let color: Color;
         let label: string;
         let data = [];
         for (let i = 0; i < 3; i++) {

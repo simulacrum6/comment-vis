@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ModelService } from 'src/app/services/model.service';
 import { Extraction, ExtractionProperty, FacetProperty, Extractions } from 'src/app/models/canonical';
-import { default as dataSet } from 'src/app/models/mock2.ce.json';
+import { default as dataSet } from 'src/app/models/foursquare_gold.ce.json';
 import { SentimentCount, mapToSentiment } from 'src/app/models/sentiment';
 import { valueCounts } from 'src/app/models/utils';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-dataset-overview',
@@ -19,9 +20,10 @@ export class DatasetOverviewComponent implements OnInit {
   private sentimentCounts: SentimentCount;
   private valueCounts;
 
-  constructor(private modelService: ModelService, private router: Router) {
-    if (!modelService.model) {
-      modelService.generateModelFromJson(dataSet);
+  constructor(private modelService: ModelService, private router: Router, private snackBar: MatSnackBar) {
+    if (!this.modelService.model) {
+      // TODO: set data on upload page
+      this.modelService.generateModelFromJson(dataSet);
     }
     this.extractions = modelService.model.rawExtractions;
     this.values = {

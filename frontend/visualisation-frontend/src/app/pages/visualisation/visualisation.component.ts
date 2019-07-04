@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import mockData from '../../models/mock2.ce.json';
 import {ModelService} from '../../services/model.service';
+import { MatSnackBar } from '@angular/material';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-visualisation',
@@ -9,10 +10,13 @@ import {ModelService} from '../../services/model.service';
 })
 export class VisualisationComponent implements OnInit {
 
-  constructor(private modelService: ModelService) { }
+  constructor(private modelService: ModelService, private snackBar: MatSnackBar, private router: Router) {
+      if (!this.modelService.model) {
+        this.snackBar.open('No data was available. You were redirected to the upload page.', 'Okay');
+        this.router.navigate(['/']);
+      }
+    }
 
-  ngOnInit() {
-    this.modelService.generateModelFromJson(mockData); //TODO: delete later
-  }
+  ngOnInit() {}
 
 }

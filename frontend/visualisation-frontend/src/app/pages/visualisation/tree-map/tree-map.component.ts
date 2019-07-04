@@ -25,7 +25,6 @@ export class TreeMapComponent implements OnInit {
   public chart: GoogleChartInterface = {
     chartType: 'TreeMap',
     dataTable: this.data,
-    //opt_firstRowIsData: true,
     options: {
       title: 'Sentiment Difference',
       minColor: DefaultColorStrings.backgroundColor.negative,
@@ -37,9 +36,6 @@ export class TreeMapComponent implements OnInit {
   };
   public positives: GoogleChartInterface;
   public negatives: GoogleChartInterface;
-
-  // TODO: add type to model
-  private facetGroups: { name: string, extractions: Extraction[] }[];
 
   constructor(private modelService: ModelService) { }
 
