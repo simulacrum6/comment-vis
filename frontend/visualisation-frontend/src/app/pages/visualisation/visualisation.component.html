@@ -1,31 +1,11 @@
-<mat-tab-group>
-    <mat-tab label="Pie">
-        <ng-template matTabContent>
-            <app-pie-grid facetType="aspect"></app-pie-grid>
-        </ng-template>
-    </mat-tab>
-    <mat-tab label="Tree">
-        <ng-template matTabContent>
-            <app-tree-map facetType="aspect"></app-tree-map>
-        </ng-template>
-    </mat-tab>
-    <mat-tab label="Bar">
-      <!-- ng-template with matTabContent enables lazyloading.
-          probably a good idea, once visualisations get expensive. -->
-        <ng-template matTabContent>
-            <app-bar
-              aspectname="Professor"
-            ></app-bar>
-        </ng-template>
-    </mat-tab>
-    <mat-tab label="Bubbles">
-        <ng-template matTabContent>
-            coming soon...
-        </ng-template>
-    </mat-tab>
-    <mat-tab label="Awesome">
-        <ng-template matTabContent>
-            coming soon...
-        </ng-template>
-    </mat-tab>
-</mat-tab-group>
+<nav mat-tab-nav-bar>
+    <a mat-tab-link
+        *ngFor="let link of visualisationLinks" 
+        [routerLink]="link.path"
+        routerLinkActive #rla="routerLinkActive"
+        [active]="rla.isActive">
+        {{ link.label }}
+    </a>
+</nav>
+<router-outlet>
+</router-outlet>
