@@ -6,6 +6,7 @@ import { DatasetOverviewComponent } from './pages/dataset-overview/dataset-overv
 import { PieGridComponent } from './pages/visualisation/pie-grid/pie-grid.component';
 import { TreeMapComponent } from './pages/visualisation/tree-map/tree-map.component';
 import { BarComponent } from './pages/visualisation/bar/bar.component';
+import { FacetDetailComponent } from './pages/visualisation/facet-detail/facet-detail.component';
 
 const routes: Routes = [
   { path: '', component: UploadComponent },
@@ -18,6 +19,7 @@ const routes: Routes = [
       { path: 'bar', component: BarComponent },
     ]
   },
+  { path: 'detail', component: FacetDetailComponent },
 ];
 
 @NgModule({

@@ -16,6 +16,7 @@ import { PieGridComponent } from './pages/visualisation/pie-grid/pie-grid.compon
 import { DatasetOverviewComponent } from './pages/dataset-overview/dataset-overview.component';
 import { TreeMapComponent } from './pages/visualisation/tree-map/tree-map.component';
 import { Ng2GoogleChartsModule } from 'ng2-google-charts';
+import { FacetDetailComponent } from './pages/visualisation/facet-detail/facet-detail.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { Ng2GoogleChartsModule } from 'ng2-google-charts';
     PieComponent,
     PieGridComponent,
     DatasetOverviewComponent,
-    TreeMapComponent
+    TreeMapComponent,
+    FacetDetailComponent
   ],
   imports: [
     BrowserModule,
