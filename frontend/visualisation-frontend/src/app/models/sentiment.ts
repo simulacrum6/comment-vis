@@ -35,6 +35,13 @@ export class SentimentCount {
 
 }
 
+/**
+ * Maps a given string or number to its corresponding `Sentiment`.
+ *
+ * Strings must be one of `'positive', 'negative', 'neutral'`,
+ * numbers must be one of `-1, 0, 1`.
+ * Other values are Mapped to `Sentiment.Unknown`.
+ */
 export function mapToSentiment(value: string | number): Sentiment {
     if (value === null || value === undefined) {
         return Sentiment.Unknown;
@@ -59,6 +66,9 @@ export function mapToSentiment(value: string | number): Sentiment {
     }
 }
 
+/**
+ * Maps the given Sentiment to its numeric representation.
+ */
 export function mapToNumber(sentiment: Sentiment): number {
     switch (sentiment) {
         case Sentiment.Positive: return 1;

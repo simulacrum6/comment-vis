@@ -1,5 +1,18 @@
 /**
- * Returns a list of value-count tuples.
+ * Counts the ocurrences of strings in the given list of strings.
+ * Returns a list of value-count tuples. The list can be sorted, using the sort parameter.
+ *
+ * Example:
+ * ```
+ * let values = ['foo', 'foo', 'bar', 'baz']
+ * let counts = valueCounts(values)
+ * console.log(counts)
+ * > [
+ *     { value: 'foo', count: 2 },
+ *     { value: 'bar', count: 1 },
+ *     { value: 'baz', count: 1 }
+ *  ]
+ * ```
  */
 export function valueCounts(values: string[], sort?: 'ascending' | 'descending' | void): {value: string, count: number}[] {
     const uniqueValues = new Set(values);

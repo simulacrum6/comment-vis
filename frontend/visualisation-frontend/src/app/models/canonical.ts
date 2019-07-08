@@ -1,4 +1,4 @@
-import {Sentiment, mapToSentiment, SentimentCount, mapToNumber } from './sentiment';
+import { Sentiment, mapToSentiment, SentimentCount, mapToNumber } from './sentiment';
 import { sum } from './utils';
 
 export interface StringMap<V> {
@@ -13,6 +13,12 @@ export class Facet {
 export type FacetProperty = 'text' | 'group';
 export type FacetType = 'attribute' | 'aspect';
 
+/**
+ * A single opinion, expressed by some user.
+ * Consists of the raw text, i.e. comment,
+ * an aspect that the comment contains, a corresponding aspect
+ * and sentiment.
+ */
 export class Extraction {
   comment = '';
   aspect: Facet = new Facet();
@@ -26,8 +32,32 @@ export type ExtractionProperty = 'comment' | 'aspect' | 'attribute' | 'sentiment
  * Utility functions for handling lists of Extractions.
  */
 export const Extractions = {
+  /**
+   * Groups the given list of `Extractions` by one of its properties.
+   * Returns a mapping from property values to a list of `Extractions`.
+   *
+   * @param extractions the extractions to be grouped.
+   * @param property the property to group by.
+   * @param facetProperty _(optional)_ the `FacetProperty` to group by, if `property` refers to a Facet.
+   * @return a mapping from property value to a list of Extractions.
+   */
   groupBy,
+  /**
+   * Groups a list of extractions by some property.
+   * Returns the extracted groups as a list of lists.
+   * Each entry in the list represents a group
+   *
+   * @see groupBy;
+   */
   groupByFlat,
+  /**
+   * Maps a given list of extractions to the values of the specified properties.
+   * If no mapping function is provided, it is automatically inferred from the parameters.
+   * @param extractions the extractions to be mapped
+   * @param property the property which should be used in the mapping
+   * @param facetProperty _(optional)_ determines whether 'group' or 'text' should be mapped for facet properties, defaults to 'group'.
+   * @param mapper _(optional)_ the mapping function to be used
+   */
   values: mapToPropertyValues
 };
 
@@ -54,14 +84,6 @@ function getPropertyMapper(property: ExtractionProperty, facetProperty: FacetPro
   }
 }
 
-/**
- * Maps a given collection of extractions to the values of the specified properties.
- * If no mapping function is provided, it is automatically inferred from the parameters.
- * @param extractions the extractions to be mapped
- * @param property the property which should be used in the mapping
- * @param facetProperty (optional) determines whether 'group' or 'text' should be mapped for facet properties, defaults to 'group'.
- * @param mapper (optional) the mapping function to be used
- */
 function mapToPropertyValues(extractions: Extraction[],
                              property: ExtractionProperty,
                              facetProperty: FacetProperty = 'group',
@@ -92,7 +114,7 @@ function groupByFlat(extractions: Extraction[],
                      property: ExtractionProperty,
                      facetProperty: FacetProperty = 'group'): Extraction[][] {
   const groupMap = groupBy(extractions, property, facetProperty);
-  return Object.keys(groupMap).map(key => groupMap[key]);
+  return Object.values(groupMap);
 }
 
 /**
