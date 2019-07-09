@@ -65,8 +65,8 @@ export class TreeMapComponent implements OnInit {
     this.data = [
       ['Unit', 'Parent', 'Sentiment Difference', 'Color'],
       ['Root', null, 0, mapToNumber(Sentiment.Unknown)],
-      ['positive', 'Root', 0, mapToNumber(Sentiment.Positive)],
-      ['negative', 'Root', 0, mapToNumber(Sentiment.Negative)]
+      ['positive', 'Root', 1 / 10000, mapToNumber(Sentiment.Positive)],
+      ['negative', 'Root', 1 / 10000, mapToNumber(Sentiment.Negative)]
     ];
   }
 
