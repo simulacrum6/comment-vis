@@ -30,3 +30,10 @@ export function valueCounts(values: string[], sort?: 'ascending' | 'descending' 
 export function sum(x: number, y: number): number {
     return x + y;
 }
+
+/**
+ * Flattens the given two-dimensional array into a one-dimensional one.
+ */
+export function flatten(xs: any[][]) {
+    return [].concat(...xs);
+}

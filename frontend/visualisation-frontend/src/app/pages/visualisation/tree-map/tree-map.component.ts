@@ -5,6 +5,7 @@ import { Extraction, Extractions, sentimentDifferential } from 'src/app/models/c
 import { Sentiment, mapToNumber } from 'src/app/models/sentiment';
 import { DefaultColorStrings, SentimentColors } from 'src/environments/constants';
 import { default as Color } from 'color';
+import { flatten } from 'src/app/models/utils';
 
 @Component({
   selector: 'app-tree-map',
@@ -14,6 +15,7 @@ import { default as Color } from 'color';
 export class TreeMapComponent implements OnInit {
 
   @Input() facetType: 'aspect' | 'attribute' = 'aspect';
+  private otherType: 'aspect' | 'attribute' = 'attribute';
 
   /**
    * Data Table containing the Sentiment Difference Values.
@@ -25,11 +27,15 @@ export class TreeMapComponent implements OnInit {
     dataTable: this.data,
     options: {
       title: 'Sentiment Difference',
+      minHighlightColor: DefaultColorStrings.hoverBackgroundColor.negative,
+      midHighlightColor: DefaultColorStrings.hoverBackgroundColor.neutral,
+      maxHighlightColor: DefaultColorStrings.hoverBackgroundColor.positive,
       minColor: DefaultColorStrings.backgroundColor.negative,
       midColor: DefaultColorStrings.backgroundColor.neutral,
       maxColor: DefaultColorStrings.backgroundColor.positive,
-      maxDepth: 3,
-      hintOpacity: 0.9,
+      maxDepth: 2,
+      maxPostDepth: 3,
+      hintOpacity: 0.66,
       height: 420
     },
   };
@@ -44,11 +50,13 @@ export class TreeMapComponent implements OnInit {
   constructor(private modelService: ModelService) { }
 
   ngOnInit() {
+    this.otherType = this.facetType === 'aspect' ? 'attribute' : 'aspect';
     this.resetData();
     const extractions = this.modelService.model.rawExtractions;
     const facetMap = Extractions.groupBy(extractions, this.facetType);
     const entries = Object.entries(facetMap).map(this.toTableEntry);
-    this.data = this.data.concat(entries);
+    const subEntries = Object.entries(facetMap).map(entry => this.toNestedTableEntries(entry));
+    this.data = this.data.concat(entries, flatten(subEntries));
     this.chart.dataTable = this.data;
     this.dataIsVisualisable = true; // TODO: Change to function check.
   }
@@ -69,6 +77,20 @@ export class TreeMapComponent implements OnInit {
     const differential = sentimentDifferential(extractions);
     const parent = differential < 0 ? 'negative' : 'positive';
     return [name, parent, Math.abs(differential), differential];
+  }
+
+  /**
+   * Maps Facet Entries (Tuples of its name and corresponding extractions) to a data table entry with subtype.
+   */
+  private toNestedTableEntries([name, extractions]): [string, string, number, number][] {
+    const facetMap = Extractions.groupBy(extractions, this.otherType);
+    const groups = Object.entries(facetMap);
+    const subGroups = groups.map(([subName, subExtractions]) => [
+      `${subName} (${name})`,
+      name,
+      Math.abs(sentimentDifferential(subExtractions)),
+      sentimentDifferential(subExtractions)]);
+    return subGroups as [string, string, number, number][];
   }
 
   /**
