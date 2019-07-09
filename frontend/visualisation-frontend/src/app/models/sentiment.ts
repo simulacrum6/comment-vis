@@ -38,8 +38,8 @@ export class SentimentCount {
 /**
  * Maps a given string or number to its corresponding `Sentiment`.
  *
- * Strings must be one of `'positive', 'negative', 'neutral'`,
- * numbers must be one of `-1, 0, 1`.
+ * Strings must be one of 'positive', 'negative', 'neutral'.
+ * Numbers must be one of -1, 0, +1.
  * Other values are Mapped to `Sentiment.Unknown`.
  */
 export function mapToSentiment(value: string | number): Sentiment {
@@ -64,10 +64,12 @@ export function mapToSentiment(value: string | number): Sentiment {
             default: return Sentiment.Unknown;
         }
     }
+
+    return Sentiment.Unknown;
 }
 
 /**
- * Maps the given Sentiment to its numeric representation.
+ * Maps the given Sentiment to its numeric representation (+1, 0, -1).
  */
 export function mapToNumber(sentiment: Sentiment): number {
     switch (sentiment) {
@@ -76,4 +78,29 @@ export function mapToNumber(sentiment: Sentiment): number {
         case Sentiment.Neutral:
         case Sentiment.Unknown: return 0;
     }
+}
+
+/**
+ * Maps the given value to a statement about its sentiment.
+ */
+export function mapToSentimentStatement(value: number) {
+    if (value > 0.85) {
+        return 'extremely positive';
+    }
+    if (value > 0.5) {
+        return 'positive';
+    }
+    if (value > 0.2) {
+        return 'somewhat positive';
+    }
+    if (value > -0.2) {
+        return 'mixed';
+    }
+    if (value > -0.5) {
+        return 'somewhat negative';
+    }
+    if (value > 0.85) {
+        return 'negative';
+    }
+    return 'extremely negative';
 }

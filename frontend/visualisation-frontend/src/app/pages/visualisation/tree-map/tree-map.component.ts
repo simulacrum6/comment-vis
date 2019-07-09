@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { GoogleChartInterface } from 'ng2-google-charts/google-charts-interfaces';
 import { ModelService } from 'src/app/services/model.service';
 import { Extraction, Extractions, sentimentDifferential } from 'src/app/models/canonical';
-import { Sentiment, mapToNumber } from 'src/app/models/sentiment';
+import { Sentiment, mapToNumber, mapToSentimentStatement } from 'src/app/models/sentiment';
 import { DefaultColorStrings, SentimentColors } from 'src/environments/constants';
 import { default as Color } from 'color';
 import { flatten } from 'src/app/models/utils';
@@ -36,7 +36,9 @@ export class TreeMapComponent implements OnInit {
       maxDepth: 2,
       maxPostDepth: 3,
       hintOpacity: 0.66,
-      height: 420
+      height: 420,
+      generateTooltip: this.tooltip.bind(this),
+      showScale: true,
     },
   };
 
@@ -64,9 +66,9 @@ export class TreeMapComponent implements OnInit {
   private resetData() {
     this.data = [
       ['Unit', 'Parent', 'Sentiment Difference', 'Color'],
-      ['Root', null, 0, mapToNumber(Sentiment.Unknown)],
-      ['positive', 'Root', 1 / 10000, mapToNumber(Sentiment.Positive)],
-      ['negative', 'Root', 1 / 10000, mapToNumber(Sentiment.Negative)]
+      ['total', null, 0, mapToNumber(Sentiment.Unknown)],
+      ['positive', 'total', 1 / 10000, mapToNumber(Sentiment.Positive)],
+      ['negative', 'total', 1 / 10000, mapToNumber(Sentiment.Negative)]
     ];
   }
 
@@ -76,7 +78,7 @@ export class TreeMapComponent implements OnInit {
   private toTableEntry([name, extractions]): [string, string, number, number] {
     const differential = sentimentDifferential(extractions);
     const parent = differential < 0 ? 'negative' : 'positive';
-    return [name, parent, Math.abs(differential), differential];
+    return [name, parent, extractions.length, differential];
   }
 
   /**
@@ -88,7 +90,7 @@ export class TreeMapComponent implements OnInit {
     const subGroups = groups.map(([subName, subExtractions]) => [
       `${subName} (${name})`,
       name,
-      Math.abs(sentimentDifferential(subExtractions)),
+      subExtractions.length,
       sentimentDifferential(subExtractions)]);
     return subGroups as [string, string, number, number][];
   }
@@ -114,5 +116,19 @@ export class TreeMapComponent implements OnInit {
       node.setAttribute('fill', Color(oldColor).alpha(0.66).string());
       node.setAttribute('stroke', oldColor);
     });
+  }
+
+  private tooltip(rowId: number, size: number, value: number) {
+    const plus = value >= 0 ? '+' : '';
+    const sentiment = mapToSentimentStatement(value);
+    return `<div style="
+        background-color: ${Color(DefaultColorStrings.hoverBackgroundColor.unknown).hex()};
+        opacity: 67%;
+        padding: 5px;
+        border-radius: 5px">
+      <span style="font-weight: 500">${this.data[rowId + 1][0]}</span>
+      was mentioned <span style="font-weight: 500">${size}</span> times.<br>
+      Opinions were <span style="font-weight: 500">${sentiment}</span> (${plus}${value.toFixed(3)}).
+    </div>`;
   }
 }
