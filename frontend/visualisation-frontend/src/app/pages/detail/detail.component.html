@@ -1,0 +1,7 @@
+<app-facet-detail *ngIf="( hasAllParams$ | async ); else invalidRequest"
+  [facet]="( facet$ | async )"
+  [facetType]="( facetType$ | async )">
+</app-facet-detail>
+<ng-template #invalidRequest>
+  <app-error [message]="errorMessage"></app-error>
+</ng-template>

@@ -17,6 +17,8 @@ import { DatasetOverviewComponent } from './pages/dataset-overview/dataset-overv
 import { TreeMapComponent } from './pages/visualisation/tree-map/tree-map.component';
 import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 import { FacetDetailComponent } from './pages/visualisation/facet-detail/facet-detail.component';
+import { DetailComponent } from './pages/detail/detail.component';
+import { ErrorComponent } from './pages/error/error.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { FacetDetailComponent } from './pages/visualisation/facet-detail/facet-d
     PieGridComponent,
     DatasetOverviewComponent,
     TreeMapComponent,
-    FacetDetailComponent
+    FacetDetailComponent,
+    DetailComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,
