@@ -29,8 +29,10 @@ export class FacetDetailComponent implements OnInit {
   private otherType: 'aspect' | 'attribute' = 'attribute';
   private otherTable: MatTableDataSource<SentimentCountRow>;
   private subGroupTable: MatTableDataSource<SentimentCountRow>;
+  private facetExists = true;
 
   constructor(private modelService: ModelService) {
+    // TODO: remove after testing.
     if (!modelService.model) {
       this.modelService.generateModelFromJson(data);
     }
@@ -39,6 +41,12 @@ export class FacetDetailComponent implements OnInit {
   ngOnInit() {
     this.otherType = this.facetType === 'aspect' ? 'attribute' : 'aspect';
     this.extractions = Extractions.groupBy(this.modelService.model.rawExtractions, this.facetType)[this.facet];
+    // abort if no extractions are available
+    if (this.extractions === undefined) {
+      this.facetExists = false;
+      return;
+    }
+
     this.others = Extractions.groupBy(this.extractions, this.otherType);
 
     // extract group sentiment counts
