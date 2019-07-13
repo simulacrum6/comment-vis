@@ -10,16 +10,22 @@ import { Extraction, Extractions } from 'src/app/models/canonical';
 export class PieGridComponent implements OnInit {
 
   @Input() facetType: 'aspect' | 'attribute' = 'aspect';
+  @Input() scaleSize = true;
 
   // TODO: add type to model
-  private facetGroups: { name: string, extractions: Extraction[] }[];
+  private facetGroups: { name: string, extractions: Extraction[], sizeRatio: number }[];
 
   constructor(private modelService: ModelService) { }
 
   ngOnInit() {
     const extractions = this.modelService.model.rawExtractions;
     const facetMap = Extractions.groupBy(extractions, this.facetType);
-    this.facetGroups = Object.keys(facetMap).map(key => ({ name: key, extractions: facetMap[key] }));
+    this.facetGroups = Object.entries(facetMap)
+      .map(([groupName, groupExtractions]) => ({
+        name: groupName,
+        extractions: groupExtractions,
+        sizeRatio: this.scaleSize ? groupExtractions.length / extractions.length : 0.25
+      }));
   }
 
 }

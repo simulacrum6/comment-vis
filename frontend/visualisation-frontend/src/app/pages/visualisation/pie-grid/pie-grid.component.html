@@ -1,6 +1,10 @@
-<div class='pie-grid' fxLayout="row wrap">
+<div class='pie-grid'
+  fxLayout="row wrap"
+  fxLayoutAlign="start end"
+  fxLayoutGap="15px">
   <app-pie *ngFor="let group of facetGroups"
     [facetType]="facetType"
     [name]="group.name"
-    [extractions]="group.extractions"></app-pie>
+    [extractions]="group.extractions"
+    [size]="group.sizeRatio"></app-pie>
 </div>

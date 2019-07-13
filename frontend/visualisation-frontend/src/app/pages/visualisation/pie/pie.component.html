@@ -1,13 +1,15 @@
-<div class="chart">
-  <canvas baseChart
-    [data]="chartData"
-    [labels]="chartLabels"
-    [chartType]="chartType"
-    [options]="chartOptions"
-    [plugins]="chartPlugins"
-    [colors]="chartColors"
-    [legend]="chartLegend"
-    (chartClick)="chartClicked($event)">
-  </canvas>
+<div #pieWrapper>
+  <div #chartWrapper class="chart">
+    <canvas baseChart
+      [data]="chartData"
+      [labels]="chartLabels"
+      [chartType]="chartType"
+      [options]="chartOptions"
+      [plugins]="chartPlugins"
+      [colors]="chartColors"
+      [legend]="chartLegend"
+      (chartClick)="chartClicked($event)">
+    </canvas>
+  </div>
   <p>{{name}}</p>
 </div>
