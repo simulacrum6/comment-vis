@@ -16,7 +16,7 @@ import { PieGridComponent } from './pages/visualisation/pie-grid/pie-grid.compon
 import { DatasetOverviewComponent } from './pages/dataset-overview/dataset-overview.component';
 import { TreeMapComponent } from './pages/visualisation/tree-map/tree-map.component';
 import { Ng2GoogleChartsModule } from 'ng2-google-charts';
-import { FacetDetailComponent } from './pages/visualisation/facet-detail/facet-detail.component';
+import { FacetDetailComponent } from './pages/detail/facet-detail/facet-detail.component';
 import { DetailComponent } from './pages/detail/detail.component';
 import { ErrorComponent } from './pages/error/error.component';
 import { PieCellComponent } from './pages/visualisation/pie-cell/pie-cell.component';
