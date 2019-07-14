@@ -1,0 +1,34 @@
+<table mat-table [dataSource]="tableData">
+  <ng-container cdkColumnDef="group">
+    <th mat-header-cell *matHeaderCellDef> {{ facetType }} </th>
+    <td mat-cell *matCellDef="let row"> {{ row.group }} </td>
+  </ng-container>
+
+  <ng-container cdkColumnDef="positive">
+    <th mat-header-cell *matHeaderCellDef> positive </th>
+    <td mat-cell *matCellDef="let row"> {{ row.positive }} </td>
+  </ng-container>
+
+  <ng-container cdkColumnDef="negative">
+    <th mat-header-cell *matHeaderCellDef> negative </th>
+    <td mat-cell *matCellDef="let row"> {{row.negative}} </td>
+  </ng-container>
+
+  <ng-container cdkColumnDef="neutral">
+    <th mat-header-cell *matHeaderCellDef> neutral </th>
+    <td mat-cell *matCellDef="let row"> {{row.neutral}} </td>
+  </ng-container>
+
+  <ng-container cdkColumnDef="total">
+    <th mat-header-cell *matHeaderCellDef> neutral </th>
+    <td mat-cell *matCellDef="let row"> {{ row.total }} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="['group', 'positive', 'negative', 'neutral', 'total']"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['group', 'positive', 'negative', 'neutral', 'total']"></tr>
+</table>
+
+<mat-paginator #paginator
+  [pageSizeOptions]="[5, 10, 20]"
+  showFirstLastButtons>
+</mat-paginator>

@@ -5,6 +5,7 @@
     [facetType]="facetType"
     [name]="group.name"
     [extractions]="group.extractions"
-    [size]="group.sizeRatio">
+    [size]="group.sizeRatio"
+    (click)="navigateToDetailPage(group.name, facetType)">
   </app-pie-cell>
 </div>

@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { ModelService } from 'src/app/services/model.service';
 import { Extraction, Extractions, StringMap } from 'src/app/models/canonical';
-import { default as data } from 'src/app/models/foursquare_gold.ce.json';
 import { SentimentCount } from 'src/app/models/sentiment';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { DetailViewBaseComponent } from '../detail-view-base.component';
 
 export interface SentimentCountRow {
   group: string;
@@ -17,41 +17,24 @@ export interface SentimentCountRow {
   templateUrl: './facet-detail.component.html',
   styleUrls: ['./facet-detail.component.scss']
 })
-export class FacetDetailComponent implements OnInit {
-  @Input() facet = 'DRINKS'; // TODO: remove after testing
-  @Input() facetType: 'aspect' | 'attribute' = 'aspect';
-
+export class FacetDetailComponent extends DetailViewBaseComponent implements OnInit {
   @ViewChild('otherPaginator') otherPaginator: MatPaginator;
   @ViewChild('subGroupPaginator') subGroupPaginator: MatPaginator;
 
-  private extractions: Extraction[];
-  private others: StringMap<Extraction[]>;
-  private otherType: 'aspect' | 'attribute' = 'attribute';
   private otherTable: MatTableDataSource<SentimentCountRow>;
   private subGroupTable: MatTableDataSource<SentimentCountRow>;
-  private facetExists = true;
 
-  constructor(private modelService: ModelService) {
-    // TODO: remove after testing.
-    if (!modelService.model) {
-      this.modelService.generateModelFromJson(data);
-    }
+  constructor(protected modelService: ModelService) {
+    super(modelService);
   }
+
   // TODO: refactor
   ngOnInit() {
-    this.otherType = this.facetType === 'aspect' ? 'attribute' : 'aspect';
-    this.extractions = Extractions.groupBy(this.modelService.model.rawExtractions, this.facetType)[this.facet];
-    // abort if no extractions are available
-    if (this.extractions === undefined) {
-      this.facetExists = false;
-      return;
-    }
-
-    this.others = Extractions.groupBy(this.extractions, this.otherType);
+    super.ngOnInit();
 
     // extract group sentiment counts
-    const otherGroups = [...Object.keys(this.others)];
-    const otherSentimentCounts = [...Object.values(this.others)]
+    const otherGroups = [...Object.keys(this.subGroups)];
+    const otherSentimentCounts = [...Object.values(this.subGroups)]
       .map(extractions => extractions.map(e => e.sentiment))
       .map(SentimentCount.fromArray);
 

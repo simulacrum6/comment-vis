@@ -6,7 +6,7 @@ import { DatasetOverviewComponent } from './pages/dataset-overview/dataset-overv
 import { PieGridComponent } from './pages/visualisation/pie-grid/pie-grid.component';
 import { TreeMapComponent } from './pages/visualisation/tree-map/tree-map.component';
 import { BarComponent } from './pages/visualisation/bar/bar.component';
-import { FacetDetailComponent } from './pages/visualisation/facet-detail/facet-detail.component';
+import { FacetDetailComponent } from './pages/detail/facet-detail/facet-detail.component';
 import { DetailComponent } from './pages/detail/detail.component';
 
 const routes: Routes = [

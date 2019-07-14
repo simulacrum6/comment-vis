@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
-import { Extraction, Extractions, StringMap } from 'src/app/models/canonical.js';
+import { Extraction, Extractions, StringMap, ExtractionProperty } from 'src/app/models/canonical.js';
 import { ChartOptions, ChartType } from 'chart.js';
 import { Label } from 'ng2-charts';
-import { Sentiments } from 'src/app/models/sentiment.js';
+import { Sentiments, Sentiment } from 'src/app/models/sentiment.js';
 import { DefaultColorStrings } from 'src/environments/constants';
-import { Interpolator, makeInterpolator } from 'src/app/models/utils';
+import { Interpolator, makeInterpolator, flatten } from 'src/app/models/utils';
 
 @Component({
   selector: 'app-pie',
@@ -15,30 +15,80 @@ export class PieComponent implements OnInit {
 
   @Input() name: string;
   @Input() extractions: Extraction[];
+  @Input() by: ExtractionProperty = 'sentiment';
+  @Input() enableTooltips = true;
 
   private sentimentGroups: StringMap<Extraction[]>;
-  private chartLabels: Label[] = Sentiments;
+  private chartLabels: Label[];
   private chartData: number[] = [];
   private chartType: ChartType = 'pie';
   private chartLegend = false;
-  private chartOptions: ChartOptions = {
-    responsive: true,
-    aspectRatio: 1,
-    legend: { position: 'bottom' },
-  };
-  private chartColors = [{
-    backgroundColor: Sentiments.map(sentiment => DefaultColorStrings.backgroundColor[sentiment]),
-    borderColor: Sentiments.map(sentiment => DefaultColorStrings.borderColor[sentiment]),
-    hoverBackgroundColor: Sentiments.map(sentiment => DefaultColorStrings.hoverBackgroundColor[sentiment])
-  }];
+  private chartOptions: ChartOptions;
+  private chartColors;
 
   ngOnInit() {
     this.sentimentGroups = Extractions.groupBy(this.extractions, 'sentiment');
-    this.chartData = Sentiments.map(sentiment => this.sentimentGroups[sentiment] || [])
-      .map(sentimentArray => sentimentArray.length);
+    if (this.by === 'sentiment') {
+      this.chartData = Sentiments.map(sentiment => this.sentimentGroups[sentiment] || [])
+        .map(sentimentArray => sentimentArray.length);
+      this.chartColors = [{
+          backgroundColor: Sentiments.map(sentiment => DefaultColorStrings.backgroundColor[sentiment]),
+          borderColor: Sentiments.map(sentiment => DefaultColorStrings.borderColor[sentiment]),
+          hoverBackgroundColor: Sentiments.map(sentiment => DefaultColorStrings.hoverBackgroundColor[sentiment])
+      }];
+      this.chartLabels = Sentiments;
+    } else {
+      console.log(this);
+      console.log(`Generating subdivisions for ${this.by}`);
+      this.chartData = this.getChartData();
+      console.log(this.chartData);
+      this.chartColors = this.getChartColors();
+      console.log(this.chartColors);
+      this.chartLabels = this.getChartLabels();
+      console.log(this.chartLabels);
+    }
+    this.chartOptions = {
+      responsive: true,
+      aspectRatio: 1,
+      legend: { position: 'bottom' },
+      tooltips: { enabled: this.enableTooltips }
+    }
   }
 
   public chartClicked({ event, active }: { event: MouseEvent, active: {}[] }): void {
     console.log(event, active);
+  }
+
+  private getChartData() {
+    const sentimentExtractions = Object.values(this.sentimentGroups)
+    .map(se => Extractions.groupByFlat(se, this.by).map(e => e.length));
+    return flatten(sentimentExtractions).reverse();
+  }
+
+  private getChartColors() {
+    const sentiments = Object.entries(this.sentimentGroups)
+    .map(entry => {
+      const sentiment = entry[0];
+      const extractions = entry[1];
+      const sentimentExtractions = Extractions.groupByFlat(extractions, this.by);
+      return sentimentExtractions.map(e => sentiment);
+    });
+    const flatSentiments = flatten(sentiments);
+    return [{
+      backgroundColor: flatSentiments.map(sentiment => DefaultColorStrings.backgroundColor[sentiment]).reverse(),
+      borderColor: flatSentiments.map(sentiment => DefaultColorStrings.borderColor[sentiment]).reverse(),
+      hoverBackgroundColor: flatSentiments.map(sentiment => DefaultColorStrings.hoverBackgroundColor[sentiment]).reverse()
+    }];
+  }
+
+  private getChartLabels() {
+    const subGroups = Object.entries(this.sentimentGroups)
+    .map(entry => {
+      const sentiment = entry[0];
+      const extractions = entry[1];
+      const sentimentExtractions = Extractions.groupBy(extractions, this.by);
+      return Object.keys(sentimentExtractions);
+    });
+    return flatten(subGroups).reverse();
   }
 }
