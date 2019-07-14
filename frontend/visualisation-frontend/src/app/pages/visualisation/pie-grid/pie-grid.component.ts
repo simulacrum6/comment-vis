@@ -10,7 +10,7 @@ import { Extraction, Extractions } from 'src/app/models/canonical';
 export class PieGridComponent implements OnInit {
 
   @Input() facetType: 'aspect' | 'attribute' = 'aspect';
-  @Input() scaleSize = true;
+  @Input() scaleSize = false;
 
   // TODO: add type to model
   private facetGroups: { name: string, extractions: Extraction[], sizeRatio: number }[];

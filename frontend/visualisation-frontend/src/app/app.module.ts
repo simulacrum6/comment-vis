@@ -19,6 +19,7 @@ import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 import { FacetDetailComponent } from './pages/visualisation/facet-detail/facet-detail.component';
 import { DetailComponent } from './pages/detail/detail.component';
 import { ErrorComponent } from './pages/error/error.component';
+import { PieCellComponent } from './pages/visualisation/pie-cell/pie-cell.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { ErrorComponent } from './pages/error/error.component';
     TreeMapComponent,
     FacetDetailComponent,
     DetailComponent,
-    ErrorComponent
+    ErrorComponent,
+    PieCellComponent
   ],
   imports: [
     BrowserModule,
