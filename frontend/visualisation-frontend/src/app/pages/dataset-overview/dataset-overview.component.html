@@ -1,10 +1,10 @@
 <h2>Stats</h2>
-<button mat-raised-button color="primary" (click)="router.navigate(['vis'])">To Visualisations</button>
+<button class="visualisations" mat-raised-button color="primary" (click)="router.navigate(['vis'])">To Visualisations</button>
 
-<h3>Unique Values</h3> 
-attributes: {{ uniqueValues.attribute.size }}<br>
-aspects: {{ uniqueValues.aspect.size }}<br>
-comments: {{ uniqueValues.comment.size }}
+<h3>Stats</h3>
+This dataset consists of <b>{{ uniqueValues.comment.size }}</b> comments.<br>
+The mood is <b>{{ mood }}</b> with <b>{{ moodPercent }}</b>.<br>
+We extracted <b>{{ uniqueValues.attribute.size }}</b> opinions for <b>{{ uniqueValues.aspect.size }}</b> topics.
 
 <h3>Sentiment Distribution</h3>
 positive: {{ this.sentimentCounts.positive }} ({{ this.sentimentCounts.positive / this.extractions.length | number }})<br>
@@ -16,3 +16,9 @@ unknown:  {{ this.sentimentCounts.unknown }}  ({{ this.sentimentCounts.unknown /
 attributes: {{ this.valueCounts.attribute.slice(0,5) | json }} <br>
 aspect: {{ this.valueCounts.aspect.slice(0,5) | json }} <br>
 sentiment: {{ this.valueCounts.sentiment.slice(0,5) | json }}
+
+<div class="warnings">
+  <h3 class="warnings_title">Warnings</h3>
+
+  No warnings yay
+</div>

@@ -19,6 +19,8 @@ export class DatasetOverviewComponent implements OnInit {
   private uniqueValues: { attribute: Set<string>, aspect: Set<string>, comment: Set<string>, sentiment: Set<string> };
   private sentimentCounts: SentimentCount;
   private valueCounts;
+  private mood: string;
+  private moodPercent: string;
 
   constructor(private modelService: ModelService, private router: Router, private snackBar: MatSnackBar) {
     if (!this.modelService.model) {
@@ -44,9 +46,22 @@ export class DatasetOverviewComponent implements OnInit {
       aspect: valueCounts(this.values.aspect, 'descending'),
       comment: valueCounts(this.values.comment, 'descending'),
       sentiment: valueCounts(this.values.sentiment, 'descending')
+    };
+
+    /** Mood **/
+    if (this.sentimentCounts.positive / this.sentimentCounts.getOverallCount() > 0.7) {
+      this.mood = 'mostly positive';
+      this.moodPercent = Math.round((this.sentimentCounts.positive / this.sentimentCounts.getOverallCount()) * 100) + '% positive comments';
+    } else if (this.sentimentCounts.negative / this.sentimentCounts.getOverallCount() > 0.7) {
+      this.mood = 'mostly negative';
+      this.moodPercent = Math.round((this.sentimentCounts.negative / this.sentimentCounts.getOverallCount()) * 100) + '% negative comments';
+    } else {
+      this.mood = 'mixed';
+      this.moodPercent = Math.round((this.sentimentCounts.positive / this.sentimentCounts.getOverallCount()) * 100) + '% positive comments';
     }
   }
 
   ngOnInit() {
+    this.modelService.generateModelFromJson(dataSet);
   }
 }
