@@ -10,7 +10,7 @@ import {ModelTransformation} from './modeltransformation';
   styleUrls: ['./bar.component.scss']
 })
 export class BarComponent implements OnInit {
-  @Input('aspectname') aspectname: string;
+  @Input('aspectname') aspectname: string = 'FOOD';
   private modelTransformation: ModelTransformation;
 
   private sortValue: string;

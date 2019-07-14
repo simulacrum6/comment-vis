@@ -19,6 +19,9 @@ export class DatasetOverviewComponent implements OnInit {
   private uniqueValues: { attribute: Set<string>, aspect: Set<string>, comment: Set<string>, sentiment: Set<string> };
   private sentimentCounts: SentimentCount;
   private valueCounts;
+  private mood: string;
+  private moodPercent: string;
+  private warnings: string[] = [];
 
   constructor(private modelService: ModelService, private router: Router, private snackBar: MatSnackBar) {
     if (!this.modelService.model) {
@@ -44,9 +47,32 @@ export class DatasetOverviewComponent implements OnInit {
       aspect: valueCounts(this.values.aspect, 'descending'),
       comment: valueCounts(this.values.comment, 'descending'),
       sentiment: valueCounts(this.values.sentiment, 'descending')
+    };
+
+    /** Mood **/
+    if (this.sentimentCounts.positive / this.sentimentCounts.getOverallCount() > 0.7) {
+      this.mood = 'mostly positive';
+      this.moodPercent = Math.round((this.sentimentCounts.positive / this.sentimentCounts.getOverallCount()) * 100) + '% positive comments';
+    } else if (this.sentimentCounts.negative / this.sentimentCounts.getOverallCount() > 0.7) {
+      this.mood = 'mostly negative';
+      this.moodPercent = Math.round((this.sentimentCounts.negative / this.sentimentCounts.getOverallCount()) * 100) + '% negative comments';
+    } else {
+      this.mood = 'mixed';
+      this.moodPercent = Math.round((this.sentimentCounts.positive / this.sentimentCounts.getOverallCount()) * 100) + '% positive comments';
+    }
+
+    /** Warnings **/
+    if (this.uniqueValues.comment.size < 30) {
+      this.warnings.push(`This dataset contains only ${this.uniqueValues.comment.size} comments - ` +
+        `some visualisations could be misleading. You should consider adding more data`);
+    }
+    if (this.sentimentCounts.unknown > 0) {
+      this.warnings.push(`Your uploaded model contains ${this.sentimentCounts.unknown} comments with unknown sentiment - ` +
+        `These comments will not be shown in most visualisations. Consider correcting your model.`);
     }
   }
 
   ngOnInit() {
+    this.modelService.generateModelFromJson(dataSet);
   }
 }
