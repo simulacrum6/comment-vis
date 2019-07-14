@@ -17,8 +17,13 @@ attributes: {{ this.valueCounts.attribute.slice(0,5) | json }} <br>
 aspect: {{ this.valueCounts.aspect.slice(0,5) | json }} <br>
 sentiment: {{ this.valueCounts.sentiment.slice(0,5) | json }}
 
-<div class="warnings">
+<div *ngIf="warnings.length > 0" class="warnings">
   <h3 class="warnings_title">Warnings</h3>
+  <ul>
+    <li *ngFor="let warning of warnings">
+      {{warning}}
+    </li>
+  </ul>
 
-  No warnings yay
+
 </div>

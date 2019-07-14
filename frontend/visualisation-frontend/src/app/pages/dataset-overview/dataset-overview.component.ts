@@ -21,6 +21,7 @@ export class DatasetOverviewComponent implements OnInit {
   private valueCounts;
   private mood: string;
   private moodPercent: string;
+  private warnings: string[] = [];
 
   constructor(private modelService: ModelService, private router: Router, private snackBar: MatSnackBar) {
     if (!this.modelService.model) {
@@ -58,6 +59,16 @@ export class DatasetOverviewComponent implements OnInit {
     } else {
       this.mood = 'mixed';
       this.moodPercent = Math.round((this.sentimentCounts.positive / this.sentimentCounts.getOverallCount()) * 100) + '% positive comments';
+    }
+
+    /** Warnings **/
+    if (this.uniqueValues.comment.size < 30) {
+      this.warnings.push(`This dataset contains only ${this.uniqueValues.comment.size} comments - ` +
+        `some visualisations could be misleading. You should consider adding more data`);
+    }
+    if (this.sentimentCounts.unknown > 0) {
+      this.warnings.push(`Your uploaded model contains ${this.sentimentCounts.unknown} comments with unknown sentiment - ` +
+        `These comments will not be shown in most visualisations. Consider correcting your model.`);
     }
   }
 
