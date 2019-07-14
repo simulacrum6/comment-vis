@@ -1,0 +1,18 @@
+<mat-card *ngIf="facetExists; else error">
+  <mat-card-title>{{ facet }} details</mat-card-title>
+  <mat-card-subtitle>Details for this {{ facetType }}</mat-card-subtitle>
+  <mat-card-content>
+    <div #topWrapper
+      fxLayout="row"
+      fxLayoutAlign="space-evenly">
+      <app-pie [extractions]="extractions" [by]="subGroupType"></app-pie>
+      <app-sentiment-table
+        [extractions]="extractions"
+        [facetType]="subGroupType">
+      </app-sentiment-table>
+    </div>
+  </mat-card-content>
+</mat-card>
+<ng-template #error>
+  <app-error message="The requested resource does not exist."></app-error>
+</ng-template>

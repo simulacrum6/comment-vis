@@ -34,7 +34,7 @@ export function sum(x: number, y: number): number {
 /**
  * Flattens the given two-dimensional array into a one-dimensional one.
  */
-export function flatten(xs: any[][]) {
+export function flatten<T>(xs: T[][]): T[] {
     return [].concat(...xs);
 }
 
