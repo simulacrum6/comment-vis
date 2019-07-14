@@ -1,0 +1,22 @@
+.label {
+    text-align: center;
+    font-weight: 500;
+}
+
+.cell-wrapper {
+    padding: 5px;
+    border-color: white;
+    border-style: solid;
+    border-width: 1px;
+    /*cursor: pointer; Nicht vergesssen! Nathalie meint das ist wichtig!!!1!! Rechtschriebngu auch! */
+}
+
+.cell-wrapper:hover {
+    border-color: grey;
+}
+
+.chart-wrapper {
+    margin: 0 auto;
+    padding: 5px;
+    padding-top: 10px;
+}
