@@ -1,11 +1,21 @@
 <mat-card>
-  <mat-card-title>Overview over all topics</mat-card-title>
-  <mat-card-subtitle>How people feel about different topics</mat-card-subtitle>
+  <mat-card-title>Overview over all {{ facetType }}s</mat-card-title>
+  <mat-card-subtitle>How people feel about different {{ facetType }}</mat-card-subtitle>
   <mat-card-content>
     <p>
-      Hover over topics to see, how many positive or negative opinions exist. <br>
-      Click on a topic to see more details.
+      Hover over {{ facetType }} to see, how many positive or negative opinions exist. <br>
+      Click on a {{ facetType }} to see more details. <br>
+      Use the toggle to switch between aspects and attributes.
     </p>
+    <div #toggle fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+      <label>Attribute</label>
+      <mat-slide-toggle
+        color="primary"
+        (change)="toggleTypes()"
+        checked="true">
+        Aspect
+      </mat-slide-toggle>
+    </div>
     <div class='pie-grid'
     fxLayout="row wrap"
     fxLayoutAlign="space-evenly">
