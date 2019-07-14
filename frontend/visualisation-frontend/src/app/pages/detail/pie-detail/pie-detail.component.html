@@ -11,6 +11,18 @@
         [facetType]="subGroupType">
       </app-sentiment-table>
     </div>
+    <br>
+    <div #commentWrapper>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Comments</mat-panel-title>
+          <mat-panel-description>inspect all comments mentioning {{ facet }}</mat-panel-description>
+        </mat-expansion-panel-header>
+        <mat-list>
+          <mat-list-item *ngFor="let comment of comments">{{ comment }}</mat-list-item>
+        </mat-list>
+      </mat-expansion-panel>
+    </div>
   </mat-card-content>
 </mat-card>
 <ng-template #error>
