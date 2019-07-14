@@ -6,6 +6,7 @@ import { SentimentCount, mapToSentiment } from 'src/app/models/sentiment';
 import { valueCounts } from 'src/app/models/utils';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
+import {StringMap} from '../../models/canonical';
 
 @Component({
   selector: 'app-dataset-overview',
@@ -22,6 +23,7 @@ export class DatasetOverviewComponent implements OnInit {
   private mood: string;
   private moodPercent: string;
   private warnings: string[] = [];
+  private distribution: any[] = [];
 
   constructor(private modelService: ModelService, private router: Router, private snackBar: MatSnackBar) {
     if (!this.modelService.model) {
@@ -70,6 +72,16 @@ export class DatasetOverviewComponent implements OnInit {
       this.warnings.push(`Your uploaded model contains ${this.sentimentCounts.unknown} comments with unknown sentiment - ` +
         `These comments will not be shown in most visualisations. Consider correcting your model.`);
     }
+
+    /** Distribution **/
+    const aspectGroups: Extraction[][] = this.modelService.model.aspectGroups;
+    aspectGroups.forEach( aspect => {
+      const miau: string;
+    });
+    this.distribution.push({category: 'all', commentValue: this.sentimentCounts.getOverallCount(), aspectValue: this.valueCounts.aspect.size});
+    this.distribution.push({category: 'positive', commentValue: this.sentimentCounts.positive, aspectValue: this.valueCounts.aspect.size});
+    this.distribution.push({category: 'neutral', commentValue: this.sentimentCounts.neutral, aspectValue: this.valueCounts.aspect.size});
+    this.distribution.push({category: 'negative', commentValue: this.sentimentCounts.negative, aspectValue: this.valueCounts.aspect.size});
   }
 
   ngOnInit() {

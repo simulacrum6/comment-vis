@@ -1,12 +1,15 @@
 <h2>Stats</h2>
 <button class="visualisations" mat-raised-button color="primary" (click)="router.navigate(['vis'])">To Visualisations</button>
 
-<h3>Stats</h3>
+<h3>Dataset</h3>
 This dataset consists of <b>{{ uniqueValues.comment.size }}</b> comments.<br>
 The mood is <b>{{ mood }}</b> with <b>{{ moodPercent }}</b>.<br>
 We extracted <b>{{ uniqueValues.attribute.size }}</b> opinions for <b>{{ uniqueValues.aspect.size }}</b> topics.
 
 <h3>Sentiment Distribution</h3>
+
+<!--<mat-table></mat-table> -->
+
 positive: {{ this.sentimentCounts.positive }} ({{ this.sentimentCounts.positive / this.extractions.length | number }})<br>
 negative: {{ this.sentimentCounts.negative }} ({{ this.sentimentCounts.negative / this.extractions.length | number }})<br>
 neutral:  {{ this.sentimentCounts.neutral }}  ({{ this.sentimentCounts.neutral / this.extractions.length | number }})<br>
@@ -24,6 +27,4 @@ sentiment: {{ this.valueCounts.sentiment.slice(0,5) | json }}
       {{warning}}
     </li>
   </ul>
-
-
 </div>
