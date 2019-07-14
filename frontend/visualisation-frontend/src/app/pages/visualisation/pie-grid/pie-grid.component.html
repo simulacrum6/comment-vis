@@ -1,11 +1,21 @@
-<div class='pie-grid'
-  fxLayout="row wrap"
-  fxLayoutAlign="space-evenly">
-  <app-pie-cell *ngFor="let group of facetGroups"
-    [facetType]="facetType"
-    [name]="group.name"
-    [extractions]="group.extractions"
-    [size]="group.sizeRatio"
-    (click)="navigateToDetailPage(group.name, facetType)">
-  </app-pie-cell>
-</div>
+<mat-card>
+  <mat-card-title>Overview over all topics</mat-card-title>
+  <mat-card-subtitle>How people feel about different topics</mat-card-subtitle>
+  <mat-card-content>
+    <p>
+      Hover over topics to see, how many positive or negative opinions exist. <br>
+      Click on a topic to see more details.
+    </p>
+    <div class='pie-grid'
+    fxLayout="row wrap"
+    fxLayoutAlign="space-evenly">
+    <app-pie-cell *ngFor="let group of facetGroups"
+      [facetType]="facetType"
+      [name]="group.name"
+      [extractions]="group.extractions"
+      [size]="group.sizeRatio"
+      (click)="navigateToDetailPage(group.name, facetType)">
+    </app-pie-cell>
+    </div>
+  </mat-card-content>
+</mat-card>
