@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 export class PieGridComponent implements OnInit {
 
   @Input() facetType: FacetType = 'aspect';
-  @Input() scaleSize = false;
+  @Input() scaleSize = true;
 
   // TODO: add type to model
   private facetGroups: { name: string, extractions: Extraction[], sizeRatio: number }[];

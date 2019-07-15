@@ -3,7 +3,7 @@
   <mat-card-subtitle>Detailed information on this this {{ facetType }}</mat-card-subtitle>
   <mat-card-content>
     <div #topWrapper
-      fxLayout="row"
+      fxLayout="row wrap"
       fxLayoutAlign="space-evenly">
       <app-pie [extractions]="extractions" [by]="subGroupType"></app-pie>
       <app-sentiment-table
