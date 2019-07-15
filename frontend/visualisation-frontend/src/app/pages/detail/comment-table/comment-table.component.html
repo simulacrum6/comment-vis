@@ -1,0 +1,29 @@
+<table mat-table [dataSource]="tableData">
+  <ng-container cdkColumnDef="group">
+    <th mat-header-cell *matHeaderCellDef> Comment </th>
+    <td mat-cell *matCellDef="let row"> {{ row.group }} </td>
+  </ng-container>
+
+  <ng-container cdkColumnDef="aspects">
+    <th mat-header-cell *matHeaderCellDef> Aspects </th>
+    <td mat-cell *matCellDef="let row"> {{ row.aspects }} </td>
+  </ng-container>
+
+  <ng-container cdkColumnDef="attributes">
+    <th mat-header-cell *matHeaderCellDef> Attributes </th>
+    <td mat-cell *matCellDef="let row"> {{ row.attributes }} </td>
+  </ng-container>
+
+  <ng-container cdkColumnDef="sentiment">
+    <th mat-header-cell *matHeaderCellDef> Sentiment Ratio </th>
+    <td mat-cell *matCellDef="let row"> <span *ngIf="row.sentiment > 0">+</span>{{ row.sentiment }} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="['group', 'aspects', 'attributes', 'sentiment']"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['group', 'aspects', 'attributes', 'sentiment']"></tr>
+</table>
+
+<mat-paginator #paginator
+  [pageSizeOptions]="[5, 10, 20]"
+  showFirstLastButtons>
+</mat-paginator>

@@ -6,8 +6,8 @@ export interface StringMap<V> {
 }
 
 export class Facet {
-  text: '';
-  group: '';
+  text: string = '';
+  group: string = '';
 }
 
 export type FacetProperty = 'text' | 'group';

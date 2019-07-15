@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { Extraction, Extractions } from 'src/app/models/canonical';
+import { Extraction, Extractions, FacetType, FacetProperty } from 'src/app/models/canonical';
 import { SentimentCount } from 'src/app/models/sentiment';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 
@@ -18,7 +18,8 @@ export interface SentimentCountRow {
 })
 export class SentimentTableComponent implements OnInit {
   @Input() extractions: Extraction[];
-  @Input() facetType: 'aspect' | 'attribute';
+  @Input() facetType: FacetType;
+  @Input() facetProperty: FacetProperty = 'group';
 
   @ViewChild('paginator') paginator: MatPaginator;
 
@@ -28,7 +29,7 @@ export class SentimentTableComponent implements OnInit {
 
   ngOnInit() {
     // extract group sentiment counts
-    const facetGroupMap = Extractions.groupBy(this.extractions, this.facetType);
+    const facetGroupMap = Extractions.groupBy(this.extractions, this.facetType, this.facetProperty);
     const facetGroups = Object.keys(facetGroupMap);
     const sentimentCounts = Object.values(facetGroupMap)
       .map(extractions => extractions.map(e => e.sentiment))
