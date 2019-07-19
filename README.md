@@ -44,7 +44,8 @@ Diese Kontextinformation ist clickbar, sodass Nutzer auf übergeordnete Seiten z
 **Sort, Filter, More** Wenn eine Menge von Elementen präsentiert wird, ist diese auf verschiedene Weise anpassbar:
 1. Sie kann nach verschiedenen Eigenschaften sortiert werden
 2. Sie kann nach bestimmten Merkmalen gefiltert werden. Alternativ können bestimmte Elemente ausgewählt werden, um die Menge zu filtern.
-3. Auf dargestellte Elemente der Menge kann per click auf eine Detailseite für dieses Element navigiert werden.
+
+Auf dargestellte Elemente der Menge kann per click auf eine Detailseite für dieses Element navigiert werden.
 
 **Peek** Wenn Nutzer über ein Element _hovern_ sollen sie (sofern vorhanden) zusätzliche Informationen über das Element erhalten (_peek_), die in der Visualisierung evtl. abstrahiert wurden.
 
@@ -58,12 +59,16 @@ Interkationsmöglichkeiten, die über die oben genannten hinaus gehen (z.B. drag
 
 **Merge & Split** Elemente können über eine _merge_ Aktion zu Elementgruppen kombiniert werden. Elemente können über _split_ Aktionen aus Gruppen gelöst werden.  
 Diese Aktionen können in jedem View durchgeführt werden. 
+Über Session hinaus TODO
+
 
 ### Layout
 
 **F-Shape Information Relevance** Nutzer betrachten Webseiten in einem F Muster.
 D.h. je weiter oben und je weiter Links auf einer Seite ein Element ist, desto eher wird es gelesen.  
 Entsprechend sollte die wichtigste Information (idR eine Visualisierung) in der oberen linken Ecke der Seite präsentiert werden.
+
+TODO: INvestigate oder raunnehmen
 
 **Tools on top** Toolbars (z.B. für filtering) befinden sich immmer über den Elementen, auf die sie sich beziehen.
 
