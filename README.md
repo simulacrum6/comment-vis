@@ -1,6 +1,6 @@
 # Konzept
 
-Das Projekt soll eine Webapp hervorbringen, die es Nutzern erlaubt, Sammlungen von Kommentaren zu einem bestimmten Untersuchungsobjekt visuell zu erkunden und infolgedessen einen besseren Überblick über die Stimmung der Kommentierenden zu unterschiedlichen Facetten des Elements zu erhalten.
+Das Projekt soll eine Webapp hervorbringen, die es Nutzern erlaubt, Sammlungen von Kommentaren zu einem bestimmten Untersuchungsobjekt visuell zu erkunden und infolgedessen einen besseren Überblick über die Stimmung der Kommentierenden zu unterschiedlichen Facetten des Untersuchungsgegenstands zu erhalten.
 
 ## Interaktionsflow
 
@@ -176,7 +176,7 @@ _Wording_: 'Topic'
 
 ***Attribute (Attribut)*** Teil einer _Opinion_, die bestimmt... TODO
 
-***Chart*** Visuelle Repräsentation einer oder mehrerer _Opinions_. Bezieht sich ausschließlich auf die Abbildung, nicht auf die zugehörigen interaktiven Elemente der Anwendung.
+***Chart*** Visuelle Repräsentation einer oder mehrerer _Opinions_ oder eines Teils einer Opinion. Bezieht sich ausschließlich auf die Abbildung, nicht auf die zugehörigen interaktiven Elemente der Anwendung.
 
 ***Darstellung*** Eine Repräsentation von einer oder mehreren _Opinions_. Kann visuell oder textuell sein.  
 
