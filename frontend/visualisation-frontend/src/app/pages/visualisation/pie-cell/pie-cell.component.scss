@@ -1,3 +1,5 @@
+@import '~@angular/material/theming';
+
 .label {
     text-align: center;
     font-weight: 500;
@@ -5,14 +7,13 @@
 
 .cell-wrapper {
     padding: 5px;
-    border-color: white;
-    border-style: solid;
-    border-width: 1px;
     cursor: pointer;
-}
+    @include mat-elevation-transition;
+    @include mat-elevation(0);
 
-.cell-wrapper:hover {
-    border-color: grey;
+    &:hover {
+      @include mat-elevation(1);
+    }
 }
 
 .chart-wrapper {

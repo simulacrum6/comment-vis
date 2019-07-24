@@ -10,15 +10,20 @@ import { Router } from '@angular/router';
 })
 export class PieGridComponent implements OnInit {
 
-  @Input() facetType: 'aspect' | 'attribute' = 'aspect';
-  @Input() scaleSize = false;
+  @Input() facetType: FacetType = 'aspect';
+  @Input() scaleSize = true;
 
   // TODO: add type to model
   private facetGroups: { name: string, extractions: Extraction[], sizeRatio: number }[];
+  private subGroupType: FacetType = 'attribute';
 
   constructor(private modelService: ModelService, private router: Router) { }
 
   ngOnInit() {
+    this.update();
+  }
+
+  public update() {
     const extractions = this.modelService.model.rawExtractions;
     const facetMap = Extractions.groupBy(extractions, this.facetType);
     this.facetGroups = Object.entries(facetMap)
@@ -31,5 +36,12 @@ export class PieGridComponent implements OnInit {
 
   public navigateToDetailPage(facet: string, facetType: FacetType) {
     this.router.navigate(['/detail'], { queryParams: { facet, facetType } });
+  }
+
+  public toggleTypes() {
+    const old = this.facetType;
+    this.facetType = this.subGroupType;
+    this.subGroupType = old;
+    this.update();
   }
 }

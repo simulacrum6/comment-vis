@@ -38,14 +38,9 @@ export class PieComponent implements OnInit {
       }];
       this.chartLabels = Sentiments;
     } else {
-      console.log(this);
-      console.log(`Generating subdivisions for ${this.by}`);
       this.chartData = this.getChartData();
-      console.log(this.chartData);
       this.chartColors = this.getChartColors();
-      console.log(this.chartColors);
       this.chartLabels = this.getChartLabels();
-      console.log(this.chartLabels);
     }
     this.chartOptions = {
       responsive: true,

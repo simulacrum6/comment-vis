@@ -1,15 +1,36 @@
 <mat-card *ngIf="facetExists; else error">
-  <mat-card-title>{{ facet }} details</mat-card-title>
-  <mat-card-subtitle>Details for this {{ facetType }}</mat-card-subtitle>
+  <mat-card-title>{{ facet }} - Details</mat-card-title>
+  <mat-card-subtitle>Detailed information on this this {{ facetType }}</mat-card-subtitle>
   <mat-card-content>
     <div #topWrapper
-      fxLayout="row"
+      fxLayout="row wrap"
       fxLayoutAlign="space-evenly">
       <app-pie [extractions]="extractions" [by]="subGroupType"></app-pie>
       <app-sentiment-table
         [extractions]="extractions"
         [facetType]="subGroupType">
       </app-sentiment-table>
+    </div>
+    <br>
+    <div #infoWrapper>
+      <mat-expansion-panel #commentPanel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Comments</mat-panel-title>
+          <mat-panel-description>all comments related to {{ facetType }} {{ facet }}</mat-panel-description>
+        </mat-expansion-panel-header>
+        <app-comment-table [extractions]="extractions"></app-comment-table>
+      </mat-expansion-panel>
+      <mat-expansion-panel #groupPanel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>Members</mat-panel-title>
+            <mat-panel-description>all members of this {{ facetType }}'s group</mat-panel-description>
+          </mat-expansion-panel-header>
+          <app-sentiment-table
+            [extractions]="extractions"
+            [facetType]="facetType"
+            facetProperty="text">
+          </app-sentiment-table>
+      </mat-expansion-panel>
     </div>
   </mat-card-content>
 </mat-card>
