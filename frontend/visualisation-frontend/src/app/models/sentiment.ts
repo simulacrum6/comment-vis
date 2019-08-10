@@ -99,7 +99,7 @@ export function mapToSentimentStatement(value: number) {
     if (value > -0.5) {
         return 'somewhat negative';
     }
-    if (value > 0.85) {
+    if (value > -0.85) {
         return 'negative';
     }
     return 'extremely negative';

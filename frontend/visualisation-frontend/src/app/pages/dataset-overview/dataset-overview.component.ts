@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ModelService } from 'src/app/services/model.service';
-import { Extraction, ExtractionProperty, FacetProperty, Extractions } from 'src/app/models/canonical';
+import { Extraction, Extractions } from 'src/app/models/canonical';
 import { default as dataSet } from 'src/app/models/foursquare_gold.ce.json';
-import { SentimentCount, mapToSentiment } from 'src/app/models/sentiment';
+import {SentimentCount, mapToSentiment, mapToSentimentStatement} from 'src/app/models/sentiment';
 import { valueCounts } from 'src/app/models/utils';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
-import {StringMap} from '../../models/canonical';
+import {sentimentDifferential} from '../../models/canonical';
 
 @Component({
   selector: 'app-dataset-overview',
@@ -52,14 +52,12 @@ export class DatasetOverviewComponent implements OnInit {
     };
 
     /** Mood **/
-    if (this.sentimentCounts.positive / this.sentimentCounts.getOverallCount() > 0.7) {
-      this.mood = 'mostly positive';
-      this.moodPercent = Math.round((this.sentimentCounts.positive / this.sentimentCounts.getOverallCount()) * 100) + '% positive comments';
-    } else if (this.sentimentCounts.negative / this.sentimentCounts.getOverallCount() > 0.7) {
-      this.mood = 'mostly negative';
+    const sentimentDiff = sentimentDifferential(this.extractions);
+    this.mood = mapToSentimentStatement(sentimentDiff);
+
+    if (sentimentDiff <= - 0.5) {
       this.moodPercent = Math.round((this.sentimentCounts.negative / this.sentimentCounts.getOverallCount()) * 100) + '% negative comments';
     } else {
-      this.mood = 'mixed';
       this.moodPercent = Math.round((this.sentimentCounts.positive / this.sentimentCounts.getOverallCount()) * 100) + '% positive comments';
     }
 
@@ -76,7 +74,7 @@ export class DatasetOverviewComponent implements OnInit {
     /** Distribution **/
     const aspectGroups: Extraction[][] = this.modelService.model.aspectGroups;
     aspectGroups.forEach( aspect => {
-      const miau: string;
+      //const miau: string;
     });
     this.distribution.push({category: 'all', commentValue: this.sentimentCounts.getOverallCount(), aspectValue: this.valueCounts.aspect.size});
     this.distribution.push({category: 'positive', commentValue: this.sentimentCounts.positive, aspectValue: this.valueCounts.aspect.size});
