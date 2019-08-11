@@ -7,6 +7,8 @@ import { valueCounts } from 'src/app/models/utils';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import {sentimentDifferential} from '../../models/canonical';
+import {ChartDataSets, ChartOptions, ChartType} from 'chart.js';
+import {Label} from 'ng2-charts';
 
 @Component({
   selector: 'app-dataset-overview',
@@ -24,6 +26,25 @@ export class DatasetOverviewComponent implements OnInit {
   private moodPercent: string;
   private warnings: string[] = [];
   private distribution: any[] = [];
+  private sentimentDistributionData: ChartDataSets[] = [];
+  private sentimentDistributionType: ChartType = 'bar';
+  private sentimentDistributionLabels: Label[] = ['positive', 'negative', 'neutral', 'unknown'];
+  private sentimentDistributionOptions: ChartOptions = {
+    legend: {
+      display: false
+    },
+    tooltips: {
+      mode: 'index',
+      intersect: false
+    },
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }],
+    }
+  };
 
   constructor(private modelService: ModelService, private router: Router, private snackBar: MatSnackBar) {
     if (!this.modelService.model) {
@@ -72,14 +93,9 @@ export class DatasetOverviewComponent implements OnInit {
     }
 
     /** Distribution **/
-    const aspectGroups: Extraction[][] = this.modelService.model.aspectGroups;
-    aspectGroups.forEach( aspect => {
-      //const miau: string;
-    });
-    this.distribution.push({category: 'all', commentValue: this.sentimentCounts.getOverallCount(), aspectValue: this.valueCounts.aspect.size});
-    this.distribution.push({category: 'positive', commentValue: this.sentimentCounts.positive, aspectValue: this.valueCounts.aspect.size});
-    this.distribution.push({category: 'neutral', commentValue: this.sentimentCounts.neutral, aspectValue: this.valueCounts.aspect.size});
-    this.distribution.push({category: 'negative', commentValue: this.sentimentCounts.negative, aspectValue: this.valueCounts.aspect.size});
+    const sentimentData: any = {};
+    sentimentData.data = [this.sentimentCounts.positive, this.sentimentCounts.negative, this.sentimentCounts.neutral, this.sentimentCounts.unknown];
+    this.sentimentDistributionData.push(sentimentData);
   }
 
   ngOnInit() {

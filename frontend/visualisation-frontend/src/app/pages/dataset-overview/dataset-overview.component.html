@@ -15,6 +15,15 @@ negative: {{ this.sentimentCounts.negative }} ({{ this.sentimentCounts.negative 
 neutral:  {{ this.sentimentCounts.neutral }}  ({{ this.sentimentCounts.neutral / this.extractions.length | number }})<br>
 unknown:  {{ this.sentimentCounts.unknown }}  ({{ this.sentimentCounts.unknown / this.extractions.length | number }})
 
+<div>
+  <canvas baseChart height="50vh"
+          [datasets]="sentimentDistributionData"
+          [labels]="sentimentDistributionLabels"
+          [options]="sentimentDistributionOptions"
+          [chartType]="sentimentDistributionType">
+  </canvas>
+</div>
+
 <h3>Top 5 Entries</h3>
 attributes: {{ this.valueCounts.attribute.slice(0,5) | json }} <br>
 aspect: {{ this.valueCounts.aspect.slice(0,5) | json }} <br>
