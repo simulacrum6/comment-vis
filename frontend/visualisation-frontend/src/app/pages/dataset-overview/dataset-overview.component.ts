@@ -25,7 +25,6 @@ export class DatasetOverviewComponent implements OnInit {
   private mood: string;
   private moodPercent: string;
   private warnings: string[] = [];
-  private distribution: any[] = [];
   private sentimentDistributionData: ChartDataSets[] = [];
   private sentimentDistributionType: ChartType = 'bar';
   private sentimentDistributionLabels: Label[] = ['positive', 'negative', 'neutral', 'unknown'];
@@ -45,6 +44,26 @@ export class DatasetOverviewComponent implements OnInit {
       }],
     }
   };
+  private aspectDistributionData: ChartDataSets[] = [];
+  private aspectDistributionType: ChartType = 'bar';
+  private aspectDistributionLabels: Label[] = [];
+  private aspectDistributionOptions: ChartOptions = {
+    legend: {
+      display: false
+    },
+    tooltips: {
+      mode: 'index',
+      intersect: false
+    },
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }],
+    }
+  };
+  private aspectDistributionMaxUniqueDisplayed = 4;
 
   constructor(private modelService: ModelService, private router: Router, private snackBar: MatSnackBar) {
     if (!this.modelService.model) {
@@ -92,10 +111,32 @@ export class DatasetOverviewComponent implements OnInit {
         `These comments will not be shown in most visualisations. Consider correcting your model.`);
     }
 
-    /** Distribution **/
+    /** Sentiment Distribution **/
     const sentimentData: any = {};
     sentimentData.data = [this.sentimentCounts.positive, this.sentimentCounts.negative, this.sentimentCounts.neutral, this.sentimentCounts.unknown];
     this.sentimentDistributionData.push(sentimentData);
+
+    /** Aspect Distribution **/
+    const aspectData: any = {};
+    const aspectCounts = [];
+    this.valueCounts.aspect.slice(0, this.aspectDistributionMaxUniqueDisplayed).forEach(aspect => {
+      aspectCounts.push(aspect.count);
+      this.aspectDistributionLabels.push(aspect.value);
+    });
+
+    if (this.valueCounts.aspect.length > this.aspectDistributionMaxUniqueDisplayed) {
+      let otherAspectCount = 0;
+      this.valueCounts.aspect.slice(this.aspectDistributionMaxUniqueDisplayed).forEach(aspect => {
+        otherAspectCount += aspect.count;
+      });
+      this.aspectDistributionLabels.push('Other');
+      aspectCounts.push(otherAspectCount);
+    }
+    aspectData.data = aspectCounts;
+
+    this.aspectDistributionData.push(aspectData);
+
+
   }
 
   ngOnInit() {

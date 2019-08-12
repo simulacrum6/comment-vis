@@ -8,19 +8,23 @@ We extracted <strong>{{ uniqueValues.attribute.size }}</strong> attributes for <
 
 <h3>Sentiment Distribution</h3>
 
-<!--<mat-table></mat-table> -->
-
-positive: {{ this.sentimentCounts.positive }} ({{ this.sentimentCounts.positive / this.extractions.length | number }})<br>
-negative: {{ this.sentimentCounts.negative }} ({{ this.sentimentCounts.negative / this.extractions.length | number }})<br>
-neutral:  {{ this.sentimentCounts.neutral }}  ({{ this.sentimentCounts.neutral / this.extractions.length | number }})<br>
-unknown:  {{ this.sentimentCounts.unknown }}  ({{ this.sentimentCounts.unknown / this.extractions.length | number }})
-
 <div>
   <canvas baseChart height="50vh"
           [datasets]="sentimentDistributionData"
           [labels]="sentimentDistributionLabels"
           [options]="sentimentDistributionOptions"
           [chartType]="sentimentDistributionType">
+  </canvas>
+</div>
+
+<h3>Aspect Distribution</h3>
+
+<div>
+  <canvas baseChart height="50vh"
+          [datasets]="aspectDistributionData"
+          [labels]="aspectDistributionLabels"
+          [options]="aspectDistributionOptions"
+          [chartType]="aspectDistributionType">
   </canvas>
 </div>
 
