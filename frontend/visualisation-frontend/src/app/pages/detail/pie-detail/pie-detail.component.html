@@ -1,14 +1,14 @@
-<mat-card *ngIf="facetExists; else error">
-  <mat-card-title>{{ facet }} - Details</mat-card-title>
-  <mat-card-subtitle>Detailed information on this this {{ facetType }}</mat-card-subtitle>
+<mat-card *ngIf="(facetExists$ | async); else error">
+  <mat-card-title>{{ facet$ | async }} - Details</mat-card-title>
+  <mat-card-subtitle>Detailed information on this this {{ facetType$ | async }}</mat-card-subtitle>
   <mat-card-content>
     <div #topWrapper
       fxLayout="row wrap"
       fxLayoutAlign="space-evenly">
-      <app-pie [extractions]="extractions" [by]="subGroupType"></app-pie>
+      <app-pie [extractions]="extractions$ | async" [by]="subGroupType$ | async"></app-pie>
       <app-sentiment-table
-        [extractions]="extractions"
-        [facetType]="subGroupType">
+        [extractions]="extractions$ | async"
+        [facetType]="subGroupType$ | async">
       </app-sentiment-table>
     </div>
     <br>
@@ -16,18 +16,19 @@
       <mat-expansion-panel #commentPanel>
         <mat-expansion-panel-header>
           <mat-panel-title>Comments</mat-panel-title>
-          <mat-panel-description>all comments related to {{ facetType }} {{ facet }}</mat-panel-description>
+          <mat-panel-description>all comments related to {{ facetType$ | async }} {{ facet$ | async }}</mat-panel-description>
         </mat-expansion-panel-header>
-        <app-comment-table [extractions]="extractions"></app-comment-table>
+        <app-comment-table [extractions]="extractions$ | async"></app-comment-table>
       </mat-expansion-panel>
       <mat-expansion-panel #groupPanel>
           <mat-expansion-panel-header>
             <mat-panel-title>Members</mat-panel-title>
-            <mat-panel-description>all members of this {{ facetType }}'s group</mat-panel-description>
+            <mat-panel-description>all members of this {{ facetType$ | async }}'s group</mat-panel-description>
           </mat-expansion-panel-header>
           <app-sentiment-table
-            [extractions]="extractions"
-            [facetType]="facetType"
+            [extractions]="extractions$ | async"
+            [facetType]="facetType$ | async"
+            [links]="false"
             facetProperty="text">
           </app-sentiment-table>
       </mat-expansion-panel>

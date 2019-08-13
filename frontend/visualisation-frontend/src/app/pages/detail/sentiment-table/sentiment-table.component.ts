@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, SimpleChanges, OnChanges } from '@angular/core';
 import { Extraction, Extractions, FacetType, FacetProperty } from 'src/app/models/canonical';
 import { SentimentCount } from 'src/app/models/sentiment';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
@@ -17,10 +17,16 @@ export interface SentimentCountRow {
   templateUrl: './sentiment-table.component.html',
   styleUrls: ['./sentiment-table.component.scss']
 })
-export class SentimentTableComponent implements OnInit {
+export class SentimentTableComponent implements OnInit, OnChanges {
   @Input() extractions: Extraction[];
   @Input() facetType: FacetType;
   @Input() facetProperty: FacetProperty = 'group';
+
+  /**
+   * Indicates whether router links are active, i.e. whether navigation is possible from the table.
+   * TODO: remove when member detail views are implemented?
+   */
+  @Input() links = true;
 
   @ViewChild('paginator') paginator: MatPaginator;
 
@@ -29,6 +35,15 @@ export class SentimentTableComponent implements OnInit {
   constructor(private router: Router) { }
 
   ngOnInit() {
+    this.update();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.update();
+  }
+
+
+  update() {
     // extract group sentiment counts
     const facetGroupMap = Extractions.groupBy(this.extractions, this.facetType, this.facetProperty);
     const facetGroups = Object.keys(facetGroupMap);
@@ -47,5 +62,4 @@ export class SentimentTableComponent implements OnInit {
     this.tableData = new MatTableDataSource(table);
     this.tableData.paginator = this.paginator;
   }
-
 }

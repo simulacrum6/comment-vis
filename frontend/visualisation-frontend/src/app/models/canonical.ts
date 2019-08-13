@@ -13,6 +13,15 @@ export class Facet {
 export type FacetProperty = 'text' | 'group';
 export type FacetType = 'attribute' | 'aspect';
 
+export class FacetTypes {
+  public static Attribute: FacetType = 'attribute';
+  public static Aspect: FacetType = 'aspect';
+
+  public static other(type: FacetType) {
+    return type === FacetTypes.Attribute ? FacetTypes.Aspect : FacetTypes.Attribute;
+  }
+}
+
 /**
  * A single opinion, expressed by some user.
  * Consists of the raw text, i.e. comment,

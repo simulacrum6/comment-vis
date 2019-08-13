@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, ViewChild, ElementRef, SimpleChanges } from '@angular/core';
 import { Extraction, Extractions, StringMap, ExtractionProperty } from 'src/app/models/canonical.js';
 import { ChartOptions, ChartType } from 'chart.js';
 import { Label } from 'ng2-charts';
@@ -11,7 +11,7 @@ import { Interpolator, makeInterpolator, flatten } from 'src/app/models/utils';
   templateUrl: './pie.component.html',
   styleUrls: ['./pie.component.scss']
 })
-export class PieComponent implements OnInit {
+export class PieComponent implements OnInit, OnChanges {
 
   @Input() name: string;
   @Input() extractions: Extraction[];
@@ -27,6 +27,14 @@ export class PieComponent implements OnInit {
   private chartColors;
 
   ngOnInit() {
+    this.update();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.update();
+  }
+
+  public update() {
     this.sentimentGroups = Extractions.groupBy(this.extractions, 'sentiment');
     if (this.by === 'sentiment') {
       this.chartData = Sentiments.map(sentiment => this.sentimentGroups[sentiment] || [])

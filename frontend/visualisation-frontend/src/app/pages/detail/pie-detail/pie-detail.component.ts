@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ModelService } from 'src/app/services/model.service';
 import { DetailViewBaseComponent } from '../detail-view-base.component';
 import { Extractions } from 'src/app/models/canonical';
+import { Observable, combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-pie-detail',
@@ -10,8 +12,8 @@ import { Extractions } from 'src/app/models/canonical';
 })
 export class PieDetailComponent extends DetailViewBaseComponent implements OnInit {
 
-  public comments: string[];
-  public members: Set<string>;
+  public comments$: Observable<string[]>;
+  public members$: Observable<Set<string>>;
 
   constructor(protected modelService: ModelService) {
     super(modelService);
@@ -19,8 +21,11 @@ export class PieDetailComponent extends DetailViewBaseComponent implements OnIni
 
   ngOnInit() {
     super.ngOnInit();
-    this.comments = Object.keys(Extractions.groupBy(this.extractions, 'comment'));
-    this.members = new Set(this.extractions.map(e => e[this.facetType].text));
-    console.log(this.extractions.map(e => e[this.facetType].text));
+    this.comments$ = this.extractions$.pipe(
+      map(extractions => Object.keys(Extractions.groupBy(extractions, 'comment')))
+    );
+    this.members$ = combineLatest(this.extractions$, this.facetType$).pipe(
+      map(([extractions, facetType]) => new Set(extractions.map(e => e[facetType].text)))
+    );
   }
 }

@@ -1,6 +1,6 @@
 <app-pie-detail *ngIf="( hasAllParams$ | async ); else invalidRequest"
-  [facet]="( facet$ | async )"
-  [facetType]="( facetType$ | async )">
+  [facet$]="facet$"
+  [facetType$]="facetType$">
 </app-pie-detail>
 <ng-template #invalidRequest>
   <app-error [message]="errorMessage"></app-error>
