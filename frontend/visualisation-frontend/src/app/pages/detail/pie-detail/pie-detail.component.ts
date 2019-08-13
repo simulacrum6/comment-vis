@@ -15,6 +15,8 @@ export class PieDetailComponent extends DetailViewBaseComponent implements OnIni
   public comments$: Observable<string[]>;
   public members$: Observable<Set<string>>;
 
+  private breadCrumbPaths$: Observable<any>;
+
   constructor(protected modelService: ModelService) {
     super(modelService);
   }
@@ -26,6 +28,13 @@ export class PieDetailComponent extends DetailViewBaseComponent implements OnIni
     );
     this.members$ = combineLatest(this.extractions$, this.facetType$).pipe(
       map(([extractions, facetType]) => new Set(extractions.map(e => e[facetType].text)))
+    );
+    this.breadCrumbPaths$ = combineLatest(this.facet$, this.facetType$).pipe(
+      map(([facet, facetType]) => [
+        { name: 'Statistics', path: ['/overview'], queryParams: {}},
+        { name: facetType, path: ['/vis/pie'], queryParams: {}},
+        { name: facet, path: ['/detail'], queryParams: { facet, facetType }}
+      ])
     );
   }
 }

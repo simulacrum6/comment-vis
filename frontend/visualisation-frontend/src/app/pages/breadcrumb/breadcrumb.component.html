@@ -1,0 +1,5 @@
+<ng-container *ngFor="let element of previous">
+    <a [routerLink]="element.path" [queryParams]="element.queryParams">{{ element.name }}</a>
+    <span>/</span>
+</ng-container>
+<span>{{ current.name }}&gt;</span>

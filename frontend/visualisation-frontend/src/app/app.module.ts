@@ -22,6 +22,7 @@ import { PieCellComponent } from './pages/visualisation/pie-cell/pie-cell.compon
 import { PieDetailComponent } from './pages/detail/pie-detail/pie-detail.component';
 import { SentimentTableComponent } from './pages/detail/sentiment-table/sentiment-table.component';
 import { CommentTableComponent } from './pages/detail/comment-table/comment-table.component';
+import { BreadcrumbComponent } from './pages/breadcrumb/breadcrumb.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { CommentTableComponent } from './pages/detail/comment-table/comment-tabl
     PieCellComponent,
     PieDetailComponent,
     SentimentTableComponent,
-    CommentTableComponent
+    CommentTableComponent,
+    BreadcrumbComponent
   ],
   imports: [
     BrowserModule,

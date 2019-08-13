@@ -1,6 +1,6 @@
 <mat-card>
   <mat-card-title>{{ facetType }} - Overview</mat-card-title>
-  <mat-card-subtitle>How people feel about different {{ facetType }}s</mat-card-subtitle>
+  <mat-card-subtitle><app-breadcrumb [paths]="breadCrumbPaths"></app-breadcrumb></mat-card-subtitle>
   <mat-card-content>
     <p>
       Hover over {{ facetType }} to see, how many positive or negative opinions exist. <br>

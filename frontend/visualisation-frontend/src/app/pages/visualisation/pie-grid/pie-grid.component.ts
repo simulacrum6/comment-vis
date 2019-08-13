@@ -17,6 +17,11 @@ export class PieGridComponent implements OnInit {
   private facetGroups: { name: string, extractions: Extraction[], sizeRatio: number }[];
   private subGroupType: FacetType = 'attribute';
 
+  private breadCrumbPaths = [
+    { name: 'Statistics', path: ['/overview'], queryParams: {} },
+    { name: this.facetType + 's', path: ['/vis/pie'], queryParams: {} }
+  ];
+
   constructor(private modelService: ModelService, private router: Router) { }
 
   ngOnInit() {
@@ -42,6 +47,7 @@ export class PieGridComponent implements OnInit {
     const old = this.facetType;
     this.facetType = this.subGroupType;
     this.subGroupType = old;
+    this.breadCrumbPaths[this.breadCrumbPaths.length - 1].name = this.facetType + 's';
     this.update();
   }
 }
