@@ -1,7 +1,13 @@
 <table mat-table [dataSource]="tableData">
   <ng-container cdkColumnDef="group">
     <th mat-header-cell *matHeaderCellDef> {{ facetType }} </th>
-    <td mat-cell *matCellDef="let row"> {{ row.group }} </td>
+    <td mat-cell *matCellDef="let row">
+      <a
+        [routerLink]="['/detail']"
+        [queryParams]="{ facet: row.group, facetType: facetType }">
+        {{ row.group }}
+      </a>
+    </td>
   </ng-container>
 
   <ng-container cdkColumnDef="positive">

@@ -2,6 +2,7 @@ import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { Extraction, Extractions, FacetType, FacetProperty } from 'src/app/models/canonical';
 import { SentimentCount } from 'src/app/models/sentiment';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { Router } from '@angular/router';
 
 export interface SentimentCountRow {
   group: string;
@@ -25,7 +26,7 @@ export class SentimentTableComponent implements OnInit {
 
   private tableData: MatTableDataSource<SentimentCountRow>;
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
     // extract group sentiment counts
