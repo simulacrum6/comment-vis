@@ -1,4 +1,4 @@
-<mat-card *ngIf="(facetExists$ | async); else error">
+<mat-card class="content" *ngIf="(facetExists$ | async); else error">
   <mat-card-title>{{ facet$ | async }} - Details</mat-card-title>
   <mat-card-subtitle><app-breadcrumb [paths]="(breadCrumbPaths$ | async)"></app-breadcrumb></mat-card-subtitle>
   <mat-card-content>

@@ -17,6 +17,10 @@ import {Label} from 'ng2-charts';
 })
 export class DatasetOverviewComponent implements OnInit {
 
+  private breadCrumbPaths = [
+    { name: 'Statistics', path: ['/overview']}
+  ];
+
   private extractions: Extraction[];
   private values: { attribute: string[], aspect: string[], comment: string[], sentiment: string[]};
   private uniqueValues: { attribute: Set<string>, aspect: Set<string>, comment: Set<string>, sentiment: Set<string> };
@@ -92,6 +96,7 @@ export class DatasetOverviewComponent implements OnInit {
     };
 
     /** Mood **/
+    // TODO: Make computed values visible in warnings
     const sentimentDiff = sentimentDifferential(this.extractions);
     this.mood = mapToSentimentStatement(sentimentDiff);
 
@@ -107,8 +112,10 @@ export class DatasetOverviewComponent implements OnInit {
         `some visualisations could be misleading. You should consider adding more data`);
     }
     if (this.sentimentCounts.unknown > 0) {
-      this.warnings.push(`Your uploaded model contains ${this.sentimentCounts.unknown} comments with unknown sentiment - ` +
-        `These comments will not be shown in most visualisations. Consider correcting your model.`);
+      this.warnings.push(
+        `Your uploaded dataset contains ${this.sentimentCounts.unknown} comments with unknown sentiment - ` +
+        `These comments will not be shown in most visualisations.`
+      );
     }
 
     /** Sentiment Distribution **/

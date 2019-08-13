@@ -1,43 +1,47 @@
-<h2>Stats</h2>
-<button class="visualisations" mat-raised-button color="primary" (click)="router.navigate(['vis'])">To Visualisations</button>
+<mat-card class="content">
+  <mat-card-title>Statistics</mat-card-title>
+  <mat-card-subtitle><app-breadcrumb [paths]="breadCrumbPaths"></app-breadcrumb></mat-card-subtitle>
 
-<h3>Dataset</h3>
-This dataset consists of <strong>{{ uniqueValues.comment.size }}</strong> comments.<br>
-The mood is <strong>{{ mood }}</strong> with <strong>{{ moodPercent }}</strong>.<br>
-We extracted <strong>{{ uniqueValues.attribute.size }}</strong> attributes for <strong>{{ uniqueValues.aspect.size }}</strong> topics.
+  <mat-card-content>
+      <h3>Dataset</h3>
+      This dataset consists of <strong>{{ uniqueValues.comment.size }}</strong> comments.<br>
+      The mood is <strong>{{ mood }}</strong> with <strong>{{ moodPercent }}</strong>.<br>
+      We extracted <strong>{{ uniqueValues.attribute.size }}</strong> attributes for <strong>{{ uniqueValues.aspect.size }}</strong> topics.
 
-<h3>Sentiment Distribution</h3>
+      <div>
+        <h3>Sentiment Distribution</h3>
+        <canvas baseChart height="50vh"
+                [datasets]="sentimentDistributionData"
+                [labels]="sentimentDistributionLabels"
+                [options]="sentimentDistributionOptions"
+                [chartType]="sentimentDistributionType">
+        </canvas>
+      </div>
 
-<div>
-  <canvas baseChart height="50vh"
-          [datasets]="sentimentDistributionData"
-          [labels]="sentimentDistributionLabels"
-          [options]="sentimentDistributionOptions"
-          [chartType]="sentimentDistributionType">
-  </canvas>
-</div>
 
-<h3>Aspect Distribution</h3>
 
-<div>
-  <canvas baseChart height="50vh"
-          [datasets]="aspectDistributionData"
-          [labels]="aspectDistributionLabels"
-          [options]="aspectDistributionOptions"
-          [chartType]="aspectDistributionType">
-  </canvas>
-</div>
+      <div>
+        <h3>Aspect Distribution</h3>
+        <canvas baseChart height="50vh"
+                [datasets]="aspectDistributionData"
+                [labels]="aspectDistributionLabels"
+                [options]="aspectDistributionOptions"
+                [chartType]="aspectDistributionType">
+        </canvas>
+      </div>
 
-<h3>Top 5 Entries</h3>
-attributes: {{ this.valueCounts.attribute.slice(0,5) | json }} <br>
-aspect: {{ this.valueCounts.aspect.slice(0,5) | json }} <br>
-sentiment: {{ this.valueCounts.sentiment.slice(0,5) | json }}
+      <div *ngIf="warnings.length > 0" class="warnings">
+        <h3 class="warnings_title">Warnings</h3>
+        <ul>
+          <li *ngFor="let warning of warnings">
+            {{warning}}
+          </li>
+        </ul>
+      </div>
+  </mat-card-content>
 
-<div *ngIf="warnings.length > 0" class="warnings">
-  <h3 class="warnings_title">Warnings</h3>
-  <ul>
-    <li *ngFor="let warning of warnings">
-      {{warning}}
-    </li>
-  </ul>
-</div>
+  <mat-card-actions>
+    <button class="visualisations" mat-raised-button color="primary" (click)="router.navigate(['vis'])">To Visualisations</button>
+  </mat-card-actions>
+
+</mat-card>

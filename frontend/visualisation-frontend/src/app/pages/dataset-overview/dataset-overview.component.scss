@@ -1,11 +1,18 @@
-.visualisations {
+mat-card.content {
+  margin: 10px;
+  margin-left: 15%;
+  margin-right: 15%;
+  min-width: 320px;
+}
 
+h3, strong {
+  font-weight: 500;
 }
 
 .warnings {
   background-color: rgba(245, 245, 220, 0.5);
-  padding-left: 10px;
-  padding-right: 10px;
+  padding: 0px 10px 10px 0px ;
+  border-radius: 5px;
 }
 
 .warnings_title {
