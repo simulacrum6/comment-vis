@@ -86,8 +86,11 @@ public class POSTagAspectExtractor {
                     }
                 // extract as attribute, if word is an adjective.
                 } else if (tag.getPosValue().startsWith("JJ")) {
+                    Sentiment sentiment = Sentiment.fromString(comment.getSentiment());
+                    Comment origin = new Comment(sentiment, comment.getCoveredText());
                     Attribute attribute = new Attribute(tag.getCoveredText());
-                    attribute.setSentiment(Sentiment.fromString(comment.getSentiment()));
+                    attribute.setSentiment(sentiment);
+                    attribute.setOrigin(origin);
                     attributes.add(attribute);
                 }
             }

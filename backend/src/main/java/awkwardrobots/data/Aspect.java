@@ -58,6 +58,16 @@ public class Aspect {
         return copy;
     }
 
+    public Aspect() {
+    	this("<undefined>");
+    }
+    
+    public Aspect(String name) {
+    	this.name = name;
+    	this.mentions = 1;
+    	this.attributes = new ArrayList<>();
+    }
+    
     public List<Attribute> getAttributes() {
         return attributes;
     }

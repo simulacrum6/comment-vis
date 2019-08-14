@@ -6,13 +6,13 @@ import java.util.List;
 public class Attribute {
     private int mentions;
     private String name;
-    private List<Comment> origin;
+    private Comment origin;
     private Sentiment sentiment;
 
     public Attribute(String name) {
         this.name = name;
         this.mentions = 1;
-        this.origin = new ArrayList<>();
+        this.origin = null;
         this.sentiment = Sentiment.UNCLEAR;
     }
 
@@ -32,11 +32,11 @@ public class Attribute {
         this.name = name;
     }
 
-    public List<Comment> getOrigin() {
+    public Comment getOrigin() {
         return origin;
     }
 
-    public void setOrigin(List<Comment> origin) {
+    public void setOrigin(Comment origin) {
         this.origin = origin;
     }
 

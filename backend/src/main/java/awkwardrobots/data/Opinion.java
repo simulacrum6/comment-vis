@@ -1,8 +1,44 @@
 package awkwardrobots.data;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class Opinion {
+	
+	/**
+	 * Creates a list of Opinions from the given Aspect.
+	 */
+	public static List<Opinion> fromAspect(Aspect aspect) {
+		List<Opinion> opinions = new ArrayList<>();
+		
+		for (Attribute attribute : aspect.getAttributes()) {
+			Opinion opinion = new Opinion();
+			opinion.setAspect(new Facet(aspect.getName()));
+			opinion.setAttribute(new Facet(attribute.getName()));
+			opinion.setComment(attribute.getOrigin().getText());
+			opinion.setSentiment(attribute.getSentiment());
+			
+			for (int i = 0; i < attribute.getMentions(); i++) {
+				opinions.add(opinion);
+			}
+		}
+		
+		return opinions;
+	}
+	
+	/**
+	 * Creates a list of Opinions from the given list of Aspects.
+	 */
+	public static List<Opinion> fromAspects(List<Aspect> aspects) {		
+		return aspects.stream()
+			.flatMap(aspect -> Opinion.fromAspect(aspect).stream())
+			.collect(Collectors.toList());
+	}
+	
+	
 	private String comment;
 	private Facet attribute;
 	private Facet aspect;
