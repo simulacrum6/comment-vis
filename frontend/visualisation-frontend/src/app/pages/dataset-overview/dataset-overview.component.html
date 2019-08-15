@@ -18,17 +18,27 @@
         </canvas>
       </div>
 
-
-
       <div>
         <h3>Aspect Distribution</h3>
         <canvas baseChart height="50vh"
                 [datasets]="aspectDistributionData"
                 [labels]="aspectDistributionLabels"
-                [options]="aspectDistributionOptions"
-                [chartType]="aspectDistributionType">
+                [options]="facetDistributionOptions"
+                [chartType]="facetDistributionType">
         </canvas>
+        <span *ngIf="tooManyAspects" class="light" matTooltip="There are too many elements to display, so only the most frequent ones are shown.">Displaying 100 of {{ valueCounts.aspect.length }} aspects</span>
       </div>
+
+      <div>
+          <h3>Attribute Distribution</h3>
+          <canvas baseChart height="50vh"
+                  [datasets]="attributeDistributionData"
+                  [labels]="attributeDistributionLabels"
+                  [options]="facetDistributionOptions"
+                  [chartType]="facetDistributionType">
+          </canvas>
+          <span *ngIf="tooManyAttributes" class="light" matTooltip="There are too many elements to display, so only the most frequent ones are shown.">Displaying 100 of {{ valueCounts.attribute.length }} attributes</span>
+        </div>
 
       <div *ngIf="warnings.length > 0" class="warnings">
         <h3 class="warnings_title">Warnings</h3>

@@ -6,9 +6,9 @@ import {SentimentCount, mapToSentiment, mapToSentimentStatement} from 'src/app/m
 import { valueCounts } from 'src/app/models/utils';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
-import {sentimentDifferential} from 'src/app/models/canonical';
-import {ChartDataSets, ChartOptions, ChartType} from 'chart.js';
-import {Label} from 'ng2-charts';
+import { sentimentDifferential } from 'src/app/models/canonical';
+import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
+import { Label } from 'ng2-charts';
 
 @Component({
   selector: 'app-dataset-overview',
@@ -48,10 +48,8 @@ export class DatasetOverviewComponent implements OnInit {
       }],
     }
   };
-  private aspectDistributionData: ChartDataSets[] = [];
-  private aspectDistributionType: ChartType = 'bar';
-  private aspectDistributionLabels: Label[] = [];
-  private aspectDistributionOptions: ChartOptions = {
+  private facetDistributionType: ChartType = 'bar';
+  private facetDistributionOptions: ChartOptions = {
     legend: {
       display: false
     },
@@ -67,7 +65,19 @@ export class DatasetOverviewComponent implements OnInit {
       }],
     }
   };
-  private aspectDistributionMaxUniqueDisplayed = 4;
+  private maxDistributionDisplayItems = 100;
+
+  private aspectDistributionData: ChartDataSets[] = [];
+  private aspectDistributionLabels: Label[] = [];
+  private attributeDistributionData: ChartDataSets[] = [];
+  private attributeDistributionLabels: Label[] = [];
+
+  get tooManyAspects(): boolean {
+    return this.valueCounts.aspect.length > this.maxDistributionDisplayItems;
+  }
+  get tooManyAttributes(): boolean {
+    return this.valueCounts.attribute.length > this.maxDistributionDisplayItems;
+  }
 
   constructor(private modelService: ModelService, private router: Router, private snackBar: MatSnackBar) {
     if (!this.modelService.model) {
@@ -125,24 +135,24 @@ export class DatasetOverviewComponent implements OnInit {
     /** Aspect Distribution **/
     const aspectData: any = {};
     const aspectCounts = [];
-    this.valueCounts.aspect.slice(0, this.aspectDistributionMaxUniqueDisplayed).forEach(aspect => {
+    this.valueCounts.aspect.slice(0, this.maxDistributionDisplayItems).forEach(aspect => {
       aspectCounts.push(aspect.count);
       this.aspectDistributionLabels.push(aspect.value);
     });
-
-    if (this.valueCounts.aspect.length > this.aspectDistributionMaxUniqueDisplayed) {
-      let otherAspectCount = 0;
-      this.valueCounts.aspect.slice(this.aspectDistributionMaxUniqueDisplayed).forEach(aspect => {
-        otherAspectCount += aspect.count;
-      });
-      this.aspectDistributionLabels.push('Other');
-      aspectCounts.push(otherAspectCount);
-    }
     aspectData.data = aspectCounts;
 
     this.aspectDistributionData.push(aspectData);
 
+    /** attribute Distribution **/
+    const attributeData: any = {};
+    const attributeCounts = [];
+    this.valueCounts.attribute.slice(0, this.maxDistributionDisplayItems).forEach(attribute => {
+      attributeCounts.push(attribute.count);
+      this.attributeDistributionLabels.push(attribute.value);
+    });
+    attributeData.data = aspectCounts;
 
+    this.attributeDistributionData.push(attributeData);
   }
 
   ngOnInit() { }
