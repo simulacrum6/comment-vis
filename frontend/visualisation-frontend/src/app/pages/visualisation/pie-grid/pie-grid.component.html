@@ -19,13 +19,19 @@
     <div class='pie-grid'
     fxLayout="row wrap"
     fxLayoutAlign="space-evenly">
-    <app-pie-cell *ngFor="let group of facetGroups"
-      [facetType]="facetType"
-      [name]="group.name"
-      [extractions]="group.extractions"
-      [size]="group.sizeRatio"
-      (click)="navigateToDetailPage(group.name, facetType)">
-    </app-pie-cell>
+      <app-pie-cell *ngFor="let group of selectedFacetGroups"
+        [facetType]="facetType"
+        [name]="group.name"
+        [extractions]="group.extractions"
+        [size]="group.sizeRatio"
+        (click)="navigateToDetailPage(group.name, facetType)">
+      </app-pie-cell>
     </div>
+    <mat-paginator
+      [length]="facetGroups.length"
+      [pageSize]="currentPageSize"
+      [pageSizeOptions]="pageSizes"
+      (page)=updatePage($event)>
+    </mat-paginator>
   </mat-card-content>
 </mat-card>

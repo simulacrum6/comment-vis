@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ModelService } from 'src/app/services/model.service';
 import { Extraction, Extractions, FacetType } from 'src/app/models/canonical';
 import { Router } from '@angular/router';
+import { PageEvent } from '@angular/material';
 
 @Component({
   selector: 'app-pie-grid',
@@ -15,12 +16,17 @@ export class PieGridComponent implements OnInit {
 
   // TODO: add type to model
   private facetGroups: { name: string, extractions: Extraction[], sizeRatio: number }[];
+  private selectedFacetGroups: { name: string, extractions: Extraction[], sizeRatio: number }[];
   private subGroupType: FacetType = 'attribute';
 
   private breadCrumbPaths = [
     { name: 'Statistics', path: ['/overview'], queryParams: {} },
     { name: this.facetType + 's', path: ['/vis/pie'], queryParams: {} }
   ];
+
+  private pageSizes = [25, 35, 50, 75, 150];
+  private currentPageSize = this.pageSizes[1];
+  private currentPageIndex = 0;
 
   constructor(private modelService: ModelService, private router: Router) { }
 
@@ -37,6 +43,20 @@ export class PieGridComponent implements OnInit {
         extractions: groupExtractions,
         sizeRatio: this.scaleSize ? groupExtractions.length / extractions.length : 0.25
       }));
+
+    this.updateSelectedFacetGroups();
+  }
+
+  public updatePage(event: PageEvent) {
+    this.currentPageIndex = event.pageIndex;
+    this.currentPageSize = event.pageSize;
+    this.updateSelectedFacetGroups();
+  }
+
+  private updateSelectedFacetGroups() {
+    const start = this.currentPageIndex * this.currentPageSize;
+    const end = (this.currentPageIndex + 1) * this.currentPageSize;
+    this.selectedFacetGroups = this.facetGroups.slice(start, end);
   }
 
   public navigateToDetailPage(facet: string, facetType: FacetType) {
