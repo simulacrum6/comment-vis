@@ -16,12 +16,18 @@ import java.util.List;
 public class DatasetLoader {
 
     public static final String ROOT_PATH = "src/main/resources/data/";
-
+    public static final String LECTURE_EVALUATIONS = "lecture_evaluations";
+    public static final String REVIEWS = "kotzias2015"; 
+    // TODO: implement SEM_EVAL and BRUN
+    public static final String SEM_EVAL = "NOT_IMPLEMENTED_sem_eval_2016";
+    public static final String BRUN = "NOT_IMPLEMENTED_brun2018";
+    
+    
     public static File[] findFiles(String dataset, String subset) {
-        if (!(dataset.equalsIgnoreCase("kotzias2015") || dataset.equalsIgnoreCase("lecture_evaluations")))
+        if (!(dataset.equalsIgnoreCase(REVIEWS) || dataset.equalsIgnoreCase(LECTURE_EVALUATIONS)))
             throw new IllegalArgumentException("Dataset name not valid.");
 
-        String extension = dataset.equalsIgnoreCase("lecture_evaluations") ? ".pdf" : ".txt";
+        String extension = dataset.equalsIgnoreCase(LECTURE_EVALUATIONS) ? ".pdf" : ".txt";
 
         File directory = new File(ROOT_PATH + dataset);
 
@@ -36,8 +42,8 @@ public class DatasetLoader {
     }
 
     public static List<String> loadLines(String dataset, String subset) throws IOException {
-        if (dataset.equalsIgnoreCase("lecture_evaluations"))
-            throw new IOException("'lecture_evaluations' are not readable line by line");
+        if (dataset.equalsIgnoreCase(LECTURE_EVALUATIONS))
+            throw new IOException("'lecture_evaluations' are not readable line by line. try 'DatasetLoader.loadComments'");
 
         File[] files = DatasetLoader.findFiles(dataset, subset);
 
@@ -56,7 +62,7 @@ public class DatasetLoader {
         if (commentFilePath == null) {
         	File[] files = DatasetLoader.findFiles(dataset, subset);
 
-            CommentParser parser = dataset.equalsIgnoreCase("lecture_evaluations") ?
+            CommentParser parser = dataset.equalsIgnoreCase(LECTURE_EVALUATIONS) ?
                     new EvaluationPDFParser() :
                     new TXTCommentParser();
 
@@ -69,6 +75,10 @@ public class DatasetLoader {
         }
     	
     	return new CommentReader().read(commentFilePath);
+    }
+    
+    public static List<Comment> loadComments(String dataset) throws IOException {
+    	return DatasetLoader.loadComments(dataset, null);
     }
     
     private static String getCommentFile(String dataset, String subset) throws IOException {
