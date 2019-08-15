@@ -20,17 +20,16 @@ export class VisualisationComponent implements OnInit {
 
   constructor(private modelService: ModelService, private snackBar: MatSnackBar, private router: Router) {
     if (!this.modelService.model) {
+      console.log('ERROR! No model was available. Trying to handle it.');
       if (environment.production) {
         this.snackBar.open('No data was available. You were redirected to the upload page.', 'Okay', { duration: 3500 });
         this.router.navigate(['/']);
       } else {
+        this.snackBar.open('No data was available. Showing default demo data.', 'Okay', { duration: 3500 });
         this.modelService.generateModelFromJson(foursquare);
       }
     }
   }
 
   ngOnInit() { }
-
-  public navigate() {
-  }
 }

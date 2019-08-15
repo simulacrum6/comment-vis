@@ -1,17 +1,16 @@
 
 <form>
-  <input #fileInput 
-    type="file" 
-    accept=".aspects.json"
-    placeholder="Select a file to upload..."
-    hidden="hidden">
-  <button mat-button 
-    type="button" 
-    (click)="fileInput.click()">
-    <mat-icon>save</mat-icon>
-  </button>
-  
-  <button mat-button 
+  <mat-form-field>
+    <mat-label>Select a dataset...</mat-label>
+    <mat-select (selectionChange)="dataset = $event">
+      <mat-option *ngFor="let demo of demoDatasets"
+        [value]="demo.value">
+        {{ demo.viewValue }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-button
     type="button"
     color="primary"
     (click)="submit()">

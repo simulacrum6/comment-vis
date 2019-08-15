@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ModelService } from 'src/app/services/model.service';
 import { Extraction, Extractions } from 'src/app/models/canonical';
-import { default as dataSet } from 'src/app/models/foursquare_gold.ce.json';
+import { default as foursquare } from 'src/app/models/foursquare_gold.ce.json';
 import {SentimentCount, mapToSentiment, mapToSentimentStatement} from 'src/app/models/sentiment';
 import { valueCounts } from 'src/app/models/utils';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
-import {sentimentDifferential} from '../../models/canonical';
+import {sentimentDifferential} from 'src/app/models/canonical';
 import {ChartDataSets, ChartOptions, ChartType} from 'chart.js';
 import {Label} from 'ng2-charts';
 
@@ -71,8 +71,7 @@ export class DatasetOverviewComponent implements OnInit {
 
   constructor(private modelService: ModelService, private router: Router, private snackBar: MatSnackBar) {
     if (!this.modelService.model) {
-      // TODO: set data on upload page
-      this.modelService.generateModelFromJson(dataSet);
+      this.modelService.generateModelFromJson(foursquare);
     }
     this.extractions = modelService.model.rawExtractions;
     this.values = {
@@ -146,7 +145,5 @@ export class DatasetOverviewComponent implements OnInit {
 
   }
 
-  ngOnInit() {
-    this.modelService.generateModelFromJson(dataSet);
-  }
+  ngOnInit() { }
 }
