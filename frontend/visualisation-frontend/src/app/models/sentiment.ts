@@ -1,3 +1,5 @@
+import { Extraction } from './canonical';
+
 export enum Sentiment {
     Positive = 'positive',
     Negative = 'negative',
@@ -19,6 +21,11 @@ export class SentimentCount {
             count.inc(sentiment);
         }
         return count;
+    }
+
+    public static fromExtractions(extractions: Extraction[]): SentimentCount {
+        const sentiments = extractions.map(e => e.sentiment);
+        return SentimentCount.fromArray(sentiments);
     }
 
     public inc(sentiment: Sentiment, count: number = 1): void {

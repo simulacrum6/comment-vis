@@ -28,6 +28,9 @@ export class PieGridComponent implements OnInit {
   private currentPageSize = this.pageSizes[1];
   private currentPageIndex = 0;
 
+  private sortBy = 'positive';
+  public mappingFunction = (x) => x.extractions;
+
   constructor(private modelService: ModelService, private router: Router) { }
 
   ngOnInit() {
@@ -69,5 +72,9 @@ export class PieGridComponent implements OnInit {
     this.subGroupType = old;
     this.breadCrumbPaths[this.breadCrumbPaths.length - 1].name = this.facetType + 's';
     this.update();
+  }
+
+  private log($event: any) {
+    console.log($event);
   }
 }

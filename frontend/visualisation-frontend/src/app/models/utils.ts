@@ -57,27 +57,65 @@ export type Interpolator = (step: number) => number;
  * @param end  the end of the interpolation interval.
  * @param overflow  how to handle a step value outside the valid interval, defaults to 'scale'.
  */
-export function makeInterpolator(start: number, end: number, overflow = 'scale'): Interpolator {
-    if (start > end) { throw Error(`"start" must be smaller than "end". start: ${start}, end: ${end}`); }
+export function makeInterpolator(
+    start: number,
+    end: number,
+    mode: 'linear' | 'exponential' | 'log' = 'linear',
+    overflow: 'scale' | 'boundary' | 'cycle' = 'scale')
+    : Interpolator {
+    if (start > end) {
+        throw Error(`"start" must be smaller than "end". start: ${start}, end: ${end}`);
+    }
 
     const range = end - start;
 
-    if (overflow === 'boundary') {
-        return (step: number) => {
-            step = Math.max(0, step);
-            step = Math.min(1, step);
+    let scalingFunction;
+    let overflowFunction;
+
+    if (mode === 'exponential') {
+        scalingFunction = (step: number) => {
+            return start + (Math.pow(range, step));
+        };
+    } else if (mode === 'log') {
+        scalingFunction = (step: number) => {
+            return start + Math.log(range * step);
+        };
+    } else {
+        scalingFunction = (step: number) => {
             return start + range * step;
         };
     }
 
-    if (overflow === 'cycle') {
-        return (step: number) => {
-            return start + range * (step % 1);
-        };
+    if (overflow === 'boundary') {
+        overflowFunction = boundary;
+    } else if (overflow === 'cycle') {
+        overflowFunction = cycle;
+    } else {
+        overflowFunction = identity;
     }
 
-    // default 'scale'
-    return (step: number) => {
-        return start + range * step;
-    };
+    return compose(overflowFunction, scalingFunction);
+}
+
+function boundary(step: number, min = 0, max = 1): number {
+    step = Math.max(min, step);
+    step = Math.min(max, step);
+    return step;
+}
+
+function cycle(step: number, max = 1): number {
+    return step % max;
+}
+
+function identity(step: number): number {
+    return step;
+}
+
+function compose(f, g) {
+    return (...xs) => g(f(...xs));
+}
+
+function pipe(...fs) {
+    let h = fs.pop();
+    return (...xs) => fs.reduce((f, g) => compose(f, g), h)(...xs);
 }

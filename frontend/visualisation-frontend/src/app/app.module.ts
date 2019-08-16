@@ -23,6 +23,7 @@ import { PieDetailComponent } from './pages/detail/pie-detail/pie-detail.compone
 import { SentimentTableComponent } from './pages/detail/sentiment-table/sentiment-table.component';
 import { CommentTableComponent } from './pages/detail/comment-table/comment-table.component';
 import { BreadcrumbComponent } from './pages/breadcrumb/breadcrumb.component';
+import { SortFilterComponent } from './pages/visualisation/sort-filter/sort-filter.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { BreadcrumbComponent } from './pages/breadcrumb/breadcrumb.component';
     PieDetailComponent,
     SentimentTableComponent,
     CommentTableComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    SortFilterComponent
   ],
   imports: [
     BrowserModule,
