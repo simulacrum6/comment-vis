@@ -116,6 +116,6 @@ function compose(f, g) {
 }
 
 function pipe(...fs) {
-    let h = fs.pop();
-    return (...xs) => fs.reduce((f, g) => compose(f, g), h)(...xs);
+    let f = fs.shift();
+    return (...xs) => fs.reduce(compose, f)(...xs);
 }
