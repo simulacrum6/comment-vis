@@ -3,10 +3,4 @@
   <div #chartWrapper class="chart-wrapper">
     <app-pie [extractions]="extractions"></app-pie>
   </div>
-  <div *ngIf="showSubGroups">
-    <div *ngFor="let group of subGroups">
-      <div class="label">{{ group.name }}</div>
-      <app-pie [extractions]="group.extractions"></app-pie>
-    </div>
-  </div>
 </div>

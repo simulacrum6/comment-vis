@@ -24,25 +24,10 @@ export class PieCellComponent implements OnInit {
 
   @ViewChild('chartWrapper') chartWrapper: ElementRef;
 
-  private subType: 'aspect' | 'attribute';
-  private subGroups: { name: string, extractions: Extraction[], sizeRatio: number }[];
-  private showSubGroups = false;
-
   constructor() { }
 
   ngOnInit() {
-    this.subType = this.facetType === 'aspect' ? 'attribute' : 'aspect';
-    this.subGroups = Object.entries(Extractions.groupBy(this.extractions, this.subType))
-      .map(([name, extractions]) => ({
-        name,
-        extractions,
-        sizeRatio: extractions.length / this.extractions.length
-      }));
     this.setSize();
-  }
-
-  public toggleSubGroups() {
-    this.showSubGroups = !this.showSubGroups;
   }
 
   /** Sets the size of the Pie Cell. */
