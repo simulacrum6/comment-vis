@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Extraction, StringMap, Extractions, FacetType, FacetTypes } from 'src/app/models/canonical';
+import { Extraction, StringMap, Extractions, FacetType, FacetTypes, Model } from 'src/app/models/canonical';
 import { ModelService } from 'src/app/services/model.service';
-import { default as data } from 'src/app/models/foursquare_gold.ce.json';
+import { default as foursquare } from 'src/app/models/foursquare_gold.ce.json';
 import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -21,7 +21,7 @@ export class DetailViewBaseComponent implements OnInit {
     constructor(protected modelService: ModelService) {
         // TODO: remove after testing.
         if (!modelService.model) {
-        this.modelService.generateModelFromJson(data);
+         this.modelService.generateModelFromJson(foursquare);
         }
     }
 
@@ -30,11 +30,11 @@ export class DetailViewBaseComponent implements OnInit {
             map(FacetTypes.other)
         );
         this.extractions$ = combineLatest(this.facet$, this.facetType$).pipe(
-            map(([facet, facetType]) => Extractions.groupBy(this.modelService.model.rawExtractions, facetType)[facet])
+            map(([facet, facetType]) => this.modelService.model.getGroup(facet, facetType).extractions)
         );
 
         this.facetExists$ = this.extractions$.pipe(
-            map(extractions => extractions !== undefined)
+            map(extractions => extractions.length !== 0)
         );
 
         this.subGroups$ = combineLatest(this.extractions$, this.subGroupType$, this.facetExists$).pipe(

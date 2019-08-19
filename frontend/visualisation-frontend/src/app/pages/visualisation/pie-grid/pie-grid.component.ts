@@ -1,8 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModelService } from 'src/app/services/model.service';
-import { Extraction, Extractions, FacetType } from 'src/app/models/canonical';
+import { Extraction, Extractions, FacetType, ExtractionGroup } from 'src/app/models/canonical';
 import { Router } from '@angular/router';
 import { PageEvent } from '@angular/material';
+import { SentimentCount } from 'src/app/models/sentiment';
 
 @Component({
   selector: 'app-pie-grid',
@@ -15,7 +16,7 @@ export class PieGridComponent implements OnInit {
   @Input() scaleSize = true;
 
   // TODO: add type to model
-  private facetGroups: { name: string, extractions: Extraction[], sizeRatio: number }[];
+  private facetGroups: { name: string, extractions: Extraction[], sentimentCount: SentimentCount, sizeRatio: number }[];
   private selectedFacetGroups: { name: string, extractions: Extraction[], sizeRatio: number }[];
   private subGroupType: FacetType = 'attribute';
 
@@ -28,6 +29,7 @@ export class PieGridComponent implements OnInit {
   private currentPageSize = this.pageSizes[1];
   private currentPageIndex = 0;
 
+  // temporary properties for filter
   private sortBy = 'positive';
   public mappingFunction = (x) => x.extractions;
 
@@ -38,13 +40,11 @@ export class PieGridComponent implements OnInit {
   }
 
   public update() {
-    const extractions = this.modelService.model.rawExtractions;
-    const facetMap = Extractions.groupBy(extractions, this.facetType);
-    this.facetGroups = Object.entries(facetMap)
-      .map(([groupName, groupExtractions]) => ({
-        name: groupName,
-        extractions: groupExtractions,
-        sizeRatio: this.scaleSize ? groupExtractions.length / extractions.length : 0.25
+    const extractions = this.modelService.model.extractions;
+    this.facetGroups = this.modelService.model.getGroupList(this.facetType)
+      .map(group => ({
+        ...group,
+        sizeRatio: this.scaleSize ? group.extractions.length / extractions.length : 0.25
       }));
 
     this.updateSelectedFacetGroups();

@@ -11,6 +11,7 @@ export class Facet {
 }
 
 export type FacetProperty = 'text' | 'group';
+
 export type FacetType = 'attribute' | 'aspect';
 
 export class FacetTypes {
@@ -73,7 +74,7 @@ export const Extractions = {
 /**
  * A function, mapping an extraction to one of its property values.
  */
-export type PropertyMapper = (e: Extraction) => string;
+type PropertyMapper = (e: Extraction) => string;
 
 /**
  * Returns a PropertyMapper, based on the given property.
@@ -137,46 +138,126 @@ export function sentimentDifferential(extractions: Extraction[], normalized: boo
   return normalized ? differential / extractions.length : differential;
 }
 
+export class ExtractionGroup {
+  public readonly name: string;
+  public readonly extractions: Extraction[];
+  public readonly sentimentCount: SentimentCount;
+
+  constructor(name: string, extractions: Extraction[]) {
+    this.name = name;
+    this.extractions = extractions;
+    this.sentimentCount = SentimentCount.fromExtractions(extractions);
+  }
+}
+
 export class Model {
-  constructor(private extractions: Extraction[]) {
+
+  /**
+   * A cache of group maps for the model.
+   */
+  private groupMaps: {
+    aspect: StringMap<Extraction[]>,
+    attribute: StringMap<Extraction[]>,
+    comment: StringMap<Extraction[]>,
+    sentiment: StringMap<Extraction[]>
+  };
+
+  /**
+   * A cache of group lists for the model.
+   */
+  private groupLists: {
+    aspect: ExtractionGroup[],
+    attribute: ExtractionGroup[],
+    comment: ExtractionGroup[],
+    sentiment: ExtractionGroup[]
+  };
+
+  constructor(public readonly extractions: Extraction[]) {
+    this.groupMaps = { aspect: null, attribute: null, comment: null, sentiment: null };
+    this.groupLists = { aspect: null, attribute: null, comment: null, sentiment: null };
   }
 
-  get rawExtractions(): Extraction[] {
-    return this.extractions;
-  }
-
-  get rawAspects(): Facet[] {
+  get aspects(): Facet[] {
     return this.extractions.map(extraction => extraction.aspect);
   }
 
-  get rawAttributes(): Facet[] {
+  get attributes(): Facet[] {
     return this.extractions.map(extraction => extraction.attribute);
   }
 
-  get rawComments(): string[] {
+  get comments(): string[] {
     return this.extractions.map(extraction => extraction.comment);
   }
 
-  get rawSentiments(): Sentiment[] {
+  get sentiments(): Sentiment[] {
     return this.extractions.map(extraction => extraction.sentiment);
   }
 
+  /**
+   * Returns a map of the given ExtractionProperty Groups to its Extractions.
+   */
+  public getGroupMap(property: ExtractionProperty): StringMap<Extraction[]> {
+    if (this.groupMaps[property] === null) {
+      this.groupMaps[property] = Extractions.groupBy(this.extractions, property);
+    }
+
+    return this.groupMaps[property];
+  }
+
+  /**
+   * Returns a map of all aspect group names to their Extractions.
+   */
   get aspectGroupMap(): StringMap<Extraction[]> {
-    return Extractions.groupBy(this.extractions, 'aspect');
+    return this.getGroupMap('aspect');
   }
 
+  /**
+   * Returns a map of all attribute group names to their Extractions.
+   */
   get attributeGroupMap(): StringMap<Extraction[]> {
-    return Extractions.groupBy(this.extractions, 'attribute');
+    return this.getGroupMap('attribute');
   }
 
-  get aspectGroups(): Extraction[][] {
-    const groupMap = this.aspectGroupMap;
-    return Object.keys(groupMap).map(key => groupMap[key]);
+  /**
+   * Returns a list of all ExtractionGroups of the given ExtractionProperty in the model.
+   */
+  public getGroupList(property: ExtractionProperty): ExtractionGroup[] {
+    if (this.groupLists[property] === null) {
+      this.groupLists[property] = Object.entries(this.getGroupMap(property))
+        .map(entry => new ExtractionGroup(...entry));
+    }
+
+    return this.groupLists[property];
   }
 
-  get attributeGroups(): Extraction[][] {
-    const groupMap = this.attributeGroupMap;
-    return Object.keys(groupMap).map(key => groupMap[key]);
+  /**
+   * Returns a list of all Aspect ExtractionGroups in the model.
+   */
+  get aspectGroupList(): ExtractionGroup[] {
+    return this.getGroupList('aspect');
+  }
+
+  /**
+   * Returns a list of all Attribute ExtractionGroups in the model.
+   */
+  get attributeGroupList(): ExtractionGroup[] {
+    return this.getGroupList('attribute');
+  }
+
+  /**
+   * Returns the ExtractionGroup for the given property.
+   * @param name  The name of the group.
+   * @param property  The ExtractionProperty to which the group belongs.
+   * @return  The corresponding ExtractionGroup, empty ExtractionGroup if group does not exist.
+   */
+  public getGroup(name: string, property: ExtractionProperty): ExtractionGroup {
+    const extractions = this.getGroupMap(property)[name];
+
+    if (extractions === undefined) {
+      return new ExtractionGroup(name, []);
+    }
+
+    return new ExtractionGroup(name, extractions);
   }
 }
 

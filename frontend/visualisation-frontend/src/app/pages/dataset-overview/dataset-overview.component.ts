@@ -83,7 +83,7 @@ export class DatasetOverviewComponent implements OnInit {
     if (!this.modelService.model) {
       this.modelService.generateModelFromJson(foursquare);
     }
-    this.extractions = modelService.model.rawExtractions;
+    this.extractions = modelService.model.extractions;
     this.values = {
       attribute: Extractions.values(this.extractions, 'attribute'),
       aspect: Extractions.values(this.extractions, 'aspect'),

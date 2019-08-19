@@ -54,7 +54,7 @@ export class TreeMapComponent implements OnInit {
   ngOnInit() {
     this.otherType = this.facetType === 'aspect' ? 'attribute' : 'aspect';
     this.resetData();
-    const extractions = this.modelService.model.rawExtractions;
+    const extractions = this.modelService.model.extractions;
     const facetMap = Extractions.groupBy(extractions, this.facetType);
     const entries = Object.entries(facetMap).map(this.toTableEntry);
     const subEntries = Object.entries(facetMap).map(entry => this.toNestedTableEntries(entry));
