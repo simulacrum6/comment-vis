@@ -1,11 +1,21 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Extraction, ExtractionGroup } from 'src/app/models/canonical';
+import { Extraction, ExtractionGroup, Extractions } from 'src/app/models/canonical';
 import { SentimentCount, Sentiment } from 'src/app/models/sentiment';
-import { map } from 'rxjs/operators';
 import { MatSelectChange } from '@angular/material';
 
 // TODO: Move to separate file.
+export interface SortOption {
+  viewValue: string;
+  sortFunction: (a: any, b: any) => number;
+  value?: any;
+}
+
+export interface SortOptionGroup {
+  name: string;
+  members: SortOption[];
+}
+
 function sentimentSorter(sentiment: Sentiment) {
   return (a: ExtractionGroup, b: ExtractionGroup) => {
     const countA = a.sentimentCount[sentiment];
@@ -14,7 +24,54 @@ function sentimentSorter(sentiment: Sentiment) {
   };
 }
 
+function controversy(counts: SentimentCount) {
+  const difference = counts.positive - counts.negative;
+  const sum = counts.positive + counts.negative;
+  return 1 / ((Math.abs(difference) + 1) / (sum));
+}
+
+function sortByControversy(a: ExtractionGroup, b: ExtractionGroup) {
+  return controversy(a.sentimentCount) - controversy(b.sentimentCount);
+}
+
 function identity(a: ExtractionGroup, b: ExtractionGroup) { return 0; }
+
+const noSortOption: SortOption = { value: 'none', viewValue: '--', sortFunction: identity};
+
+const sentimentOptions: SortOption[] = [
+  { value: 'controvery', viewValue: 'controversial', sortFunction: sortByControversy },
+  { value: 'positive', viewValue: 'positive', sortFunction: sentimentSorter(Sentiment.Positive) },
+  { value: 'neutral', viewValue: 'neutral', sortFunction: sentimentSorter(Sentiment.Neutral) },
+  { value: 'negative', viewValue: 'negative', sortFunction: sentimentSorter(Sentiment.Negative) }
+];
+
+function sortByExtractionLength(a: ExtractionGroup, b: ExtractionGroup) {
+  return a.extractions.length - b.extractions.length;
+}
+
+function sortByAspects(a: ExtractionGroup, b: ExtractionGroup) {
+  const property = 'aspect';
+  return Extractions.groupByFlat(a.extractions, property).length - Extractions.groupByFlat(b.extractions, property).length;
+}
+
+function sortByAttributes(a: ExtractionGroup, b: ExtractionGroup) {
+  const property = 'attribute';
+  return Extractions.groupByFlat(a.extractions, property).length - Extractions.groupByFlat(b.extractions, property).length;
+}
+
+function sortByComments(a: ExtractionGroup, b: ExtractionGroup) {
+  const property = 'comment';
+  return Extractions.groupByFlat(a.extractions, property).length - Extractions.groupByFlat(b.extractions, property).length;
+}
+
+const extractionOptions = [
+  { viewValue: 'talked about', sortFunction: sortByExtractionLength },
+  { viewValue: 'comments', sortFunction: sortByComments },
+  { viewValue: 'subtopics', sortFunction: sortByAspects },
+  { viewValue: 'aspects', sortFunction: sortByAttributes },
+  // TODO: Implement { viewValue: 'most subtopics', sortFunction: identity },
+];
+
 
 @Component({
   selector: 'app-sort-filter',
@@ -23,19 +80,25 @@ function identity(a: ExtractionGroup, b: ExtractionGroup) { return 0; }
 })
 export class SortFilterComponent implements OnInit {
 
-  private sortOptions = [
-    { value: 'none', viewValue: '--', sortFunction: identity},
-    { value: 'positive', viewValue: 'Most Positive Sentiments', sortFunction: sentimentSorter(Sentiment.Positive)},
-    { value: 'neutral', viewValue: 'Most Neutral Sentiments', sortFunction: sentimentSorter(Sentiment.Neutral)},
-    { value: 'negative', viewValue: 'Most Negative Sentiments', sortFunction: sentimentSorter(Sentiment.Negative)}
+  private noSortOption: SortOption = noSortOption;
+
+  private sortOptions: SortOptionGroup[] = [
+    { name: 'Sentiment', members: sentimentOptions },
+    { name: 'Topic', members: extractionOptions },
   ];
 
   private sortOrderOptions = [
-    { value: 'descending', viewValue: 'Descending'},
-    { value: 'ascending', viewValue: 'Ascending'}
+    { value: 'descending', viewValue: 'Descending' },
+    { value: 'ascending', viewValue: 'Ascending' }
   ];
 
   private data$: BehaviorSubject<ExtractionGroup[]>;
+
+  private sortFunction: (a: ExtractionGroup, b: ExtractionGroup) => number = identity;
+
+  private get noSort(): boolean {
+    return this.sortFunction === identity;
+  }
 
   @Input() sortOrder: 'ascending' | 'descending' = 'descending';
 
@@ -65,11 +128,7 @@ export class SortFilterComponent implements OnInit {
    */
   @Output('filter') filter$: EventEmitter<ExtractionGroup[]>;
 
-  private get noSort(): boolean {
-    return this.sortFunction === identity;
-  }
 
-  private sortFunction: (a: ExtractionGroup, b: ExtractionGroup) => number = identity;
 
   constructor() {
     this.data$ = new BehaviorSubject<ExtractionGroup[]>([]);
@@ -77,9 +136,7 @@ export class SortFilterComponent implements OnInit {
    }
 
   ngOnInit() {
-    this.data$.pipe(
-      map(extractionGroups => this.sortData(extractionGroups))
-    ).subscribe(this.sort$);
+    this.sort$.emit(this.sortData(this.data));
   }
 
   sortData(extractions: ExtractionGroup[]): ExtractionGroup[] {
@@ -87,7 +144,7 @@ export class SortFilterComponent implements OnInit {
 
     data.sort(this.sortFunction);
 
-    if (this.sortFunction !== identity && this.sortOrder === 'descending') {
+    if (!this.noSort && this.sortOrder === 'descending') {
       data.reverse();
     }
 

@@ -2,9 +2,13 @@
   <mat-select placeholder="Sort by..."
     [(ngModel)]="sortFunction"
     (selectionChange)="onSortOptionChange($event)">
-    <mat-option *ngFor="let option of sortOptions" [value]="option.sortFunction">
-      {{ option.viewValue }}
-    </mat-option>
+    <mat-option [value]="noSortOption.sortFunction">{{ noSortOption.viewValue }}</mat-option>
+    <mat-optgroup *ngFor="let group of sortOptions" [label]="group.name">
+      <mat-option *ngFor="let option of group.members" [value]="option.sortFunction">
+        {{ sortOrder === 'ascending' ? 'least' : 'most' }} {{ option.viewValue }}
+      </mat-option>
+    </mat-optgroup>
+
   </mat-select>
 </mat-form-field>
 <mat-form-field>
@@ -13,7 +17,7 @@
     placeholder="Order"
     [(ngModel)]="sortOrder"
     (selectionChange)="onSortOrderChange($event)">
-    <mat-option *ngFor="let option of sortOrderOptions" [value]="option.value">
+    <mat-option #sortOrder *ngFor="let option of sortOrderOptions" [value]="option.value">
       {{ option.viewValue }}
     </mat-option>
   </mat-select>

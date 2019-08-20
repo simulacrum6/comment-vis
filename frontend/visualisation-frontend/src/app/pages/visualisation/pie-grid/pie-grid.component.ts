@@ -1,9 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModelService } from 'src/app/services/model.service';
-import { Extraction, Extractions, FacetType, ExtractionGroup } from 'src/app/models/canonical';
+import { Extraction, FacetType, ExtractionGroup } from 'src/app/models/canonical';
 import { Router } from '@angular/router';
 import { PageEvent } from '@angular/material';
 import { SentimentCount } from 'src/app/models/sentiment';
+
+interface PieExtractionGroup extends ExtractionGroup {
+  sizeRatio: number;
+}
 
 @Component({
   selector: 'app-pie-grid',
@@ -16,9 +20,9 @@ export class PieGridComponent implements OnInit {
   @Input() scaleSize = true;
 
   // TODO: add type to model
-  private facetGroups: { name: string, extractions: Extraction[], sentimentCount: SentimentCount, sizeRatio: number }[];
-  private sortedFacetGroups: { name: string, extractions: Extraction[], sentimentCount: SentimentCount, sizeRatio: number }[];
-  private selectedFacetGroups: { name: string, extractions: Extraction[], sizeRatio: number }[];
+  private facetGroups: PieExtractionGroup[];
+  private sortedFacetGroups: PieExtractionGroup[];
+  private selectedFacetGroups: PieExtractionGroup[];
   private subGroupType: FacetType = 'attribute';
 
   private breadCrumbPaths = [
