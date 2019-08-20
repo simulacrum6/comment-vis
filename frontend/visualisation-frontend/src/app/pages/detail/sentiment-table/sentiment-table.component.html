@@ -1,3 +1,4 @@
+<app-sort-filter [data]="groups" (processed)="onSortFilter($event)"></app-sort-filter>
 <table mat-table [dataSource]="tableData">
   <ng-container cdkColumnDef="group">
     <th mat-header-cell *matHeaderCellDef> {{ facetType }} </th>

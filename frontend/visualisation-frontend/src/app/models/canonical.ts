@@ -68,8 +68,21 @@ export const Extractions = {
    * @param facetProperty _(optional)_ determines whether 'group' or 'text' should be mapped for facet properties, defaults to 'group'.
    * @param mapper _(optional)_ the mapping function to be used
    */
-  values: mapToPropertyValues
+  values: mapToPropertyValues,
+  toGroups: mapToExtractionGroups
 };
+
+export class ExtractionGroup {
+  public readonly name: string;
+  public readonly extractions: Extraction[];
+  public readonly sentimentCount: SentimentCount;
+
+  constructor(name: string, extractions: Extraction[]) {
+    this.name = name;
+    this.extractions = extractions;
+    this.sentimentCount = SentimentCount.fromExtractions(extractions);
+  }
+}
 
 /**
  * A function, mapping an extraction to one of its property values.
@@ -127,6 +140,12 @@ function groupByFlat(extractions: Extraction[],
   return Object.values(groupMap);
 }
 
+function mapToExtractionGroups(extractions: Extraction[], property: ExtractionProperty, facetProperty: FacetProperty = 'group') {
+  const groupMap = groupBy(extractions, property, facetProperty);
+  return Object.entries(groupMap).map(entry => new ExtractionGroup(...entry));
+}
+
+// TODO: move to sentiment?
 /**
  * Calculates the difference in Sentiment for the given extractions.
  */
@@ -136,18 +155,6 @@ export function sentimentDifferential(extractions: Extraction[], normalized: boo
     .map(mapToNumber)
     .reduce(sum);
   return normalized ? differential / extractions.length : differential;
-}
-
-export class ExtractionGroup {
-  public readonly name: string;
-  public readonly extractions: Extraction[];
-  public readonly sentimentCount: SentimentCount;
-
-  constructor(name: string, extractions: Extraction[]) {
-    this.name = name;
-    this.extractions = extractions;
-    this.sentimentCount = SentimentCount.fromExtractions(extractions);
-  }
 }
 
 export class Model {
