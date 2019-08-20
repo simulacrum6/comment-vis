@@ -1,20 +1,20 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Extraction, ExtractionGroup } from 'src/app/models/canonical';
-import { SentimentCount } from 'src/app/models/sentiment';
+import { SentimentCount, Sentiment } from 'src/app/models/sentiment';
 import { map } from 'rxjs/operators';
+import { MatSelectChange } from '@angular/material';
 
-const sortOptions: any = [
-  { value: 'none', viewValue: 'None'},
-  { value: 'positive', viewValue: 'Positive Sentiments'},
-  { value: 'neutral', viewValue: 'Neutral Sentiments'},
-  { value: 'negative', viewValue: 'Negative Sentiments'}
-];
+// TODO: Move to separate file.
+function sentimentSorter(sentiment: Sentiment) {
+  return (a: ExtractionGroup, b: ExtractionGroup) => {
+    const countA = a.sentimentCount[sentiment];
+    const countB = b.sentimentCount[sentiment];
+    return countA - countB;
+  };
+}
 
-const sortOrderOptions: any = [
-  { value: 'descending', viewValue: 'Descending'},
-  { value: 'ascending', viewValue: 'Ascending'}
-];
+function identity(a: ExtractionGroup, b: ExtractionGroup) { return 0; }
 
 @Component({
   selector: 'app-sort-filter',
@@ -23,11 +23,21 @@ const sortOrderOptions: any = [
 })
 export class SortFilterComponent implements OnInit {
 
+  private sortOptions = [
+    { value: 'none', viewValue: '--', sortFunction: identity},
+    { value: 'positive', viewValue: 'Most Positive Sentiments', sortFunction: sentimentSorter(Sentiment.Positive)},
+    { value: 'neutral', viewValue: 'Most Neutral Sentiments', sortFunction: sentimentSorter(Sentiment.Neutral)},
+    { value: 'negative', viewValue: 'Most Negative Sentiments', sortFunction: sentimentSorter(Sentiment.Negative)}
+  ];
+
+  private sortOrderOptions = [
+    { value: 'descending', viewValue: 'Descending'},
+    { value: 'ascending', viewValue: 'Ascending'}
+  ];
+
   private data$: BehaviorSubject<ExtractionGroup[]>;
 
-  @Input() sortBy = 'none';
-
-  @Input() sortOrder: 'ascending' | 'descending' = 'ascending';
+  @Input() sortOrder: 'ascending' | 'descending' = 'descending';
 
   /**
    * The data to be sorted.
@@ -42,48 +52,55 @@ export class SortFilterComponent implements OnInit {
   /**
    * Emits processed data whenever data has either been filtered or sorted.
    */
-  @Output() processed: EventEmitter<ExtractionGroup[]>;
+  @Output('processed') processed$: EventEmitter<ExtractionGroup[]>;
 
   /**
    * Emits processed data, whenever data has been sorted.
    */
-  @Output() sort: EventEmitter<ExtractionGroup[]>;
-
+  @Output('sort') sort$: EventEmitter<ExtractionGroup[]>;
 
   // TODO: Implement
   /**
    * Emits processed data, whenever data has been filtered.
    */
-  @Output() filter: EventEmitter<ExtractionGroup[]>;
+  @Output('filter') filter$: EventEmitter<ExtractionGroup[]>;
 
-  private sortingFunction = (a: ExtractionGroup, b: ExtractionGroup) => {
-    const countA = a.sentimentCount[this.sortBy];
-    const countB = b.sentimentCount[this.sortBy];
-    return countA - countB;
+  private get noSort(): boolean {
+    return this.sortFunction === identity;
   }
+
+  private sortFunction: (a: ExtractionGroup, b: ExtractionGroup) => number = identity;
 
   constructor() {
     this.data$ = new BehaviorSubject<ExtractionGroup[]>([]);
-    this.sort = new EventEmitter<ExtractionGroup[]>();
+    this.sort$ = new EventEmitter<ExtractionGroup[]>();
    }
 
   ngOnInit() {
     this.data$.pipe(
       map(extractionGroups => this.sortData(extractionGroups))
-    ).subscribe(this.sort);
+    ).subscribe(this.sort$);
   }
 
   sortData(extractions: ExtractionGroup[]): ExtractionGroup[] {
     const data = extractions.slice();
 
-    if (this.sortBy !== 'none') {
-      data.sort(this.sortingFunction);
-    }
+    data.sort(this.sortFunction);
 
-    if (this.sortOrder !== 'ascending') {
+    if (this.sortFunction !== identity && this.sortOrder === 'descending') {
       data.reverse();
     }
 
     return data;
+  }
+
+  public onSortOptionChange(change: MatSelectChange) {
+    this.sortFunction = change.value;
+    this.sort$.emit(this.sortData(this.data));
+  }
+
+  public onSortOrderChange(change: MatSelectChange) {
+    this.sortOrder = change.value;
+    this.sort$.emit(this.sortData(this.data));
   }
 }

@@ -7,14 +7,19 @@
       Click on a {{ facetType }} to see more details. <br>
       Use the toggle to switch between aspects and attributes.
     </p>
-    <div #toggle fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
-      <label>Attribute</label>
-      <mat-slide-toggle
-        color="primary"
-        (change)="toggleTypes()"
-        checked="true">
-        Aspect
-      </mat-slide-toggle>
+    <div #toggle fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px">
+      <div>
+          <label>Attribute</label>
+          <mat-slide-toggle
+            color="primary"
+            (change)="toggleTypes()"
+            checked="true">
+            Aspect
+          </mat-slide-toggle>
+      </div>
+      <div>
+        <app-sort-filter [data]="facetGroups" (sort)="onSort($event)"></app-sort-filter>
+      </div>
     </div>
     <div class='pie-grid'
     fxLayout="row wrap"
@@ -33,6 +38,5 @@
       [pageSizeOptions]="pageSizes"
       (page)=updatePage($event)>
     </mat-paginator>
-    <app-sort-filter [data]="facetGroups" [sortBy]="sortBy" (sort)="onSort($event)"></app-sort-filter>
   </mat-card-content>
 </mat-card>

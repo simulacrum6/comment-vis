@@ -1,3 +1,20 @@
-<p>
-  sort-filter works!
-</p>
+<mat-form-field>
+  <mat-select placeholder="Sort by..."
+    [(ngModel)]="sortFunction"
+    (selectionChange)="onSortOptionChange($event)">
+    <mat-option *ngFor="let option of sortOptions" [value]="option.sortFunction">
+      {{ option.viewValue }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<mat-form-field>
+  <mat-select
+    [disabled]="noSort"
+    placeholder="Order"
+    [(ngModel)]="sortOrder"
+    (selectionChange)="onSortOrderChange($event)">
+    <mat-option *ngFor="let option of sortOrderOptions" [value]="option.value">
+      {{ option.viewValue }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
