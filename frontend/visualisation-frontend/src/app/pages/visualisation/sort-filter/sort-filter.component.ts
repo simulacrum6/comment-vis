@@ -1,8 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { BehaviorSubject, Subscription, Observable } from 'rxjs';
 import { Extraction, ExtractionGroup, Extractions } from 'src/app/models/canonical';
 import { SentimentCount, Sentiment } from 'src/app/models/sentiment';
 import { MatSelectChange } from '@angular/material';
+import { merge } from 'rxjs';
 
 // TODO: Move to separate file.
 export interface SortOption {
@@ -67,9 +68,6 @@ function sortByComments(a: ExtractionGroup, b: ExtractionGroup) {
 const extractionOptions = [
   { viewValue: 'talked about', sortFunction: sortByExtractionLength },
   { viewValue: 'comments', sortFunction: sortByComments },
-  { viewValue: 'subtopics', sortFunction: sortByAspects },
-  { viewValue: 'aspects', sortFunction: sortByAttributes },
-  // TODO: Implement { viewValue: 'most subtopics', sortFunction: identity },
 ];
 
 
@@ -92,8 +90,6 @@ export class SortFilterComponent implements OnInit {
     { value: 'ascending', viewValue: 'Ascending' }
   ];
 
-  private data$: BehaviorSubject<ExtractionGroup[]>;
-
   private sortFunction: (a: ExtractionGroup, b: ExtractionGroup) => number = identity;
 
   private get noSort(): boolean {
@@ -105,17 +101,7 @@ export class SortFilterComponent implements OnInit {
   /**
    * The data to be sorted.
    */
-  @Input() set data(value: any[]) {
-    this.data$.next(value);
-  }
-  get data() {
-    return this.data$.getValue();
-  }
-
-  /**
-   * Emits processed data whenever data has either been filtered or sorted.
-   */
-  @Output('processed') processed$: EventEmitter<ExtractionGroup[]>;
+  @Input() data: ExtractionGroup[];
 
   /**
    * Emits processed data, whenever data has been sorted.
@@ -128,19 +114,24 @@ export class SortFilterComponent implements OnInit {
    */
   @Output('filter') filter$: EventEmitter<ExtractionGroup[]>;
 
+  /**
+   * Emits processed data whenever data has either been filtered or sorted.
+   */
+  @Output('processed') processed$: Observable<ExtractionGroup[]>;
 
 
   constructor() {
-    this.data$ = new BehaviorSubject<ExtractionGroup[]>([]);
     this.sort$ = new EventEmitter<ExtractionGroup[]>();
+    this.filter$ = new EventEmitter<ExtractionGroup[]>();
+    this.processed$ = merge(this.sort$, this.filter$) as Observable<ExtractionGroup[]>;
    }
 
   ngOnInit() {
-    this.sort$.emit(this.sortData(this.data));
+    this.sort$.emit(this.sortData());
   }
 
-  sortData(extractions: ExtractionGroup[]): ExtractionGroup[] {
-    const data = extractions.slice();
+  sortData(): ExtractionGroup[] {
+    const data = this.data.slice();
 
     data.sort(this.sortFunction);
 
@@ -152,12 +143,10 @@ export class SortFilterComponent implements OnInit {
   }
 
   public onSortOptionChange(change: MatSelectChange) {
-    this.sortFunction = change.value;
-    this.sort$.emit(this.sortData(this.data));
+    this.sort$.emit(this.sortData());
   }
 
   public onSortOrderChange(change: MatSelectChange) {
-    this.sortOrder = change.value;
-    this.sort$.emit(this.sortData(this.data));
+    this.sort$.emit(this.sortData());
   }
 }

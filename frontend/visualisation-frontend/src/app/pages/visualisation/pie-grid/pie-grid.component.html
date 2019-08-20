@@ -18,7 +18,7 @@
           </mat-slide-toggle>
       </div>
       <div>
-        <app-sort-filter [data]="facetGroups" (sort)="onSort($event)"></app-sort-filter>
+        <app-sort-filter [data]="facetGroups" (processed)="onSort($event)"></app-sort-filter>
       </div>
     </div>
     <div class='pie-grid'
