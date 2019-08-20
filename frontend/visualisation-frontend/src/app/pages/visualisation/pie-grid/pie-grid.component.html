@@ -33,6 +33,6 @@
       [pageSizeOptions]="pageSizes"
       (page)=updatePage($event)>
     </mat-paginator>
-    <app-sort-filter [data]="selectedFacetGroups" [dataAccessor]="mappingFunction" [sortBy]="sortBy" (sort)="log($event)"></app-sort-filter>
+    <app-sort-filter [data]="facetGroups" [sortBy]="sortBy" (sort)="onSort($event)"></app-sort-filter>
   </mat-card-content>
 </mat-card>

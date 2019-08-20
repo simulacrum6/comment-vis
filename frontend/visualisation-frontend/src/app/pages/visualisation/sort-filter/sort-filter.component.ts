@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Extraction } from 'src/app/models/canonical';
+import { Extraction, ExtractionGroup } from 'src/app/models/canonical';
 import { SentimentCount } from 'src/app/models/sentiment';
 import { map } from 'rxjs/operators';
 
@@ -23,15 +23,15 @@ const sortOrderOptions: any = [
 })
 export class SortFilterComponent implements OnInit {
 
-  private data$: BehaviorSubject<Extraction[][]>;
+  private data$: BehaviorSubject<ExtractionGroup[]>;
 
   @Input() sortBy = 'none';
 
   @Input() sortOrder: 'ascending' | 'descending' = 'ascending';
 
-  // TODO: Implement cleanly
-  @Input() dataAccessor: (any) => Extraction[] = (x) => x;
-
+  /**
+   * The data to be sorted.
+   */
   @Input() set data(value: any[]) {
     this.data$.next(value);
   }
@@ -42,42 +42,42 @@ export class SortFilterComponent implements OnInit {
   /**
    * Emits processed data whenever data has either been filtered or sorted.
    */
-  @Output() processed: EventEmitter<Extraction[][]>;
+  @Output() processed: EventEmitter<ExtractionGroup[]>;
 
   /**
    * Emits processed data, whenever data has been sorted.
    */
-  @Output() sort: EventEmitter<Extraction[][]>;
+  @Output() sort: EventEmitter<ExtractionGroup[]>;
 
 
   // TODO: Implement
   /**
    * Emits processed data, whenever data has been filtered.
    */
-  @Output() filter: EventEmitter<Extraction[][]>;
+  @Output() filter: EventEmitter<ExtractionGroup[]>;
 
-  private sortingFunction = (a: Extraction[], b: Extraction[]) => {
-    const countA = SentimentCount.fromExtractions(a)[this.sortBy];
-    const countB = SentimentCount.fromExtractions(b)[this.sortBy];
+  private sortingFunction = (a: ExtractionGroup, b: ExtractionGroup) => {
+    const countA = a.sentimentCount[this.sortBy];
+    const countB = b.sentimentCount[this.sortBy];
     return countA - countB;
   }
 
   constructor() {
-    this.data$ = new BehaviorSubject<Extraction[][]>([]);
-    this.sort = new EventEmitter<Extraction[][]>();
+    this.data$ = new BehaviorSubject<ExtractionGroup[]>([]);
+    this.sort = new EventEmitter<ExtractionGroup[]>();
    }
 
   ngOnInit() {
     this.data$.pipe(
-      map(data => data.map(this.dataAccessor)),
       map(extractionGroups => this.sortData(extractionGroups))
     ).subscribe(this.sort);
   }
 
-  sortData(extractions: Extraction[][]): Extraction[][] {
-    let data = extractions.slice();
+  sortData(extractions: ExtractionGroup[]): ExtractionGroup[] {
+    const data = extractions.slice();
+
     if (this.sortBy !== 'none') {
-      data = data.sort(this.sortingFunction);
+      data.sort(this.sortingFunction);
     }
 
     if (this.sortOrder !== 'ascending') {

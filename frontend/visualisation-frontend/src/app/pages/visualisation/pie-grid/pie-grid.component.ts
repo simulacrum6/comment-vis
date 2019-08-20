@@ -17,6 +17,7 @@ export class PieGridComponent implements OnInit {
 
   // TODO: add type to model
   private facetGroups: { name: string, extractions: Extraction[], sentimentCount: SentimentCount, sizeRatio: number }[];
+  private sortedFacetGroups: { name: string, extractions: Extraction[], sentimentCount: SentimentCount, sizeRatio: number }[];
   private selectedFacetGroups: { name: string, extractions: Extraction[], sizeRatio: number }[];
   private subGroupType: FacetType = 'attribute';
 
@@ -31,7 +32,6 @@ export class PieGridComponent implements OnInit {
 
   // temporary properties for filter
   private sortBy = 'positive';
-  public mappingFunction = (x) => x.extractions;
 
   constructor(private modelService: ModelService, private router: Router) { }
 
@@ -46,6 +46,7 @@ export class PieGridComponent implements OnInit {
         ...group,
         sizeRatio: this.scaleSize ? group.extractions.length / extractions.length : 0.25
       }));
+    this.sortedFacetGroups = this.facetGroups.slice();
 
     this.updateSelectedFacetGroups();
   }
@@ -59,7 +60,7 @@ export class PieGridComponent implements OnInit {
   private updateSelectedFacetGroups() {
     const start = this.currentPageIndex * this.currentPageSize;
     const end = (this.currentPageIndex + 1) * this.currentPageSize;
-    this.selectedFacetGroups = this.facetGroups.slice(start, end);
+    this.selectedFacetGroups = this.sortedFacetGroups.slice(start, end);
   }
 
   public navigateToDetailPage(facet: string, facetType: FacetType) {
@@ -74,7 +75,8 @@ export class PieGridComponent implements OnInit {
     this.update();
   }
 
-  private log($event: any) {
-    console.log($event);
+  public onSort($event: { name: string, extractions: Extraction[], sentimentCount: SentimentCount, sizeRatio: number }[]) {
+    this.sortedFacetGroups = $event;
+    this.updateSelectedFacetGroups();
   }
 }
