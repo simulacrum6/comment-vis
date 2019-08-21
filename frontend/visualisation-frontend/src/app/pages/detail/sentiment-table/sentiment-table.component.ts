@@ -38,8 +38,6 @@ export class SentimentTableComponent implements OnInit, OnChanges {
   private displayGroups: ExtractionGroup[];
   private tableData: MatTableDataSource<SentimentCountRow>;
 
-
-
   constructor(private router: Router) { }
 
   ngOnInit() {

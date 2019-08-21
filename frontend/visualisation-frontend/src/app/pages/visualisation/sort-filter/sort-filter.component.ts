@@ -1,75 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Subscription, Observable } from 'rxjs';
-import { Extraction, ExtractionGroup, Extractions } from 'src/app/models/canonical';
-import { SentimentCount, Sentiment } from 'src/app/models/sentiment';
+import { Observable } from 'rxjs';
+import { ExtractionGroup } from 'src/app/models/canonical';
 import { MatSelectChange } from '@angular/material';
 import { merge } from 'rxjs';
-
-// TODO: Move to separate file.
-export interface SortOption {
-  viewValue: string;
-  sortFunction: (a: any, b: any) => number;
-  value?: any;
-}
-
-export interface SortOptionGroup {
-  name: string;
-  members: SortOption[];
-}
-
-function sentimentSorter(sentiment: Sentiment) {
-  return (a: ExtractionGroup, b: ExtractionGroup) => {
-    const countA = a.sentimentCount[sentiment];
-    const countB = b.sentimentCount[sentiment];
-    return countA - countB;
-  };
-}
-
-function controversy(counts: SentimentCount) {
-  const difference = counts.positive - counts.negative;
-  const sum = counts.positive + counts.negative;
-  return 1 / ((Math.abs(difference) + 1) / (sum));
-}
-
-function sortByControversy(a: ExtractionGroup, b: ExtractionGroup) {
-  return controversy(a.sentimentCount) - controversy(b.sentimentCount);
-}
-
-function identity(a: ExtractionGroup, b: ExtractionGroup) { return 0; }
-
-const noSortOption: SortOption = { value: 'none', viewValue: '--', sortFunction: identity};
-
-const sentimentOptions: SortOption[] = [
-  { value: 'controvery', viewValue: 'controversial', sortFunction: sortByControversy },
-  { value: 'positive', viewValue: 'positive', sortFunction: sentimentSorter(Sentiment.Positive) },
-  { value: 'neutral', viewValue: 'neutral', sortFunction: sentimentSorter(Sentiment.Neutral) },
-  { value: 'negative', viewValue: 'negative', sortFunction: sentimentSorter(Sentiment.Negative) }
-];
-
-function sortByExtractionLength(a: ExtractionGroup, b: ExtractionGroup) {
-  return a.extractions.length - b.extractions.length;
-}
-
-function sortByAspects(a: ExtractionGroup, b: ExtractionGroup) {
-  const property = 'aspect';
-  return Extractions.groupByFlat(a.extractions, property).length - Extractions.groupByFlat(b.extractions, property).length;
-}
-
-function sortByAttributes(a: ExtractionGroup, b: ExtractionGroup) {
-  const property = 'attribute';
-  return Extractions.groupByFlat(a.extractions, property).length - Extractions.groupByFlat(b.extractions, property).length;
-}
-
-function sortByComments(a: ExtractionGroup, b: ExtractionGroup) {
-  const property = 'comment';
-  return Extractions.groupByFlat(a.extractions, property).length - Extractions.groupByFlat(b.extractions, property).length;
-}
-
-const extractionOptions = [
-  { viewValue: 'talked about', sortFunction: sortByExtractionLength },
-  { viewValue: 'comments', sortFunction: sortByComments },
-];
-
+import { SortOption, SortOptions, SortOptionGroup, SortOptionGroups, SortFunctions, SortOrder, SortOrderOption } from './sort';
 
 @Component({
   selector: 'app-sort-filter',
@@ -78,25 +12,25 @@ const extractionOptions = [
 })
 export class SortFilterComponent implements OnInit {
 
-  private noSortOption: SortOption = noSortOption;
+  private noSortOption: SortOption = SortOptions.options.noSort;
 
   private sortOptions: SortOptionGroup[] = [
-    { name: 'Sentiment', members: sentimentOptions },
-    { name: 'Topic', members: extractionOptions },
+    SortOptionGroups.sentiment,
+    SortOptionGroups.topics
   ];
 
-  private sortOrderOptions = [
-    { value: 'descending', viewValue: 'Descending' },
-    { value: 'ascending', viewValue: 'Ascending' }
+  private sortOrderOptions: SortOrderOption[] = [
+    { order: 'descending', viewValue: 'Descending' },
+    { order: 'ascending', viewValue: 'Ascending' }
   ];
 
-  private sortFunction: (a: ExtractionGroup, b: ExtractionGroup) => number = identity;
+  private sortFunction: (a: ExtractionGroup, b: ExtractionGroup) => number = SortFunctions.noSort;
 
   private get noSort(): boolean {
-    return this.sortFunction === identity;
+    return this.sortFunction === SortFunctions.noSort;
   }
 
-  @Input() sortOrder: 'ascending' | 'descending' = 'descending';
+  @Input() sortOrder: SortOrder = 'descending';
 
   /**
    * The data to be sorted.

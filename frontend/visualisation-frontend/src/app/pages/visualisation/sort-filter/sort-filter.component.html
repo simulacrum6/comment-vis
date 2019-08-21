@@ -6,7 +6,7 @@
     <mat-option [value]="noSortOption.sortFunction">{{ noSortOption.viewValue }}</mat-option>
     <mat-optgroup *ngFor="let group of sortOptions" [label]="group.name">
       <mat-option *ngFor="let option of group.members" [value]="option.sortFunction">
-        {{ sortOrder === 'ascending' ? 'least' : 'most' }} {{ option.viewValue }}
+        {{ option.viewValue }}
       </mat-option>
     </mat-optgroup>
 
@@ -18,7 +18,7 @@
     [disabled]="noSort"
     [(ngModel)]="sortOrder"
     (selectionChange)="onSortOrderChange($event)">
-    <mat-option #sortOrder *ngFor="let option of sortOrderOptions" [value]="option.value">
+    <mat-option #sortOrder *ngFor="let option of sortOrderOptions" [value]="option.order">
       {{ option.viewValue }}
     </mat-option>
   </mat-select>

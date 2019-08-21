@@ -111,3 +111,9 @@ export function mapToSentimentStatement(value: number) {
     }
     return 'extremely negative';
 }
+
+export function controversy(counts: SentimentCount) {
+    const difference = counts.positive - counts.negative;
+    const sum = counts.positive + counts.negative;
+    return 1 / ((Math.abs(difference) + 1) / (sum));
+}
