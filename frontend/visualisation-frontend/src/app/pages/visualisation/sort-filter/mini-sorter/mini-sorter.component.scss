@@ -1,0 +1,10 @@
+.interact {
+    transition: background-color 0.3s;
+    transition-timing-function: ease-in-out;
+
+    &:hover {
+        cursor: pointer;
+        /*background: rgba(0,0,0,.04)*/
+    }
+
+}

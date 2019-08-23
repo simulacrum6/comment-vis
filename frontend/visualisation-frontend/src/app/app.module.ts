@@ -24,6 +24,7 @@ import { SentimentTableComponent } from './pages/detail/sentiment-table/sentimen
 import { CommentTableComponent } from './pages/detail/comment-table/comment-table.component';
 import { BreadcrumbComponent } from './pages/breadcrumb/breadcrumb.component';
 import { SortFilterComponent } from './pages/visualisation/sort-filter/sort-filter.component';
+import { MiniSorterComponent } from './pages/visualisation/sort-filter/mini-sorter/mini-sorter.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { SortFilterComponent } from './pages/visualisation/sort-filter/sort-filt
     SentimentTableComponent,
     CommentTableComponent,
     BreadcrumbComponent,
-    SortFilterComponent
+    SortFilterComponent,
+    MiniSorterComponent
   ],
   imports: [
     BrowserModule,

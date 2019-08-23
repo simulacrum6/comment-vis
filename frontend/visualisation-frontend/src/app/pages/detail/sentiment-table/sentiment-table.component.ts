@@ -3,6 +3,7 @@ import { Extraction, Extractions, FacetType, FacetProperty, ExtractionGroup } fr
 import { SentimentCount } from 'src/app/models/sentiment';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
+import { SortOptions, SortOption } from '../../visualisation/sort-filter/sort';
 
 export class SentimentCountRow {
   group: string;
@@ -38,6 +39,12 @@ export class SentimentTableComponent implements OnInit, OnChanges {
   private displayGroups: ExtractionGroup[];
   private tableData: MatTableDataSource<SentimentCountRow>;
 
+  // TODO: implement clean
+  private positiveSort: SortOption = SortOptions.options.positiveSentiments;
+  private negativeSort: SortOption = SortOptions.options.negativeSentiments;
+  private neutralSort: SortOption = SortOptions.options.neutralSentiments;
+  private totalSort: SortOption = SortOptions.options.popularity;
+
   constructor(private router: Router) { }
 
   ngOnInit() {
@@ -62,7 +69,7 @@ export class SentimentTableComponent implements OnInit, OnChanges {
     this.tableData.paginator = this.paginator;
   }
 
-  onSortFilter(groups: ExtractionGroup[]) {
+  onSort(groups: ExtractionGroup[]) {
     this.displayGroups = groups;
     this.generateTableData();
   }

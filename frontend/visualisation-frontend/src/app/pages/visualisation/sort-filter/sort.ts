@@ -38,7 +38,8 @@ const noSortOption: SortOption = { value: 'none', viewValue: '--', sortFunction:
 const sentimentOptions: SortOption[] = [
   { value: 'controvery', viewValue: 'most controversial', sortFunction: sortByControversy },
   { value: 'positive', viewValue: 'most positive', sortFunction: sentimentSorter(Sentiment.Positive) },
-  { value: 'negative', viewValue: 'most negative', sortFunction: sentimentSorter(Sentiment.Negative) }
+  { value: 'negative', viewValue: 'most negative', sortFunction: sentimentSorter(Sentiment.Negative) },
+  { value: 'negative', viewValue: 'most negative', sortFunction: sentimentSorter(Sentiment.Neutral) }
 ];
 
 function sortByExtractionLength(a: ExtractionGroup, b: ExtractionGroup): number {
@@ -96,6 +97,7 @@ export const SortOptions = {
         controversialSentiments: sentimentOptions[0],
         positiveSentiments: sentimentOptions[1],
         negativeSentiments: sentimentOptions[2],
+        neutralSentiments: sentimentOptions[2],
     },
     bundles: {
         sentiment: sentimentOptions,

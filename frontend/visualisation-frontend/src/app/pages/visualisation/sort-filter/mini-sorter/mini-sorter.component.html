@@ -1,0 +1,16 @@
+<div fxLayout="row" fxLayoutAlign="start center">
+  <div *ngIf="controlPosition === 'before'; then sortControl"></div>
+  <ng-content></ng-content>
+  <div *ngIf="controlPosition === 'after'; then sortControl"></div>
+</div>
+
+<ng-template #sortControl>
+  <div class="interact"
+    [ngSwitch]="sortOrder"
+    (click)="sortData()">
+    <mat-icon *ngSwitchCase="'ascending'" matTooltip="Sorted in ascending order">arrow_drop_up</mat-icon>
+    <mat-icon *ngSwitchCase="'descending'" matTooltip="Sorted in descending order">arrow_drop_down</mat-icon>
+    <mat-icon *ngSwitchCase="'none'" matTooltip="Click to sort data">sort</mat-icon>
+    <div *ngSwitchDefault></div>
+  </div>
+</ng-template>

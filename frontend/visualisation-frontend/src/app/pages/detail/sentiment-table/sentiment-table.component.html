@@ -12,22 +12,50 @@
   </ng-container>
 
   <ng-container cdkColumnDef="positive">
-    <th mat-header-cell *matHeaderCellDef> positive </th>
-    <td mat-cell *matCellDef="let row"> {{ row.positive }}</td>
+    <th mat-header-cell *matHeaderCellDef>
+      <app-mini-sorter
+        [data]="displayGroups"
+        [sortConfig]="positiveSort"
+        (sort)="onSort($event)">
+        positive
+      </app-mini-sorter>
+      </th>
+    <td mat-cell *matCellDef="let row"> {{ row.positive }} </td>
   </ng-container>
 
   <ng-container cdkColumnDef="negative">
-    <th mat-header-cell *matHeaderCellDef> negative </th>
+    <th mat-header-cell *matHeaderCellDef>
+      <app-mini-sorter
+        [data]="displayGroups"
+        [sortConfig]="negativeSort"
+        (sort)="onSort($event)">
+        negative
+      </app-mini-sorter>
+    </th>
     <td mat-cell *matCellDef="let row"> {{row.negative}} </td>
   </ng-container>
 
   <ng-container cdkColumnDef="neutral">
-    <th mat-header-cell *matHeaderCellDef> neutral </th>
+    <th mat-header-cell *matHeaderCellDef>
+      <app-mini-sorter
+        [data]="displayGroups"
+        [sortConfig]="neutralSort"
+        (sort)="onSort($event)">
+        neutral
+      </app-mini-sorter>
+    </th>
     <td mat-cell *matCellDef="let row"> {{row.neutral}} </td>
   </ng-container>
 
   <ng-container cdkColumnDef="total">
-    <th mat-header-cell *matHeaderCellDef> total </th>
+    <th mat-header-cell *matHeaderCellDef>
+      <app-mini-sorter
+        [data]="displayGroups"
+        [sortConfig]="totalSort"
+        (sort)="onSort($event)">
+        total
+      </app-mini-sorter>
+    </th>
     <td mat-cell *matCellDef="let row"> {{ row.total }} </td>
   </ng-container>
 
