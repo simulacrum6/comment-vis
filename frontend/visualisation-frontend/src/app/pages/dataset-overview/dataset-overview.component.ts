@@ -9,6 +9,8 @@ import { MatSnackBar } from '@angular/material';
 import { sentimentDifferential } from 'src/app/models/canonical';
 import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 import { Label } from 'ng2-charts';
+import {Sentiments} from '../../models/sentiment';
+import {DefaultColorStrings} from '../../../environments/constants';
 
 @Component({
   selector: 'app-dataset-overview',
@@ -48,6 +50,8 @@ export class DatasetOverviewComponent implements OnInit {
       }],
     }
   };
+  private sentimentDistributionColors;
+
   private facetDistributionType: ChartType = 'bar';
   private facetDistributionOptions: ChartOptions = {
     legend: {
@@ -129,7 +133,13 @@ export class DatasetOverviewComponent implements OnInit {
 
     /** Sentiment Distribution **/
     const sentimentData: any = {};
-    sentimentData.data = [this.sentimentCounts.positive, this.sentimentCounts.negative, this.sentimentCounts.neutral, this.sentimentCounts.unknown];
+    sentimentData.data = [this.sentimentCounts.positive, this.sentimentCounts.negative,
+      this.sentimentCounts.neutral, this.sentimentCounts.unknown];
+    this.sentimentDistributionColors = [{
+      backgroundColor: Sentiments.map(sentiment => DefaultColorStrings.backgroundColor[sentiment]),
+      borderColor: Sentiments.map(sentiment => DefaultColorStrings.borderColor[sentiment]),
+      hoverBackgroundColor: Sentiments.map(sentiment => DefaultColorStrings.hoverBackgroundColor[sentiment])
+    }];
     this.sentimentDistributionData.push(sentimentData);
 
     /** Aspect Distribution **/

@@ -7,7 +7,7 @@ export const SentimentColors: { positive: Color, negative: Color, neutral: Color
   positive: Color('rgb(0, 163, 51)'),
   negative: Color('rgb(255, 0, 0)'),
   neutral: Color('rgb(169, 169, 169)'),
-  unknown: Color('rgba(255, 255, 255, 0)')
+  unknown: Color('rgba(0, 0, 0)')
 };
 
 export const backgroundAlpha = 0.3;
