@@ -25,6 +25,7 @@ import { CommentTableComponent } from './pages/detail/comment-table/comment-tabl
 import { BreadcrumbComponent } from './pages/breadcrumb/breadcrumb.component';
 import { SortFilterComponent } from './pages/visualisation/sort-filter/sort-filter.component';
 import { MiniSorterComponent } from './pages/visualisation/sort-filter/mini-sorter/mini-sorter.component';
+import { SearchFilterComponent } from './pages/visualisation/search-filter/search-filter.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { MiniSorterComponent } from './pages/visualisation/sort-filter/mini-sort
     CommentTableComponent,
     BreadcrumbComponent,
     SortFilterComponent,
-    MiniSorterComponent
+    MiniSorterComponent,
+    SearchFilterComponent
   ],
   imports: [
     BrowserModule,

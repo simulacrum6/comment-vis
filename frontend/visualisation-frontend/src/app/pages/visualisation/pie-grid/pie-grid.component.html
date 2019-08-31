@@ -18,6 +18,9 @@
           </mat-slide-toggle>
       </div>
       <div>
+        <app-search-filter [data]="facetGroups" [facetType]='aspect' (searchedValue)="onSearched($event)"></app-search-filter>
+      </div>
+      <div>
         <app-sort-filter [data]="facetGroups" (processed)="onSort($event)"></app-sort-filter>
       </div>
     </div>

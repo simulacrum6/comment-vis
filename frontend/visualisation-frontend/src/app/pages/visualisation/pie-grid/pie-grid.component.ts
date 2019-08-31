@@ -83,4 +83,8 @@ export class PieGridComponent implements OnInit {
     this.sortedFacetGroups = $event;
     this.updateSelectedFacetGroups();
   }
+
+  public onSearched($event: { name: string, extractions: Extraction[], sentimentCount: SentimentCount, sizeRatio: number }[]) {
+
+  }
 }
