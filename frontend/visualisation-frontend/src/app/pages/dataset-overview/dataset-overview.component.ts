@@ -70,18 +70,20 @@ export class DatasetOverviewComponent implements OnInit {
       }],
     }
   };
-  private maxDistributionDisplayItems = 10;
+  private maxRankingDisplayItems = 10;
 
   private aspectRankingData: ChartDataSets[] = [];
   private aspectRankingLabels: Label[] = [];
   private attributeRankingData: ChartDataSets[] = [];
   private attributeRankingLabels: Label[] = [];
+  private aspectDistributionData: ChartDataSets[] = [];
+  private aspectDistributionLabels: Label[] = [];
 
   get tooManyAspects(): boolean {
-    return this.valueCounts.aspect.length > this.maxDistributionDisplayItems;
+    return this.valueCounts.aspect.length > this.maxRankingDisplayItems;
   }
   get tooManyAttributes(): boolean {
-    return this.valueCounts.attribute.length > this.maxDistributionDisplayItems;
+    return this.valueCounts.attribute.length > this.maxRankingDisplayItems;
   }
 
   constructor(private modelService: ModelService, private router: Router, private snackBar: MatSnackBar) {
@@ -144,25 +146,34 @@ export class DatasetOverviewComponent implements OnInit {
     this.sentimentDistributionData.push(sentimentData);
 
     /** Aspect Ranking **/
-    const aspectData: any = {};
-    const aspectCounts = [];
-    this.valueCounts.aspect.slice(0, this.maxDistributionDisplayItems).forEach(aspect => {
-      aspectCounts.push(aspect.count);
+    const aspectRankingData: any = {};
+    const aspectRankingCounts = [];
+    this.valueCounts.aspect.slice(0, this.maxRankingDisplayItems).forEach(aspect => {
+      aspectRankingCounts.push(aspect.count);
       this.aspectRankingLabels.push(aspect.value);
     });
-    aspectData.data = aspectCounts;
+    aspectRankingData.data = aspectRankingCounts;
+    this.aspectRankingData.push(aspectRankingData);
 
-    this.aspectRankingData.push(aspectData);
+    /** Aspect Distribution **/
+    const aspectDistributionData: any = {};
+    const aspectDistributionCounts = [];
+
+    const counts = this.valueCounts.aspect.map(aspect => aspect.count);
+    // TODO: Get datalib somehow and call histogram()
+
+
+    aspectDistributionData.data = aspectDistributionCounts;
+    this.aspectDistributionData.push(aspectDistributionData);
 
     /** Attribute Ranking **/
     const attributeData: any = {};
     const attributeCounts = [];
-    this.valueCounts.attribute.slice(0, this.maxDistributionDisplayItems).forEach(attribute => {
+    this.valueCounts.attribute.slice(0, this.maxRankingDisplayItems).forEach(attribute => {
       attributeCounts.push(attribute.count);
       this.attributeRankingLabels.push(attribute.value);
     });
-    attributeData.data = aspectCounts;
-
+    attributeData.data = aspectRankingCounts;
     this.attributeRankingData.push(attributeData);
   }
 

@@ -33,6 +33,16 @@
       </div>
 
       <div>
+        <h3>Aspect Distribution</h3>
+        <canvas baseChart height="50vh"
+                [datasets]="aspectDistributionData"
+                [labels]="aspectDistributionLabels"
+                [options]="facetDistributionOptions"
+                [chartType]="facetDistributionType">
+        </canvas>
+      </div>
+
+      <div>
           <h3>Attribute Ranking</h3>
           <canvas baseChart height="50vh"
                   [datasets]="attributeRankingData"
