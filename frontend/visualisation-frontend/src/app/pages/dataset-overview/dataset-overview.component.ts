@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { ModelService } from 'src/app/services/model.service';
 import { Extraction, Extractions } from 'src/app/models/canonical';
 import { default as foursquare } from 'src/app/models/foursquare_gold.ce.json';
@@ -11,6 +11,7 @@ import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 import { Label } from 'ng2-charts';
 import {Sentiments} from '../../models/sentiment';
 import {DefaultColorStrings} from '../../../environments/constants';
+import {FacetType} from '../../models/canonical';
 
 @Component({
   selector: 'app-dataset-overview',
@@ -69,12 +70,12 @@ export class DatasetOverviewComponent implements OnInit {
       }],
     }
   };
-  private maxDistributionDisplayItems = 100;
+  private maxDistributionDisplayItems = 10;
 
-  private aspectDistributionData: ChartDataSets[] = [];
-  private aspectDistributionLabels: Label[] = [];
-  private attributeDistributionData: ChartDataSets[] = [];
-  private attributeDistributionLabels: Label[] = [];
+  private aspectRankingData: ChartDataSets[] = [];
+  private aspectRankingLabels: Label[] = [];
+  private attributeRankingData: ChartDataSets[] = [];
+  private attributeRankingLabels: Label[] = [];
 
   get tooManyAspects(): boolean {
     return this.valueCounts.aspect.length > this.maxDistributionDisplayItems;
@@ -142,27 +143,43 @@ export class DatasetOverviewComponent implements OnInit {
     }];
     this.sentimentDistributionData.push(sentimentData);
 
-    /** Aspect Distribution **/
+    /** Aspect Ranking **/
     const aspectData: any = {};
     const aspectCounts = [];
     this.valueCounts.aspect.slice(0, this.maxDistributionDisplayItems).forEach(aspect => {
       aspectCounts.push(aspect.count);
-      this.aspectDistributionLabels.push(aspect.value);
+      this.aspectRankingLabels.push(aspect.value);
     });
     aspectData.data = aspectCounts;
 
-    this.aspectDistributionData.push(aspectData);
+    this.aspectRankingData.push(aspectData);
 
-    /** attribute Distribution **/
+    /** Attribute Ranking **/
     const attributeData: any = {};
     const attributeCounts = [];
     this.valueCounts.attribute.slice(0, this.maxDistributionDisplayItems).forEach(attribute => {
       attributeCounts.push(attribute.count);
-      this.attributeDistributionLabels.push(attribute.value);
+      this.attributeRankingLabels.push(attribute.value);
     });
     attributeData.data = aspectCounts;
 
-    this.attributeDistributionData.push(attributeData);
+    this.attributeRankingData.push(attributeData);
+  }
+
+  public handleRankingClick(event: any, facetType: FacetType) {
+    if (event.active.length > 0) {
+      const chart = event.active[0]._chart;
+      const activePoints = chart.getElementAtEvent(event.event);
+      if (activePoints.length > 0) {
+        const clickedElementIndex = activePoints[0]._index;
+        const label = chart.data.labels[clickedElementIndex];
+        this.navigateToDetailPage(label, facetType);
+      }
+    }
+  }
+
+  private navigateToDetailPage(facet: string, facetType: FacetType) {
+    this.router.navigate(['/detail'], { queryParams: { facet, facetType } });
   }
 
   ngOnInit() { }

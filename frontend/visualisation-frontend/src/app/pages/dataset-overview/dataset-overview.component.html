@@ -20,23 +20,26 @@
       </div>
 
       <div>
-        <h3>Aspect Distribution</h3>
+        <h3>Aspect Ranking</h3>
         <canvas baseChart height="50vh"
-                [datasets]="aspectDistributionData"
-                [labels]="aspectDistributionLabels"
+                [datasets]="aspectRankingData"
+                [labels]="aspectRankingLabels"
                 [options]="facetDistributionOptions"
-                [chartType]="facetDistributionType">
+                [chartType]="facetDistributionType"
+                (chartClick)="handleRankingClick($event, 'aspect')"
+        >
         </canvas>
-        <span *ngIf="tooManyAspects" class="light" matTooltip="There are too many elements to display, so only the most frequent ones are shown.">Displaying 100 of {{ valueCounts.aspect.length }} aspects</span>
+        <span *ngIf="tooManyAspects" class="light" matTooltip="There are too many elements to display, so only the most frequent ones are shown.">Displaying {{ maxDistributionDisplayItems }} of {{ valueCounts.aspect.length }} aspects</span>
       </div>
 
       <div>
-          <h3>Attribute Distribution</h3>
+          <h3>Attribute Ranking</h3>
           <canvas baseChart height="50vh"
-                  [datasets]="attributeDistributionData"
-                  [labels]="attributeDistributionLabels"
+                  [datasets]="attributeRankingData"
+                  [labels]="attributeRankingLabels"
                   [options]="facetDistributionOptions"
-                  [chartType]="facetDistributionType">
+                  [chartType]="facetDistributionType"
+                  (chartClick)="handleRankingClick($event, 'attribute')">
           </canvas>
           <span *ngIf="tooManyAttributes" class="light" matTooltip="There are too many elements to display, so only the most frequent ones are shown.">Displaying 100 of {{ valueCounts.attribute.length }} attributes</span>
         </div>
