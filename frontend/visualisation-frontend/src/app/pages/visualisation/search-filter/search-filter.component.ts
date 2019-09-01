@@ -12,7 +12,7 @@ import {map, startWith} from 'rxjs/internal/operators';
 export class SearchFilterComponent implements OnInit {
 
   /**
-   * The data which will be filtered
+   * The input data which will be filtered
    */
   @Input() data: ExtractionGroup[];
 

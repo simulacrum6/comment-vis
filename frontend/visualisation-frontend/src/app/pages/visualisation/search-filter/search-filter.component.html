@@ -1,6 +1,6 @@
 <form>
   <mat-form-field>
-    <input type="text" matInput placeholder={{placeholder}} [formControl]="formControl" [matAutocomplete]="auto">
+    <input type="text" matInput placeholder={{placeholder}} [formControl]="inputForm" [matAutocomplete]="auto">
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="getAutocompleteUIOutput">
       <mat-option *ngFor="let option of autocompleteFilteredOptions | async" [value]="option">
         {{option.name}}
