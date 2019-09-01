@@ -17,6 +17,7 @@ export class PieComponent implements OnInit, OnChanges {
   @Input() extractions: Extraction[];
   @Input() by: ExtractionProperty = 'sentiment';
   @Input() enableTooltips = true;
+  @Input() animate = true;
 
   private sentimentGroups: StringMap<Extraction[]>;
   private chartLabels: Label[];
@@ -51,6 +52,7 @@ export class PieComponent implements OnInit, OnChanges {
       this.chartLabels = this.getChartLabels();
     }
     this.chartOptions = {
+      animation: { animateRotate: this.animate, animateScale: this.animate },
       responsive: true,
       aspectRatio: 1,
       legend: { position: 'bottom' },
