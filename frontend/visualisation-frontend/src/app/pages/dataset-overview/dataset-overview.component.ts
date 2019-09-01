@@ -12,6 +12,7 @@ import { Label } from 'ng2-charts';
 import {Sentiments} from '../../models/sentiment';
 import {DefaultColorStrings} from '../../../environments/constants';
 import {FacetType} from '../../models/canonical';
+import { histogram, bins } from 'datalib';
 
 @Component({
   selector: 'app-dataset-overview',
@@ -55,6 +56,32 @@ export class DatasetOverviewComponent implements OnInit {
 
   private facetDistributionType: ChartType = 'bar';
   private facetDistributionOptions: ChartOptions = {
+    legend: {
+      display: false
+    },
+    tooltips: {
+      mode: 'index',
+      intersect: false
+    },
+    scales: {
+      xAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: 'Number of Comments mentioning an Aspect'
+        }
+      }],
+      yAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: 'Number of Aspects'
+        },
+        ticks: {
+          beginAtZero: true
+        }
+      }],
+    }
+  };
+  private facetRankingOptions: ChartOptions = {
     legend: {
       display: false
     },
@@ -148,7 +175,9 @@ export class DatasetOverviewComponent implements OnInit {
     /** Aspect Ranking **/
     const aspectRankingData: any = {};
     const aspectRankingCounts = [];
-    this.valueCounts.aspect.slice(0, this.maxRankingDisplayItems).forEach(aspect => {
+    this.valueCounts.aspect
+    .slice(0, this.maxRankingDisplayItems)
+    .forEach(aspect => {
       aspectRankingCounts.push(aspect.count);
       this.aspectRankingLabels.push(aspect.value);
     });
@@ -156,15 +185,12 @@ export class DatasetOverviewComponent implements OnInit {
     this.aspectRankingData.push(aspectRankingData);
 
     /** Aspect Distribution **/
-    const aspectDistributionData: any = {};
-    const aspectDistributionCounts = [];
-
     const counts = this.valueCounts.aspect.map(aspect => aspect.count);
-    // TODO: Get datalib somehow and call histogram()
-
-
-    aspectDistributionData.data = aspectDistributionCounts;
-    this.aspectDistributionData.push(aspectDistributionData);
+    const hist = histogram(counts);
+    this.aspectDistributionData = [
+      { label: 'Aspects in Category', data: hist.map(entry => entry.count) },
+    ];
+    this.aspectDistributionLabels = hist.map(entry => entry.value);
 
     /** Attribute Ranking **/
     const attributeData: any = {};
