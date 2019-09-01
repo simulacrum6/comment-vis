@@ -12,42 +12,44 @@ import {map, startWith} from 'rxjs/internal/operators';
 export class SearchFilterComponent implements OnInit {
 
   /**
-   * The data to be sorted.
+   * The data which will be filtered
    */
   @Input() data: ExtractionGroup[];
 
-  @Input() facetType: FacetType;
-
   /**
-   * Emits searched data whenever the search value has changed
+   * Emits filtered data whenever the search value has changed
    */
-  @Output() searchedValue: EventEmitter<ExtractionGroup[]> = new EventEmitter<ExtractionGroup[]>();
+  @Output() filteredDataEmitter: EventEmitter<ExtractionGroup[]> = new EventEmitter<ExtractionGroup[]>();
 
-  private placeholder = 'Search';
-  private formControl = new FormControl();
-  private filterOptions: Observable<ExtractionGroup[]>;
+  private placeholder = 'Search/Filter';
+  private inputForm = new FormControl();
+  private autocompleteFilteredOptions: Observable<ExtractionGroup[]>;
 
   constructor() {
   }
 
   ngOnInit() {
-    this.filterOptions = this.formControl.valueChanges.pipe(
+    this.autocompleteFilteredOptions = this.inputForm.valueChanges.pipe(
       startWith(''),
       map(value => typeof value === 'string' ? value : value.name),
       map(name => this.data.filter(extractionGroup => extractionGroup.name.toLowerCase().startsWith(name.toLowerCase()))),
     );
 
-    this.filterOptions.subscribe({
-      next: data => this.emitSearchFilter(data)
+    this.autocompleteFilteredOptions.subscribe({
+      next: filteredData => this.emitFilteredData(filteredData)
     });
   }
 
-  getAutocompleteUIOutput(selectedOption: ExtractionGroup): string | undefined {
+  private getAutocompleteUIOutput(selectedOption: ExtractionGroup): string | undefined {
     return selectedOption ? selectedOption.name : undefined;
   }
 
-  emitSearchFilter(data: ExtractionGroup[]) {
-    this.searchedValue.emit(data);
+  private emitFilteredData(data: ExtractionGroup[]) {
+    this.filteredDataEmitter.emit(data);
+  }
+
+  public clearSearch() {
+    this.inputForm.setValue('');
   }
 
 }

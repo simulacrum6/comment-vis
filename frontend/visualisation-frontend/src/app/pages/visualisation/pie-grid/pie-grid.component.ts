@@ -1,9 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {Component, OnInit, Input, ViewChild} from '@angular/core';
 import { ModelService } from 'src/app/services/model.service';
 import { Extraction, FacetType, ExtractionGroup } from 'src/app/models/canonical';
 import { Router } from '@angular/router';
 import { PageEvent } from '@angular/material';
 import { SentimentCount } from 'src/app/models/sentiment';
+import {SearchFilterComponent} from '../search-filter/search-filter.component';
 
 interface PieExtractionGroup extends ExtractionGroup {
   sizeRatio: number;
@@ -37,6 +38,8 @@ export class PieGridComponent implements OnInit {
 
   // temporary properties for filter
   private sortBy = 'positive';
+
+  @ViewChild('searchReference') searchReference: SearchFilterComponent;
 
   constructor(private modelService: ModelService, private router: Router) { }
 
@@ -78,6 +81,7 @@ export class PieGridComponent implements OnInit {
     this.facetType = this.subGroupType;
     this.subGroupType = old;
     this.breadCrumbPaths[this.breadCrumbPaths.length - 1].name = this.facetType + 's';
+    this.searchReference.clearSearch();
     this.update();
   }
 
@@ -86,7 +90,7 @@ export class PieGridComponent implements OnInit {
     this.updateSelectedFacetGroups();
   }
 
-  public onSearched($event: { name: string, extractions: Extraction[], sentimentCount: SentimentCount, sizeRatio: number }[]) {
+  public onSearch($event: { name: string, extractions: Extraction[], sentimentCount: SentimentCount, sizeRatio: number }[]) {
     this.searchedFacetGroups = $event;
     this.updateSelectedFacetGroups();
   }
