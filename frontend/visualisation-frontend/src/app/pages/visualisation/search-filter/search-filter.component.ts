@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Observable} from 'rxjs';
 import {ExtractionGroup, FacetType} from '../../../models/canonical';
 import {FormControl} from '@angular/forms';
@@ -21,7 +21,7 @@ export class SearchFilterComponent implements OnInit {
   /**
    * Emits searched data whenever the search value has changed
    */
-  @Output() searchedValue: Observable<ExtractionGroup[]> = new Observable<ExtractionGroup[]>();
+  @Output() searchedValue: EventEmitter<ExtractionGroup[]> = new EventEmitter<ExtractionGroup[]>();
 
   private placeholder = 'Search';
   private formControl = new FormControl();
@@ -33,12 +33,21 @@ export class SearchFilterComponent implements OnInit {
   ngOnInit() {
     this.filterOptions = this.formControl.valueChanges.pipe(
       startWith(''),
-      map(value => this.data.filter(extractionGroup => extractionGroup.name.toLowerCase().startsWith(value.toLowerCase())))
+      map(value => typeof value === 'string' ? value : value.name),
+      map(name => this.data.filter(extractionGroup => extractionGroup.name.toLowerCase().startsWith(name.toLowerCase()))),
     );
+
+    this.filterOptions.subscribe({
+      next: data => this.emitSearchFilter(data)
+    });
   }
 
   getAutocompleteUIOutput(selectedOption: ExtractionGroup): string | undefined {
     return selectedOption ? selectedOption.name : undefined;
+  }
+
+  emitSearchFilter(data: ExtractionGroup[]) {
+    this.searchedValue.emit(data);
   }
 
 }

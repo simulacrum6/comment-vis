@@ -22,6 +22,7 @@ export class PieGridComponent implements OnInit {
   // TODO: add type to model
   private facetGroups: PieExtractionGroup[];
   private sortedFacetGroups: PieExtractionGroup[];
+  private searchedFacetGroups: PieExtractionGroup[];
   private selectedFacetGroups: PieExtractionGroup[];
   private subGroupType: FacetType = 'attribute';
 
@@ -51,6 +52,7 @@ export class PieGridComponent implements OnInit {
         sizeRatio: this.scaleSize ? group.extractions.length / extractions.length : 0.25
       }));
     this.sortedFacetGroups = this.facetGroups.slice();
+    this.searchedFacetGroups = this.facetGroups.slice();
 
     this.updateSelectedFacetGroups();
   }
@@ -64,7 +66,7 @@ export class PieGridComponent implements OnInit {
   private updateSelectedFacetGroups() {
     const start = this.currentPageIndex * this.currentPageSize;
     const end = (this.currentPageIndex + 1) * this.currentPageSize;
-    this.selectedFacetGroups = this.sortedFacetGroups.slice(start, end);
+    this.selectedFacetGroups = this.sortedFacetGroups.filter(value => this.searchedFacetGroups.indexOf(value) !== -1).slice(start, end);
   }
 
   public navigateToDetailPage(facet: string, facetType: FacetType) {
@@ -85,6 +87,7 @@ export class PieGridComponent implements OnInit {
   }
 
   public onSearched($event: { name: string, extractions: Extraction[], sentimentCount: SentimentCount, sizeRatio: number }[]) {
-
+    this.searchedFacetGroups = $event;
+    this.updateSelectedFacetGroups();
   }
 }
