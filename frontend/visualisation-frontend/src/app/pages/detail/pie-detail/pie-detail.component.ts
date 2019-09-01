@@ -31,7 +31,7 @@ export class PieDetailComponent extends DetailViewBaseComponent implements OnIni
     );
     this.breadCrumbPaths$ = combineLatest(this.facet$, this.facetType$).pipe(
       map(([facet, facetType]) => [
-        { name: 'Statistics', path: ['/overview'], queryParams: {}},
+        { name: 'Statistics', path: ['/stats'], queryParams: {}},
         { name: facetType + 's', path: ['/vis/pie'], queryParams: {}},
         { name: facet, path: ['/detail'], queryParams: { facet, facetType }}
       ])

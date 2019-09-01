@@ -28,7 +28,7 @@ export class PieGridComponent implements OnInit {
   private subGroupType: FacetType = 'attribute';
 
   private breadCrumbPaths = [
-    { name: 'Statistics', path: ['/overview'], queryParams: {} },
+    { name: 'Statistics', path: ['/stats'], queryParams: {} },
     { name: this.facetType + 's', path: ['/vis/pie'], queryParams: {} }
   ];
 

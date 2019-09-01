@@ -10,7 +10,7 @@ import { DetailComponent } from './pages/detail/detail.component';
 
 const routes: Routes = [
   { path: '', component: UploadComponent },
-  { path: 'overview', component: DatasetOverviewComponent },
+  { path: 'stats', component: DatasetOverviewComponent },
   { path: 'vis', component: VisualisationComponent,
     children: [
       { path: '', redirectTo: 'pie', pathMatch: 'full' },

@@ -45,6 +45,6 @@ export class UploadComponent implements OnInit {
   }
 
   submit(): void {
-    this.router.navigate(['overview']);
+    this.router.navigate(['stats']);
   }
 }
