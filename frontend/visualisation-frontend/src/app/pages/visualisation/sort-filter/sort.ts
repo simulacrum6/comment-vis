@@ -36,10 +36,10 @@ function noSort(a: ExtractionGroup, b: ExtractionGroup): number { return 0; }
 const noSortOption: SortOption = { value: 'none', viewValue: '--', sortFunction: noSort };
 
 const sentimentOptions: SortOption[] = [
-  { value: 'controvery', viewValue: 'most controversial', sortFunction: sortByControversy },
+  { value: 'controversy', viewValue: 'most controversial', sortFunction: sortByControversy },
   { value: 'positive', viewValue: 'most positive', sortFunction: sentimentSorter(Sentiment.Positive) },
   { value: 'negative', viewValue: 'most negative', sortFunction: sentimentSorter(Sentiment.Negative) },
-  { value: 'negative', viewValue: 'most negative', sortFunction: sentimentSorter(Sentiment.Neutral) }
+  { value: 'neutral', viewValue: 'most neutral', sortFunction: sentimentSorter(Sentiment.Neutral) }
 ];
 
 function sortByExtractionLength(a: ExtractionGroup, b: ExtractionGroup): number {
