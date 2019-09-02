@@ -1,17 +1,15 @@
-import {Component, OnInit} from '@angular/core';
-import { ModelService } from 'src/app/services/model.service';
-import { Extraction, Extractions } from 'src/app/models/canonical';
-import { default as foursquare } from 'src/app/models/foursquare_gold.ce.json';
-import {SentimentCount, mapToSentiment, mapToSentimentStatement} from 'src/app/models/sentiment';
-import { valueCounts } from 'src/app/models/utils';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
-import { sentimentDifferential } from 'src/app/models/canonical';
+import { Router } from '@angular/router';
 import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 import { Label } from 'ng2-charts';
-import {Sentiments} from '../../models/sentiment';
-import {DefaultColorStrings} from '../../../environments/constants';
-import {FacetType} from '../../models/canonical';
+import { Extraction, Extractions, sentimentDifferential } from 'src/app/models/canonical';
+import { mapToSentiment, mapToSentimentStatement, SentimentCount } from 'src/app/models/sentiment';
+import { valueCounts } from 'src/app/models/utils';
+import { ModelService } from 'src/app/services/model.service';
+import { DefaultColorStrings } from 'src/environments/constants';
+import { FacetType } from 'src/app/models/canonical';
+import { Sentiments } from 'src/app/models/sentiment';
 
 @Component({
   selector: 'app-dataset-overview',
@@ -87,9 +85,7 @@ export class DatasetOverviewComponent implements OnInit {
   }
 
   constructor(private modelService: ModelService, private router: Router, private snackBar: MatSnackBar) {
-    if (!this.modelService.model) {
-      this.modelService.generateModelFromJson(foursquare);
-    }
+    this.modelService.ensureModelIsAvailable();
     this.extractions = modelService.model.extractions;
     this.values = {
       attribute: Extractions.values(this.extractions, 'attribute'),

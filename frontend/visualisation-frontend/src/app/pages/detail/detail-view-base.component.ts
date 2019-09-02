@@ -1,9 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Extraction, StringMap, Extractions, FacetType, FacetTypes, Model, ExtractionGroup } from 'src/app/models/canonical';
-import { ModelService } from 'src/app/services/model.service';
-import { default as foursquare } from 'src/app/models/foursquare_gold.ce.json';
-import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
+import { Component, Input, OnInit } from '@angular/core';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Extraction, ExtractionGroup, Extractions, FacetType, FacetTypes, StringMap } from 'src/app/models/canonical';
+import { ModelService } from 'src/app/services/model.service';
 
 
 @Component({
@@ -20,10 +19,7 @@ export class DetailViewBaseComponent implements OnInit {
     @Input() facetType$: Observable<FacetType>;
 
     constructor(protected modelService: ModelService) {
-        // TODO: remove after testing.
-        if (!modelService.model) {
-         this.modelService.generateModelFromJson(foursquare);
-        }
+        this.modelService.ensureModelIsAvailable();
     }
 
     ngOnInit() {

@@ -1,8 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { default as foursquare } from 'src/app/models/foursquare_gold.ce.json';
-import { default as reviews } from 'src/app/models/reviews.ce.json';
-import { default as evaluations } from 'src/app/models/evaulations.ce.json';
 import { MatSelectChange } from '@angular/material';
 import { ModelService, DemoModel } from 'src/app/services/model.service';
 
