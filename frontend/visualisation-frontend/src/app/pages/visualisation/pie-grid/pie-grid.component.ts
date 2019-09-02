@@ -35,6 +35,7 @@ export class PieGridComponent implements OnInit {
   private pageSizes = [25, 35, 50, 75, 150];
   private currentPageSize = this.pageSizes[1];
   private currentPageIndex = 0;
+  private currentLength;
 
   // temporary properties for filter
   private sortBy = 'positive';
@@ -56,6 +57,7 @@ export class PieGridComponent implements OnInit {
       }));
     this.sortedFacetGroups = this.facetGroups.slice();
     this.searchedFacetGroups = this.facetGroups.slice();
+    this.currentLength = this.facetGroups.length;
 
     this.updateSelectedFacetGroups();
   }
@@ -63,6 +65,7 @@ export class PieGridComponent implements OnInit {
   public updatePage(event: PageEvent) {
     this.currentPageIndex = event.pageIndex;
     this.currentPageSize = event.pageSize;
+    this.currentLength = event.length;
     this.updateSelectedFacetGroups();
   }
 
@@ -92,6 +95,6 @@ export class PieGridComponent implements OnInit {
 
   public onSearch($event: { name: string, extractions: Extraction[], sentimentCount: SentimentCount, sizeRatio: number }[]) {
     this.searchedFacetGroups = $event;
-    this.updateSelectedFacetGroups();
+    this.updatePage({ pageIndex: 0, pageSize: this.currentPageSize, length: this.searchedFacetGroups.length });
   }
 }

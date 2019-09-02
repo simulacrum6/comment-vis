@@ -38,7 +38,8 @@
       </app-pie-cell>
     </div>
     <mat-paginator
-      [length]="facetGroups.length"
+      [length]="currentLength"
+      [pageIndex]="currentPageIndex"
       [pageSize]="currentPageSize"
       [pageSizeOptions]="pageSizes"
       (page)=updatePage($event)>
