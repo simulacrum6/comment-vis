@@ -4,3 +4,8 @@ mat-card.content {
     margin-right: 15%;
     min-width: 320px;
 }
+
+a:link, a:visited, a:active {
+    text-decoration: none;
+    color: inherit;
+}
