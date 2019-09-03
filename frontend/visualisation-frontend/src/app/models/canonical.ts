@@ -1,4 +1,4 @@
-import { Sentiment, mapToSentiment, SentimentCount, mapToNumber } from './sentiment';
+import { mapToNumber, mapToSentiment, Sentiment, SentimentCount } from './sentiment';
 import { sum } from './utils';
 
 export interface StringMap<V> {

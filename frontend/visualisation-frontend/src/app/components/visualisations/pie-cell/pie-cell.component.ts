@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, ElementRef, ViewChild } from '@angular/core';
-import { Extraction, Extractions } from 'src/app/models/canonical';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Extraction } from 'src/app/models/canonical';
 import { Interpolator, makeInterpolator } from 'src/app/models/utils';
 
 @Component({

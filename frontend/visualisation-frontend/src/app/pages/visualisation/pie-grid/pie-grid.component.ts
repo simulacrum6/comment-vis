@@ -1,10 +1,10 @@
-import {Component, OnInit, Input, ViewChild} from '@angular/core';
-import { ModelService } from 'src/app/services/model.service';
-import { Extraction, FacetType, ExtractionGroup } from 'src/app/models/canonical';
-import { Router } from '@angular/router';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material';
+import { Router } from '@angular/router';
+import { Extraction, ExtractionGroup, FacetType } from 'src/app/models/canonical';
 import { SentimentCount } from 'src/app/models/sentiment';
-import {SearchFilterComponent} from '../search-filter/search-filter.component';
+import { ModelService } from 'src/app/services/model.service';
+import { SearchFilterComponent } from '../../../components/filters/search-filter/search-filter.component';
 
 interface PieExtractionGroup extends ExtractionGroup {
   sizeRatio: number;

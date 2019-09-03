@@ -1,10 +1,10 @@
-import { Component, OnInit, OnChanges, Input, ViewChild, ElementRef, SimpleChanges } from '@angular/core';
-import { Extraction, Extractions, StringMap, ExtractionProperty } from 'src/app/models/canonical.js';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ChartOptions, ChartType } from 'chart.js';
 import { Label } from 'ng2-charts';
-import { Sentiments, Sentiment } from 'src/app/models/sentiment.js';
+import { Extraction, ExtractionProperty, Extractions, StringMap } from 'src/app/models/canonical.js';
+import { Sentiments } from 'src/app/models/sentiment.js';
+import { flatten } from 'src/app/models/utils';
 import { DefaultColorStrings } from 'src/environments/constants';
-import { Interpolator, makeInterpolator, flatten } from 'src/app/models/utils';
 
 @Component({
   selector: 'app-pie',

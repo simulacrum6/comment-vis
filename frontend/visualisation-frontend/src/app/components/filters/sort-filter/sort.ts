@@ -1,5 +1,5 @@
 import { ExtractionGroup, Extractions } from 'src/app/models/canonical';
-import { Sentiment, controversy } from 'src/app/models/sentiment';
+import { controversy, Sentiment } from 'src/app/models/sentiment';
 
 export interface SortOption {
   viewValue: string;

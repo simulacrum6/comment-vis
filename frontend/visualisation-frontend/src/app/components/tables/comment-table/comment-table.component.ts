@@ -1,7 +1,6 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
-import { Extractions, Extraction, FacetType, sentimentDifferential } from 'src/app/models/canonical';
-import { MatTableDataSource, MatPaginator } from '@angular/material';
-import { SentimentCountRow } from '../sentiment-table/sentiment-table.component';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { Extraction, Extractions, sentimentDifferential } from 'src/app/models/canonical';
 
 export interface CommentRow { group: string; aspects: string[]; attributes: string[]; sentiment: number; }
 

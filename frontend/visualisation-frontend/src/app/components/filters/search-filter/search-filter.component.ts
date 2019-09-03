@@ -1,8 +1,8 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Observable} from 'rxjs';
-import {ExtractionGroup, FacetType} from '../../../models/canonical';
-import {FormControl} from '@angular/forms';
-import {map, startWith} from 'rxjs/internal/operators';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/internal/operators';
+import { ExtractionGroup } from '../../../models/canonical';
 
 @Component({
   selector: 'app-search-filter',

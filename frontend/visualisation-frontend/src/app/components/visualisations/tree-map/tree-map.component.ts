@@ -1,11 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import Color from 'color';
 import { GoogleChartInterface } from 'ng2-google-charts/google-charts-interfaces';
-import { ModelService } from 'src/app/services/model.service';
-import { Extraction, Extractions, sentimentDifferential } from 'src/app/models/canonical';
-import { Sentiment, mapToNumber, mapToSentimentStatement } from 'src/app/models/sentiment';
-import { DefaultColorStrings, SentimentColors } from 'src/environments/constants';
-import { default as Color } from 'color';
+import { Extractions, sentimentDifferential } from 'src/app/models/canonical';
+import { mapToNumber, mapToSentimentStatement, Sentiment } from 'src/app/models/sentiment';
 import { flatten } from 'src/app/models/utils';
+import { ModelService } from 'src/app/services/model.service';
+import { DefaultColorStrings } from 'src/environments/constants';
 
 @Component({
   selector: 'app-tree-map',

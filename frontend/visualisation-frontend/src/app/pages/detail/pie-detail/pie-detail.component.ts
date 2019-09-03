@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Extractions } from 'src/app/models/canonical';
 import { ModelService } from 'src/app/services/model.service';
 import { DetailViewBaseComponent } from '../detail-view-base.component';
-import { Extractions } from 'src/app/models/canonical';
-import { Observable, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-pie-detail',

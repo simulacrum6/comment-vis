@@ -1,9 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { Observable } from 'rxjs';
-import { ExtractionGroup } from 'src/app/models/canonical';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatSelectChange } from '@angular/material';
-import { merge } from 'rxjs';
-import { SortOption, SortOptions, SortOptionGroup, SortOptionGroups, SortFunctions, SortOrder, SortOrderOption } from './sort';
+import { merge, Observable } from 'rxjs';
+import { ExtractionGroup } from 'src/app/models/canonical';
+import { SortFunctions, SortOption, SortOptionGroup, SortOptionGroups, SortOptions, SortOrder, SortOrderOption } from './sort';
 
 @Component({
   selector: 'app-sort-filter',

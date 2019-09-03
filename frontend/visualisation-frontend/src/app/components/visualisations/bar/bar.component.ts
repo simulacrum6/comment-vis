@@ -1,8 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ChartDataSets, ChartOptions, ChartType} from 'chart.js';
-import {ModelService} from '../../../services/model.service';
-import {Label} from 'ng2-charts';
-import {ModelTransformation} from './modeltransformation';
+import { Component, Input, OnInit } from '@angular/core';
+import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
+import { Label } from 'ng2-charts';
+import { ModelService } from 'src/app/services/model.service';
+import { ModelTransformation } from './modeltransformation';
 
 @Component({
   selector: 'app-bar',

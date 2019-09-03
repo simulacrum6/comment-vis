@@ -2,25 +2,23 @@ import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
+import { histogram } from 'datalib';
 import { Label } from 'ng2-charts';
-import { Extraction, Extractions, sentimentDifferential } from 'src/app/models/canonical';
-import { mapToSentiment, mapToSentimentStatement, SentimentCount } from 'src/app/models/sentiment';
+import { Extraction, Extractions, FacetType, sentimentDifferential } from 'src/app/models/canonical';
+import { mapToSentiment, mapToSentimentStatement, SentimentCount, Sentiments } from 'src/app/models/sentiment';
 import { valueCounts } from 'src/app/models/utils';
 import { ModelService } from 'src/app/services/model.service';
 import { DefaultColorStrings } from 'src/environments/constants';
-import { FacetType } from 'src/app/models/canonical';
-import { Sentiments } from 'src/app/models/sentiment';
-import { histogram, bins } from 'datalib';
 
 @Component({
   selector: 'app-dataset-overview',
-  templateUrl: './dataset-overview.component.html',
-  styleUrls: ['./dataset-overview.component.scss']
+  templateUrl: './statistics.html',
+  styleUrls: ['./statistics.scss']
 })
-export class DatasetOverviewComponent implements OnInit {
+export class StatisticsComponent implements OnInit {
 
   private breadCrumbPaths = [
-    { name: 'Statistics', path: ['/overview']}
+    { name: 'Statistics', path: ['/stats']}
   ];
 
   private extractions: Extraction[];

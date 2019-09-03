@@ -1,31 +1,31 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ChartsModule } from 'ng2-charts';
+import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
+import { ErrorComponent } from './components/error/error.component';
+import { MiniSorterComponent } from './components/filters/mini-sorter/mini-sorter.component';
+import { SearchFilterComponent } from './components/filters/search-filter/search-filter.component';
+import { SortFilterComponent } from './components/filters/sort-filter/sort-filter.component';
+import { CommentTableComponent } from './components/tables/comment-table/comment-table.component';
+import { SentimentTableComponent } from './components/tables/sentiment-table/sentiment-table.component';
+import { BarComponent } from './components/visualisations/bar/bar.component';
+import { PieCellComponent } from './components/visualisations/pie-cell/pie-cell.component';
+import { PieComponent } from './components/visualisations/pie/pie.component';
+import { TreeMapComponent } from './components/visualisations/tree-map/tree-map.component';
 import { MaterialModule } from './modules/material.module';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { UploadComponent } from './pages/upload/upload.component';
-import { VisualisationComponent } from './pages/visualisation/visualisation.component';
-import { BarComponent } from './pages/visualisation/bar/bar.component';
-import { ChartsModule } from 'ng2-charts';
-import { PieComponent } from './pages/visualisation/pie/pie.component';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { PieGridComponent } from './pages/visualisation/pie-grid/pie-grid.component';
-import { DatasetOverviewComponent } from './pages/dataset-overview/dataset-overview.component';
-import { TreeMapComponent } from './pages/visualisation/tree-map/tree-map.component';
-import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 import { DetailComponent } from './pages/detail/detail.component';
-import { ErrorComponent } from './pages/error/error.component';
-import { PieCellComponent } from './pages/visualisation/pie-cell/pie-cell.component';
 import { PieDetailComponent } from './pages/detail/pie-detail/pie-detail.component';
-import { SentimentTableComponent } from './pages/detail/sentiment-table/sentiment-table.component';
-import { CommentTableComponent } from './pages/detail/comment-table/comment-table.component';
-import { BreadcrumbComponent } from './pages/breadcrumb/breadcrumb.component';
-import { SortFilterComponent } from './pages/visualisation/sort-filter/sort-filter.component';
-import { MiniSorterComponent } from './pages/visualisation/sort-filter/mini-sorter/mini-sorter.component';
-import { SearchFilterComponent } from './pages/visualisation/search-filter/search-filter.component';
+import { StatisticsComponent } from './pages/statistics/statistics';
+import { UploadComponent } from './pages/upload/upload.component';
+import { PieGridComponent } from './pages/visualisation/pie-grid/pie-grid.component';
+import { VisualisationComponent } from './pages/visualisation/visualisation.component';
+
 
 @NgModule({
   declarations: [
@@ -35,7 +35,7 @@ import { SearchFilterComponent } from './pages/visualisation/search-filter/searc
     BarComponent,
     PieComponent,
     PieGridComponent,
-    DatasetOverviewComponent,
+    StatisticsComponent,
     TreeMapComponent,
     DetailComponent,
     ErrorComponent,

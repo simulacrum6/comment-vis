@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
 import { MatSelectChange } from '@angular/material';
-import { ModelService, DemoModel } from 'src/app/services/model.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DemoModel, ModelService } from 'src/app/services/model.service';
 
 @Component({
   selector: 'app-upload',

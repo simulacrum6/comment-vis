@@ -1,8 +1,8 @@
-import {BarComponent} from './bar.component';
-import {SentimentColors} from '../../../../environments/constants';
-import {Extraction, Extractions} from '../../../models/canonical';
-import {SentimentCount} from '../../../models/sentiment';
-import {default as Color} from 'color';
+import * as Color from 'color';
+import { SentimentColors } from '../../../../environments/constants';
+import { Extraction, Extractions } from '../../../models/canonical';
+import { SentimentCount } from '../../../models/sentiment';
+import { BarComponent } from './bar.component';
 
 export class ModelTransformation {
 

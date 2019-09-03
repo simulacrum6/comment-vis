@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Model, parseJson, Extraction } from '../models/canonical';
+import { default as evaluations } from 'src/app/models/evaulations.ce.json';
 import { default as foursquare } from 'src/app/models/foursquare_gold.ce.json';
 import { default as reviews } from 'src/app/models/reviews.ce.json';
-import { default as evaluations } from 'src/app/models/evaulations.ce.json';
+import { Extraction, Model, parseJson } from '../models/canonical';
 
 export enum DemoModel {
   Foursquare,

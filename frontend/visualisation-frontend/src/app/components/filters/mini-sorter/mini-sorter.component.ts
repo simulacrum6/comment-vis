@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ExtractionGroup } from 'src/app/models/canonical';
-import { SortOption, SortOrder, SortFunctions } from '../sort';
+import { SortOption, SortOrder } from '../sort-filter/sort';
 
 @Component({
   selector: 'app-mini-sorter',
