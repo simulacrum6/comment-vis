@@ -17,7 +17,7 @@
     [disabled]="noSort"
     [(ngModel)]="sortOrderOption"
     (selectionChange)="onSortStateChange($event)">
-    <mat-option #sortOrder *ngFor="let option of _sortOrderOptions" [value]="option">
+    <mat-option *ngFor="let option of _sortOrderOptions" [value]="option">
       {{ option.viewValue }}
     </mat-option>
   </mat-select>

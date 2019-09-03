@@ -19,7 +19,10 @@
       </div>
       <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
         <div>
-          <app-search-filter #searchReference [data]="facetGroups" (filteredDataEmitter)="onSearch($event)"></app-search-filter>
+          <app-search-filter #searchReference
+            [data]="facetGroups"
+            (searchResults)="onSearch($event)">
+          </app-search-filter>
         </div>
         <div>
           <app-sort-filter

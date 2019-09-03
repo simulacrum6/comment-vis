@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map, startWith } from 'rxjs/internal/operators';
 import { ExtractionGroup } from '../../../models/canonical';
 
@@ -9,47 +9,52 @@ import { ExtractionGroup } from '../../../models/canonical';
   templateUrl: './search-filter.component.html',
   styleUrls: ['./search-filter.component.scss']
 })
-export class SearchFilterComponent implements OnInit {
+export class SearchFilterComponent implements OnInit, OnDestroy {
 
   /**
    * The input data which will be filtered
    */
   @Input() data: ExtractionGroup[];
 
+  @Input() searchTerm = '';
+
+  @Output() searchTermChange: EventEmitter<string> = new EventEmitter();
+
   /**
-   * Emits filtered data whenever the search value has changed
+   * Emits filtered data that meet the search criteria.
    */
-  @Output() filteredDataEmitter: EventEmitter<ExtractionGroup[]> = new EventEmitter<ExtractionGroup[]>();
+  @Output() searchResults: EventEmitter<ExtractionGroup[]> = new EventEmitter();
 
   private placeholder = 'Search/Filter';
   private inputForm = new FormControl();
-  private autocompleteFilteredOptions: Observable<ExtractionGroup[]>;
+  private subscription: Subscription = new Subscription();
 
-  constructor() {
-  }
+  constructor() { }
 
   ngOnInit() {
-    this.autocompleteFilteredOptions = this.inputForm.valueChanges.pipe(
+    const searchTermChange = this.inputForm.valueChanges.pipe(
       startWith(''),
-      map(value => typeof value === 'string' ? value : value.name),
-      map(name => this.data.filter(extractionGroup => extractionGroup.name.toLowerCase().startsWith(name.toLowerCase()))),
+      map(value => typeof value === 'string' ? value : value.name)
+    );
+    const searchResults = searchTermChange.pipe(
+      map(name => this.data.filter(extractionGroup => extractionGroup.name.toLowerCase().startsWith(name.toLowerCase())))
     );
 
-    this.autocompleteFilteredOptions.subscribe({
-      next: filteredData => this.emitFilteredData(filteredData)
-    });
+    const searchTermSubscription = searchTermChange.subscribe(this.searchTermChange);
+    const searchResultSubscription = searchResults.subscribe(this.searchResults);
+    this.subscription.add(searchResultSubscription);
+    this.subscription.add(searchTermSubscription);
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+  clearSearch() {
+    this.inputForm.setValue('');
   }
 
   private getAutocompleteUIOutput(selectedOption: ExtractionGroup): string | undefined {
     return selectedOption ? selectedOption.name : undefined;
   }
-
-  private emitFilteredData(data: ExtractionGroup[]) {
-    this.filteredDataEmitter.emit(data);
-  }
-
-  public clearSearch() {
-    this.inputForm.setValue('');
-  }
-
 }

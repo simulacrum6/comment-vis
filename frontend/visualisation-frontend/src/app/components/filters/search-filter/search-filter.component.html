@@ -1,8 +1,12 @@
 <form>
   <mat-form-field>
-    <input type="text" matInput placeholder={{placeholder}} [formControl]="inputForm" [matAutocomplete]="auto">
+    <input type="text" matInput
+      placeholder={{placeholder}}
+      [value]="searchTerm"
+      [formControl]="inputForm"
+      [matAutocomplete]="auto">
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="getAutocompleteUIOutput">
-      <mat-option *ngFor="let option of autocompleteFilteredOptions | async" [value]="option">
+      <mat-option *ngFor="let option of (searchResults | async)" [value]="option">
         {{option.name}}
       </mat-option>
     </mat-autocomplete>
