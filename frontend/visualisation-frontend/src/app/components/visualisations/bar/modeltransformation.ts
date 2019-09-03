@@ -20,7 +20,7 @@ export class ModelTransformation {
     const neutralSentiments = [];
     const negativeSentiments = [];
 
-    const model = this.parentComponent.modelService.model;
+    const model = this.parentComponent.stateService.model;
     if (this.parentComponent.aspectname) {
       const extractions: Extraction[] = model.aspectGroupMap[this.parentComponent.aspectname];
       if (extractions) {

@@ -3,7 +3,7 @@ import { PageEvent } from '@angular/material';
 import { Router } from '@angular/router';
 import { Extraction, ExtractionGroup, FacetType } from 'src/app/models/canonical';
 import { SentimentCount } from 'src/app/models/sentiment';
-import { ModelService } from 'src/app/services/model.service';
+import { StateService } from 'src/app/services/state.service';
 import { SearchFilterComponent } from '../../../components/filters/search-filter/search-filter.component';
 
 interface PieExtractionGroup extends ExtractionGroup {
@@ -42,15 +42,15 @@ export class PieGridComponent implements OnInit {
 
   @ViewChild('searchReference') searchReference: SearchFilterComponent;
 
-  constructor(private modelService: ModelService, private router: Router) { }
+  constructor(private stateService: StateService, private router: Router) { }
 
   ngOnInit() {
     this.update();
   }
 
   public update() {
-    const extractions = this.modelService.model.extractions;
-    this.facetGroups = this.modelService.model.getGroupList(this.facetType)
+    const extractions = this.stateService.model.extractions;
+    this.facetGroups = this.stateService.model.getGroupList(this.facetType)
       .map(group => ({
         ...group,
         sizeRatio: this.scaleSize ? group.extractions.length / extractions.length : 0.25

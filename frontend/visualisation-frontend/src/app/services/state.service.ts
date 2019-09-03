@@ -13,21 +13,16 @@ export enum DemoModel {
 @Injectable({
   providedIn: 'root'
 })
-export class ModelService {
-  /** The key under which the model id is stored in the Session Storage. */
+export class StateService {
+  /** The key under which the dataset id is stored in the Session Storage. */
   static readonly ModelIdKey = 'cv_dataset_id';
 
-  model: Model;
-
   private _modelId: string;
+  private _model: Model;
 
-  get modelId(): string {
-    return this._modelId;
-  }
-
-  get hasModel(): boolean {
-    return this.model !== undefined;
-  }
+  get model(): Model { return this._model; }
+  get modelId(): string { return this._modelId; }
+  get hasModel(): boolean { return this._model !== undefined; }
 
   constructor() { }
 
@@ -35,9 +30,9 @@ export class ModelService {
    * Generates a model from the given extractions and updates the stored model id.
    */
   generateModel(extractions: Extraction[], id: string) {
-    this.model = new Model(extractions);
+    this._model = new Model(extractions);
     this._modelId = id;
-    sessionStorage.setItem(ModelService.ModelIdKey, id);
+    sessionStorage.setItem(StateService.ModelIdKey, id);
   }
 
   generateModelFromJson(json: any[]): void {
@@ -70,7 +65,7 @@ export class ModelService {
    * Throws an error if loading fails.
    */
   loadModelFromStorage() {
-    const storedId = sessionStorage.getItem(ModelService.ModelIdKey);
+    const storedId = sessionStorage.getItem(StateService.ModelIdKey);
 
     // load demo model if demo model was stored.
     const demoModel = DemoModel[storedId];

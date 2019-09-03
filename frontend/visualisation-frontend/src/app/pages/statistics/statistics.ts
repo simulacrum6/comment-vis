@@ -7,7 +7,7 @@ import { Label } from 'ng2-charts';
 import { Extraction, Extractions, FacetType, sentimentDifferential } from 'src/app/models/canonical';
 import { mapToSentiment, mapToSentimentStatement, SentimentCount, Sentiments } from 'src/app/models/sentiment';
 import { valueCounts } from 'src/app/models/utils';
-import { ModelService } from 'src/app/services/model.service';
+import { StateService } from 'src/app/services/state.service';
 import { DefaultColorStrings } from 'src/environments/constants';
 
 @Component({
@@ -109,9 +109,9 @@ export class StatisticsComponent implements OnInit {
     return this.valueCounts.attribute.length > this.maxRankingDisplayItems;
   }
 
-  constructor(private modelService: ModelService, private router: Router, private snackBar: MatSnackBar) {
-    this.modelService.ensureModelIsAvailable();
-    this.extractions = modelService.model.extractions;
+  constructor(private stateService: StateService, private router: Router, private snackBar: MatSnackBar) {
+    this.stateService.ensureModelIsAvailable();
+    this.extractions = stateService.model.extractions;
     this.values = {
       attribute: Extractions.values(this.extractions, 'attribute'),
       aspect: Extractions.values(this.extractions, 'aspect'),

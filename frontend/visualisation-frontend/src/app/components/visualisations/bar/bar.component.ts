@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 import { Label } from 'ng2-charts';
-import { ModelService } from 'src/app/services/model.service';
+import { StateService } from 'src/app/services/state.service';
 import { ModelTransformation } from './modeltransformation';
 
 @Component({
@@ -53,7 +53,7 @@ export class BarComponent implements OnInit {
     {value: 'ascending', viewValue: 'Ascending'}
   ];
 
-  constructor(public modelService: ModelService) {
+  constructor(public stateService: StateService) {
     this.modelTransformation = new ModelTransformation(this);
     this.sortValue = this.sortOptions[0].value;
     this.sortOrderValue = this.sortOrderOptions[0].value;

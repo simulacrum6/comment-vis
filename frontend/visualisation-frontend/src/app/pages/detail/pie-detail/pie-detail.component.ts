@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Extractions } from 'src/app/models/canonical';
-import { ModelService } from 'src/app/services/model.service';
+import { StateService } from 'src/app/services/state.service';
 import { DetailViewBaseComponent } from '../detail-view-base.component';
 
 @Component({
@@ -17,8 +17,8 @@ export class PieDetailComponent extends DetailViewBaseComponent implements OnIni
 
   private breadCrumbPaths$: Observable<any>;
 
-  constructor(protected modelService: ModelService) {
-    super(modelService);
+  constructor(protected stateService: StateService) {
+    super(stateService);
   }
 
   ngOnInit() {

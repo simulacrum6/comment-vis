@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Extraction, ExtractionGroup, Extractions, FacetType, FacetTypes, StringMap } from 'src/app/models/canonical';
-import { ModelService } from 'src/app/services/model.service';
+import { StateService } from 'src/app/services/state.service';
 
 
 @Component({
@@ -18,13 +18,13 @@ export class DetailViewBaseComponent implements OnInit {
     @Input() facet$: Observable<string>;
     @Input() facetType$: Observable<FacetType>;
 
-    constructor(protected modelService: ModelService) {
-        this.modelService.ensureModelIsAvailable();
+    constructor(protected stateService: StateService) {
+        this.stateService.ensureModelIsAvailable();
     }
 
     ngOnInit() {
         this.group$ = combineLatest(this.facet$, this.facetType$).pipe(
-            map(facetDescription => this.modelService.model.getGroup(...facetDescription))
+            map(facetDescription => this.stateService.model.getGroup(...facetDescription))
         );
         this.extractions$ = this.group$.pipe(
             map(group => group.extractions)

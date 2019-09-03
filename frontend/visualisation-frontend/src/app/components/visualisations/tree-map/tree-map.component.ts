@@ -4,7 +4,7 @@ import { GoogleChartInterface } from 'ng2-google-charts/google-charts-interfaces
 import { Extractions, sentimentDifferential } from 'src/app/models/canonical';
 import { mapToNumber, mapToSentimentStatement, Sentiment } from 'src/app/models/sentiment';
 import { flatten } from 'src/app/models/utils';
-import { ModelService } from 'src/app/services/model.service';
+import { StateService } from 'src/app/services/state.service';
 import { DefaultColorStrings } from 'src/environments/constants';
 
 @Component({
@@ -49,12 +49,12 @@ export class TreeMapComponent implements OnInit {
    */
   private dataIsVisualisable = false;
 
-  constructor(private modelService: ModelService) { }
+  constructor(private stateService: StateService) { }
 
   ngOnInit() {
     this.otherType = this.facetType === 'aspect' ? 'attribute' : 'aspect';
     this.resetData();
-    const extractions = this.modelService.model.extractions;
+    const extractions = this.stateService.model.extractions;
     const facetMap = Extractions.groupBy(extractions, this.facetType);
     const entries = Object.entries(facetMap).map(this.toTableEntry);
     const subEntries = Object.entries(facetMap).map(entry => this.toNestedTableEntries(entry));

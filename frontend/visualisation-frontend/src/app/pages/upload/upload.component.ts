@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSelectChange } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DemoModel, ModelService } from 'src/app/services/model.service';
+import { DemoModel, StateService } from 'src/app/services/state.service';
 
 @Component({
   selector: 'app-upload',
@@ -29,14 +29,14 @@ export class UploadComponent implements OnInit {
   set dataset(dataset: any) {
     if (dataset instanceof MatSelectChange) {
       this._dataset = dataset.value;
-      this.modelService.loadDemoModel(dataset.value);
+      this.stateService.loadDemoModel(dataset.value);
     } else {
       this._dataset = dataset;
-      this.modelService.generateModelFromJson(dataset);
+      this.stateService.generateModelFromJson(dataset);
     }
   }
 
-  constructor(private router: Router, private ar: ActivatedRoute, private modelService: ModelService) {}
+  constructor(private router: Router, private ar: ActivatedRoute, private stateService: StateService) {}
 
   ngOnInit() {
 

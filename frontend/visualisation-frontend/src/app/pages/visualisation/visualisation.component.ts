@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
-import { ModelService } from 'src/app/services/model.service';
+import { StateService } from 'src/app/services/state.service';
 
 @Component({
   selector: 'app-visualisation',
@@ -16,8 +16,8 @@ export class VisualisationComponent implements OnInit {
     { path: 'bar', label: 'Bar' }
   ];
 
-  constructor(private modelService: ModelService, private snackBar: MatSnackBar, private router: Router) {
-    this.modelService.ensureModelIsAvailable();
+  constructor(private stateService: StateService, private snackBar: MatSnackBar, private router: Router) {
+    this.stateService.ensureModelIsAvailable();
   }
 
   ngOnInit() { }
