@@ -1,6 +1,25 @@
 <mat-card class="content" *ngIf="(facetExists$ | async); else error">
-  <mat-card-title>{{ facet$ | async }} - Details</mat-card-title>
-  <mat-card-subtitle><app-breadcrumb [paths]="(breadCrumbPaths$ | async)"></app-breadcrumb></mat-card-subtitle>
+  <div fxLayout="row" fxLayoutAlign="space-between">
+    <mat-card-title-group>
+      <mat-card-title>{{ facet$ | async }} - Details</mat-card-title>
+      <mat-card-subtitle><app-breadcrumb [paths]="(breadCrumbPaths$ | async)"></app-breadcrumb></mat-card-subtitle>
+    </mat-card-title-group>
+    <div>
+      <!-- TODO: activate, once implemented -->
+      <a mat-button
+        [routerLink]="previousDetailLink"
+        matTooltip="go to previous detail view"
+        [disabled]="true">
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+      <a mat-button
+        [routerLink]="returnLink"
+        matTooltip="close detail view"
+        [disabled]="true">
+        <mat-icon>close</mat-icon>
+      </a>
+    </div>
+  </div>
   <mat-card-content>
     <div #topWrapper
       fxLayout="row wrap"
