@@ -5,6 +5,7 @@ import { Extraction, ExtractionGroup, FacetType } from 'src/app/models/canonical
 import { SentimentCount } from 'src/app/models/sentiment';
 import { StateService } from 'src/app/services/state.service';
 import { SearchFilterComponent } from '../../../components/filters/search-filter/search-filter.component';
+import { SortState } from 'src/app/components/filters/sort-filter/sort';
 
 interface PieExtractionGroup extends ExtractionGroup {
   sizeRatio: number;
@@ -37,12 +38,11 @@ export class PieGridComponent implements OnInit {
   private currentPageIndex = 0;
   private currentLength;
 
-  // temporary properties for filter
-  private sortBy = 'positive';
-
   @ViewChild('searchReference') searchReference: SearchFilterComponent;
 
-  constructor(private stateService: StateService, private router: Router) { }
+  constructor(private stateService: StateService, private router: Router) {
+    stateService.sort.loadSafe();
+  }
 
   ngOnInit() {
     this.update();
@@ -96,5 +96,9 @@ export class PieGridComponent implements OnInit {
   public onSearch($event: { name: string, extractions: Extraction[], sentimentCount: SentimentCount, sizeRatio: number }[]) {
     this.searchedFacetGroups = $event;
     this.updatePage({ pageIndex: 0, pageSize: this.currentPageSize, length: this.searchedFacetGroups.length });
+  }
+
+  public onSortStateChange(state: SortState) {
+    this.stateService.sort.state = state;
   }
 }

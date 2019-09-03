@@ -3,7 +3,7 @@ import { default as evaluations } from 'src/app/models/evaulations.ce.json';
 import { default as foursquare } from 'src/app/models/foursquare_gold.ce.json';
 import { default as reviews } from 'src/app/models/reviews.ce.json';
 import { Extraction, Model, parseJson } from '../models/canonical';
-import { DefaultStorage } from './state-manager';
+import { DefaultStorage, SortStateManager } from './state-manager';
 
 export enum DemoModel {
   Foursquare,
@@ -16,6 +16,7 @@ export enum DemoModel {
   providedIn: 'root'
 })
 export class StateService {
+  // TODO: Create ModelStateManager
   /** The key under which the dataset id is stored in the Session Storage. */
   static readonly ModelIdKey = 'cv_dataset_id';
 
@@ -24,11 +25,16 @@ export class StateService {
   private _modelId: string;
   private _model: Model;
 
+  public sort: SortStateManager;
+
+  constructor() {
+    this.sort = new SortStateManager();
+  }
+
   get model(): Model { return this._model; }
   get modelId(): string { return this._modelId; }
   get hasModel(): boolean { return this._model !== undefined; }
 
-  constructor() { }
 
   /**
    * Generates a model from the given extractions and updates the stored model id.

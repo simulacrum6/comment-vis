@@ -1,24 +1,23 @@
 <mat-form-field class="medium">
   <mat-select
     placeholder="Sort by..."
-    [(ngModel)]="sortFunction"
-    (selectionChange)="onSortOptionChange($event)">
-    <mat-option [value]="noSortOption.sortFunction">{{ noSortOption.viewValue }}</mat-option>
-    <mat-optgroup *ngFor="let group of sortOptions" [label]="group.name">
-      <mat-option *ngFor="let option of group.members" [value]="option.sortFunction">
+    [(ngModel)]="sortOption"
+    (selectionChange)="onSortStateChange($event)">
+    <mat-option [value]="_noSortOption">{{ _noSortOption.viewValue }}</mat-option>
+    <mat-optgroup *ngFor="let group of _sortOptions" [label]="group.name">
+      <mat-option *ngFor="let option of group.members" [value]="option">
         {{ option.viewValue }}
       </mat-option>
     </mat-optgroup>
-
   </mat-select>
 </mat-form-field>
 <mat-form-field class="small">
   <mat-select
     placeholder="Order"
     [disabled]="noSort"
-    [(ngModel)]="sortOrder"
-    (selectionChange)="onSortOrderChange($event)">
-    <mat-option #sortOrder *ngFor="let option of sortOrderOptions" [value]="option.order">
+    [(ngModel)]="sortOrderOption"
+    (selectionChange)="onSortStateChange($event)">
+    <mat-option #sortOrder *ngFor="let option of _sortOrderOptions" [value]="option">
       {{ option.viewValue }}
     </mat-option>
   </mat-select>

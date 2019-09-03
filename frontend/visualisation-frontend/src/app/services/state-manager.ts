@@ -1,9 +1,13 @@
-import { SortOption, SortOptions, SortOrderOption, SortOrderOptions } from 'src/app/components/filters/sort-filter/sort';
+import { SortOption, SortOptions, SortOrderOption, SortOrderOptions, SortState } from 'src/app/components/filters/sort-filter/sort';
 
-/** The default `Storage` to use for `StateManagers` */
+/**
+ * The default `Storage` to use for `StateManagers`
+ */
 export const DefaultStorage: Storage = sessionStorage;
 
-/** Generates a storage key for the given identifiers by joining them. */
+/**
+ * Generates a storage key for the given identifiers by joining them.
+ */
 function makeStorageKey(...identifiers: string[]) {
   const prefix = 'cv';
   const seperator = '_';
@@ -17,14 +21,19 @@ function makeStorageKey(...identifiers: string[]) {
  * Class for managing the state of Objects of type `T` using a storage.
  */
 export class StateManager<T> {
-  /** The key under which the state object is stored. */
+  /**
+   * The key under which the state object is stored.
+   */
   readonly StorageKey: string;
 
-  /** The default value to be returned, when `loadSafe` fails. */
+  /**
+   * The default value to be returned, when `loadSafe` fails.
+   */
   readonly DefaultValue: T;
 
   protected _storage: Storage;
   protected _state: T;
+  protected _isSaved: boolean;
 
   /**
    * Transformation function that deserializes the stored string into a valid state object.\
@@ -39,27 +48,58 @@ export class StateManager<T> {
   public serializer: (state: T) => string = JSON.stringify;
 
   /**
-   * Indicates whether the storage should be updated automatically, when a new state is set. \
+   * If true the storage is updated automatically whenever a new state is set. \
    * Defaults to `true`.
    */
   public saveOnSet = true;
 
-  constructor(storageKey: string, defaultValue: T, storage: Storage) {
+  /**
+   * Constructs a new `StateManager`.
+   * @param storageKey  the key to use for the state object.
+   * @param defaultValue  the defaultValue to return, when `loadSafe` fails.
+   * @param storage  the storage to use.
+   * @param loadAfter  If true `safeLoad` is called after construction.
+   */
+  constructor(storageKey: string, defaultValue: T, storage: Storage, loadAfter: boolean = false) {
     this._storage = storage;
     this.StorageKey = storageKey;
     this.DefaultValue = Object.freeze(defaultValue);
+    this._isSaved = false;
+    if (loadAfter) {
+      this.loadSafe();
+    }
   }
 
-  /** The current state object. */
+  /**
+   * The current state object.
+   */
   get state(): T { return this._state; }
   set state(state: T) {
     this._state = state;
+    this._isSaved = false;
     if (this.saveOnSet) {
       this.save();
     }
   }
 
-  /** Reads the state object stored under the `StorageKey`. */
+  /**
+   * Indicates whether a valid state object is available.
+   */
+  get hasState(): boolean {
+    const current = this.state;
+    return (current !== null && current !== undefined);
+  }
+
+  /**
+   * Indicates whether the current state object was stored.
+   */
+  get isSaved(): boolean {
+    return this._isSaved;
+  }
+
+  /**
+   * Reads the state object stored under the `StorageKey`.
+   */
   read(): T {
     const stored = this._storage.getItem(this.StorageKey);
     return this.deserializer(stored);
@@ -79,7 +119,9 @@ export class StateManager<T> {
     }
   }
 
-  /** Reads the state object stored under the `StorageKey` and sets the new state. */
+  /**
+   * Reads the state object stored under the `StorageKey` and sets the new state.
+   */
   load() {
     this.state = this.read();
   }
@@ -93,16 +135,13 @@ export class StateManager<T> {
     this.state = state !== null ? state : fallBack;
   }
 
-  /** Saves the current state in the storage. */
+  /**
+   * Saves the current state in the storage.
+   */
   save() {
     this._storage.setItem(this.StorageKey, this.serializer(this.state));
+    this._isSaved = true;
   }
-}
-
-// TODO: move to sort.ts
-export interface SortState {
-  order: SortOrderOption;
-  sort: SortOption;
 }
 
 export interface SortOptionRegistry {
@@ -155,13 +194,17 @@ export class SortStateManager extends StateManager<SortState> {
     this.deserializer = makeSortStateDeserializer(this.SortOptionRegistry);
   }
 
-  /** The current sort order option of the sort state. */
+  /**
+   * The current sort order option of the sort state.
+   */
   get order(): SortOrderOption { return this.state.order; }
   set order(order: SortOrderOption) {
     this.state = { order, sort: this._state.sort };
   }
 
-  /** The current sort option of the sort state. */
+  /**
+   * The current sort option of the sort state.
+   */
   get sort(): SortOption { return this.state.sort; }
   set sort(sort: SortOption) {
     this.state = { order: this._state.order, sort };

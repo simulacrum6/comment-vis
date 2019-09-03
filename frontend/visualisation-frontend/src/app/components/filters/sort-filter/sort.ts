@@ -19,6 +19,11 @@ export interface SortOrderOption {
     viewValue: string;
 }
 
+export interface SortState {
+  order: SortOrderOption;
+  sort: SortOption;
+}
+
 const ascending: SortOrderOption = { viewValue: 'Ascending', order: 'ascending' };
 const descending: SortOrderOption = { viewValue: 'Descending', order: 'descending' };
 
@@ -105,7 +110,7 @@ export const SortOptions = {
         controversialSentiments: sentimentOptions[0],
         positiveSentiments: sentimentOptions[1],
         negativeSentiments: sentimentOptions[2],
-        neutralSentiments: sentimentOptions[2],
+        neutralSentiments: sentimentOptions[3],
     },
     bundles: {
         sentiment: sentimentOptions,

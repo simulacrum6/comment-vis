@@ -1,8 +1,16 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatSelectChange } from '@angular/material';
-import { merge, Observable } from 'rxjs';
 import { ExtractionGroup } from 'src/app/models/canonical';
-import { SortFunctions, SortOption, SortOptionGroup, SortOptionGroups, SortOptions, SortOrder, SortOrderOption } from './sort';
+import {
+  SortFunctions,
+  SortOption,
+  SortOptionGroup,
+  SortOptionGroups,
+  SortOptions, SortOrder,
+  SortOrderOption,
+  SortOrderOptions,
+  SortState
+} from './sort';
 
 @Component({
   selector: 'app-sort-filter',
@@ -11,56 +19,80 @@ import { SortFunctions, SortOption, SortOptionGroup, SortOptionGroups, SortOptio
 })
 export class SortFilterComponent implements OnInit {
 
-  private noSortOption: SortOption = SortOptions.options.noSort;
+  private _noSortOption: SortOption = SortOptions.options.noSort;
 
-  private sortOptions: SortOptionGroup[] = [
+  private _sortOptions: SortOptionGroup[] = [
     SortOptionGroups.sentiment,
     SortOptionGroups.topics
   ];
 
-  private sortOrderOptions: SortOrderOption[] = [
-    { order: 'descending', viewValue: 'Descending' },
-    { order: 'ascending', viewValue: 'Ascending' }
+  private _sortOrderOptions: SortOrderOption[] = [
+    SortOrderOptions.descending,
+    SortOrderOptions.ascending,
   ];
 
-  private sortFunction: (a: ExtractionGroup, b: ExtractionGroup) => number = SortFunctions.noSort;
+  private _sortState: SortState;
 
   private get noSort(): boolean {
     return this.sortFunction === SortFunctions.noSort;
   }
 
-  @Input() sortOrder: SortOrder = 'descending';
+  get sortOption(): SortOption {
+    return this.sortState.sort;
+  }
+  set sortOption(option: SortOption) {
+    this.sortState = { order: this.sortState.order, sort: option };
+  }
+
+  get sortOrderOption(): SortOrderOption {
+    return this.sortState.order;
+  }
+  set sortOrderOption(option: SortOrderOption) {
+    this.sortState = { order: option, sort: this.sortState.sort };
+  }
+
+  get sortFunction(): (a: ExtractionGroup, b: ExtractionGroup) => number {
+    return this.sortOption.sortFunction;
+  }
+
+  get sortOrder(): SortOrder {
+    return this.sortOrderOption.order;
+  }
+
+  get sortState(): SortState {
+    return this._sortState;
+  }
+  @Input()
+  set sortState(state: SortState) {
+    this._sortState = state;
+    this.sortStateChange.emit(this._sortState);
+  }
+
+  @Output()
+  sortStateChange: EventEmitter<SortState>;
 
   /**
    * The data to be sorted.
    */
-  @Input() data: ExtractionGroup[];
+  @Input()
+  data: ExtractionGroup[];
 
   /**
    * Emits processed data, whenever data has been sorted.
    */
-  @Output('sort') sort$: EventEmitter<ExtractionGroup[]>;
-
-  // TODO: Implement
-  /**
-   * Emits processed data, whenever data has been filtered.
-   */
-  @Output('filter') filter$: EventEmitter<ExtractionGroup[]>;
-
-  /**
-   * Emits processed data whenever data has either been filtered or sorted.
-   */
-  @Output('processed') processed$: Observable<ExtractionGroup[]>;
-
+  @Output()
+  sort: EventEmitter<ExtractionGroup[]>;
 
   constructor() {
-    this.sort$ = new EventEmitter<ExtractionGroup[]>();
-    this.filter$ = new EventEmitter<ExtractionGroup[]>();
-    this.processed$ = merge(this.sort$, this.filter$) as Observable<ExtractionGroup[]>;
+    this.sort = new EventEmitter();
+    this.sortStateChange = new EventEmitter();
    }
 
+
   ngOnInit() {
-    this.sort$.emit(this.sortData());
+    this.sort.emit(this.sortData());
+    console.log('posting sort state');
+    console.log(this.sortState);
   }
 
   sortData(): ExtractionGroup[] {
@@ -75,11 +107,7 @@ export class SortFilterComponent implements OnInit {
     return data;
   }
 
-  public onSortOptionChange(change: MatSelectChange) {
-    this.sort$.emit(this.sortData());
-  }
-
-  public onSortOrderChange(change: MatSelectChange) {
-    this.sort$.emit(this.sortData());
+  onSortStateChange(change: MatSelectChange) {
+    this.sort.emit(this.sortData());
   }
 }
