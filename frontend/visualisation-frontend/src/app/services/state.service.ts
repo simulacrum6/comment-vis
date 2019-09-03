@@ -3,6 +3,7 @@ import { default as evaluations } from 'src/app/models/evaulations.ce.json';
 import { default as foursquare } from 'src/app/models/foursquare_gold.ce.json';
 import { default as reviews } from 'src/app/models/reviews.ce.json';
 import { Extraction, Model, parseJson } from '../models/canonical';
+import { DefaultStorage } from './state-manager';
 
 export enum DemoModel {
   Foursquare,
@@ -10,12 +11,15 @@ export enum DemoModel {
   Evaluations
 }
 
+// TODO: implement StateManagers for relevant classes.
 @Injectable({
   providedIn: 'root'
 })
 export class StateService {
   /** The key under which the dataset id is stored in the Session Storage. */
   static readonly ModelIdKey = 'cv_dataset_id';
+
+  private readonly _storage = DefaultStorage;
 
   private _modelId: string;
   private _model: Model;
@@ -32,7 +36,7 @@ export class StateService {
   generateModel(extractions: Extraction[], id: string) {
     this._model = new Model(extractions);
     this._modelId = id;
-    sessionStorage.setItem(StateService.ModelIdKey, id);
+    this._storage.setItem(StateService.ModelIdKey, id);
   }
 
   generateModelFromJson(json: any[]): void {
@@ -65,7 +69,7 @@ export class StateService {
    * Throws an error if loading fails.
    */
   loadModelFromStorage() {
-    const storedId = sessionStorage.getItem(StateService.ModelIdKey);
+    const storedId = this._storage.getItem(StateService.ModelIdKey);
 
     // load demo model if demo model was stored.
     const demoModel = DemoModel[storedId];
@@ -99,5 +103,4 @@ export class StateService {
       }
     }
   }
-
 }

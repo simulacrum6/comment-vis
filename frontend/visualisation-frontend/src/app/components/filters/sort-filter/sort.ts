@@ -19,6 +19,14 @@ export interface SortOrderOption {
     viewValue: string;
 }
 
+const ascending: SortOrderOption = { viewValue: 'Ascending', order: 'ascending' };
+const descending: SortOrderOption = { viewValue: 'Descending', order: 'descending' };
+
+export const SortOrderOptions = {
+  ascending,
+  descending
+};
+
 function sentimentSorter(sentiment: Sentiment) {
   return (a: ExtractionGroup, b: ExtractionGroup) => {
     const countA = a.sentimentCount[sentiment];
@@ -33,13 +41,13 @@ function sortByControversy(a: ExtractionGroup, b: ExtractionGroup): number {
 
 function noSort(a: ExtractionGroup, b: ExtractionGroup): number { return 0; }
 
-const noSortOption: SortOption = { value: 'none', viewValue: '--', sortFunction: noSort };
+const noSortOption: SortOption = { value: 'noSort', viewValue: '--', sortFunction: noSort };
 
 const sentimentOptions: SortOption[] = [
-  { value: 'controversy', viewValue: 'most controversial', sortFunction: sortByControversy },
-  { value: 'positive', viewValue: 'most positive', sortFunction: sentimentSorter(Sentiment.Positive) },
-  { value: 'negative', viewValue: 'most negative', sortFunction: sentimentSorter(Sentiment.Negative) },
-  { value: 'neutral', viewValue: 'most neutral', sortFunction: sentimentSorter(Sentiment.Neutral) }
+  { value: 'controversialSentiments', viewValue: 'most controversial', sortFunction: sortByControversy },
+  { value: 'positiveSentiments', viewValue: 'most positive', sortFunction: sentimentSorter(Sentiment.Positive) },
+  { value: 'negativeSentiments', viewValue: 'most negative', sortFunction: sentimentSorter(Sentiment.Negative) },
+  { value: 'neutralSentiments', viewValue: 'most neutral', sortFunction: sentimentSorter(Sentiment.Neutral) }
 ];
 
 function sortByExtractionLength(a: ExtractionGroup, b: ExtractionGroup): number {
@@ -75,8 +83,8 @@ function sortByGroupName(a: ExtractionGroup, b: ExtractionGroup): number {
 }
 
 const extractionOptions: SortOption[] = [
-  { viewValue: 'alphabetically', sortFunction: sortByGroupName },
-  { viewValue: 'most talked about', sortFunction: sortByExtractionLength },
+  { value: 'alphabetically', viewValue: 'alphabetically', sortFunction: sortByGroupName },
+  { value: 'popularity', viewValue: 'most talked about', sortFunction: sortByExtractionLength },
 ];
 
 export const SortFunctions = {
