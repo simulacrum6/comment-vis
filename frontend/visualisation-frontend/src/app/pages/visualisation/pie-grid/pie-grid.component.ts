@@ -42,6 +42,7 @@ export class PieGridComponent implements OnInit {
 
   constructor(private stateService: StateService, private router: Router) {
     stateService.sort.loadSafe();
+    stateService.search.loadSafe();
   }
 
   ngOnInit() {

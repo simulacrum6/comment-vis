@@ -21,6 +21,7 @@
         <div>
           <app-search-filter #searchReference
             [data]="facetGroups"
+            [(searchTerm)]="stateService.search.state"
             (searchResults)="onSearch($event)">
           </app-search-filter>
         </div>

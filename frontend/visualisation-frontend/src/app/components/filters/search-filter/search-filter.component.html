@@ -1,8 +1,7 @@
-<form>
-  <mat-form-field>
-    <input type="text" matInput
-      placeholder={{placeholder}}
-      [value]="searchTerm"
+  <mat-form-field #input>
+    <input matInput
+      type="text"
+      placeholder="Search/Filter"
       [formControl]="inputForm"
       [matAutocomplete]="auto">
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="getAutocompleteUIOutput">
@@ -11,4 +10,3 @@
       </mat-option>
     </mat-autocomplete>
   </mat-form-field>
-</form>

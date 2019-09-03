@@ -55,14 +55,14 @@ export class StateManager<T> {
 
   /**
    * Constructs a new `StateManager`.
-   * @param storageKey  the key to use for the state object.
+   * @param name  the name of the manager.
    * @param defaultValue  the defaultValue to return, when `loadSafe` fails.
    * @param storage  the storage to use.
    * @param loadAfter  If true `safeLoad` is called after construction.
    */
-  constructor(storageKey: string, defaultValue: T, storage: Storage, loadAfter: boolean = false) {
+  constructor(name: string, defaultValue: T, storage: Storage = DefaultStorage, loadAfter: boolean = false) {
     this._storage = storage;
-    this.StorageKey = storageKey;
+    this.StorageKey = makeStorageKey(name);
     this.DefaultValue = Object.freeze(defaultValue);
     this._isSaved = false;
     if (loadAfter) {
@@ -184,7 +184,7 @@ export class SortStateManager extends StateManager<SortState> {
    * @param registry  the registry to use for looking up sortOptions. Defaults to `SororderOptions`.
    */
   constructor(registry: SortOptionRegistry = SortOptions.options) {
-    const key = makeStorageKey('sort');
+    const key = 'sort';
     const defaultValue = {
       order: SortOrderOptions.descending,
       sort: SortOptions.options.noSort

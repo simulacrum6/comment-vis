@@ -3,7 +3,7 @@ import { default as evaluations } from 'src/app/models/evaulations.ce.json';
 import { default as foursquare } from 'src/app/models/foursquare_gold.ce.json';
 import { default as reviews } from 'src/app/models/reviews.ce.json';
 import { Extraction, Model, parseJson } from '../models/canonical';
-import { DefaultStorage, SortStateManager } from './state-manager';
+import { DefaultStorage, SortStateManager, StateManager } from './state-manager';
 
 export enum DemoModel {
   Foursquare,
@@ -25,10 +25,10 @@ export class StateService {
   private _modelId: string;
   private _model: Model;
 
-  public sort: SortStateManager;
+  public sort: SortStateManager = new SortStateManager();
+  public search: StateManager<string> = new StateManager<string>('search', '');
 
   constructor() {
-    this.sort = new SortStateManager();
   }
 
   get model(): Model { return this._model; }

@@ -91,8 +91,6 @@ export class SortFilterComponent implements OnInit {
 
   ngOnInit() {
     this.sort.emit(this.sortData());
-    console.log('posting sort state');
-    console.log(this.sortState);
   }
 
   sortData(): ExtractionGroup[] {

@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
-import { map, startWith } from 'rxjs/internal/operators';
-import { ExtractionGroup } from '../../../models/canonical';
+import { Subscription } from 'rxjs';
+import { debounceTime, map } from 'rxjs/internal/operators';
+import { ExtractionGroup } from 'src/app/models/canonical';
 
 @Component({
   selector: 'app-search-filter',
@@ -10,13 +10,17 @@ import { ExtractionGroup } from '../../../models/canonical';
   styleUrls: ['./search-filter.component.scss']
 })
 export class SearchFilterComponent implements OnInit, OnDestroy {
-
   /**
    * The input data which will be filtered
    */
   @Input() data: ExtractionGroup[];
 
-  @Input() searchTerm = '';
+  get searchTerm(): string {
+    return this._term;
+  }
+  @Input() set searchTerm(term: string) {
+    this._term = term;
+  };
 
   @Output() searchTermChange: EventEmitter<string> = new EventEmitter();
 
@@ -25,15 +29,13 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
    */
   @Output() searchResults: EventEmitter<ExtractionGroup[]> = new EventEmitter();
 
-  private placeholder = 'Search/Filter';
-  private inputForm = new FormControl();
+  private _term;
+  private inputForm = new FormControl('');
   private subscription: Subscription = new Subscription();
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor() {
     const searchTermChange = this.inputForm.valueChanges.pipe(
-      startWith(''),
+      debounceTime(200),
       map(value => typeof value === 'string' ? value : value.name)
     );
     const searchResults = searchTermChange.pipe(
@@ -46,15 +48,23 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     this.subscription.add(searchTermSubscription);
   }
 
+  ngOnInit() {
+    this.inputForm.setValue(this.searchTerm);
+  }
+
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
 
   clearSearch() {
-    this.inputForm.setValue('');
+    this.inputForm.reset();
   }
 
-  private getAutocompleteUIOutput(selectedOption: ExtractionGroup): string | undefined {
-    return selectedOption ? selectedOption.name : undefined;
+  private getAutocompleteUIOutput(selectedOption: ExtractionGroup | string): string {
+    if (typeof selectedOption === 'string') {
+      return selectedOption;
+    } else {
+      return selectedOption.name;
+    }
   }
 }
