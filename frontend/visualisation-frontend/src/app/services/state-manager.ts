@@ -102,7 +102,7 @@ export class StateManager<T> {
   constructor(name: string, defaultValue: T, storage: Storage = DefaultStorage, loadAfter: boolean = false) {
     this._storage = storage;
     this._storageKey = makeStorageKey(name);
-    this._defaultValue = Object.freeze(defaultValue);
+    this._defaultValue = defaultValue;
     this._isSaved = false;
     if (loadAfter) {
       this.loadSafe();
@@ -153,6 +153,13 @@ export class StateManager<T> {
   save() {
     this._storage.setItem(this.storageKey, this.serializer(this.state));
     this._isSaved = true;
+  }
+
+  reset(save = true) {
+    this._state = this.defaultValue;
+    if (save) {
+      this.save();
+    }
   }
 
   /**

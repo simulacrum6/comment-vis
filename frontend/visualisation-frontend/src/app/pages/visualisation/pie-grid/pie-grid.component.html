@@ -12,8 +12,8 @@
           <label>Attribute</label>
           <mat-slide-toggle
             color="primary"
-            (change)="toggleTypes()"
-            checked="true">
+            [checked]="isAspect"
+            (change)="toggleTypes()">
             Aspect
           </mat-slide-toggle>
       </div>
@@ -37,7 +37,7 @@
     <div class='pie-grid'
     fxLayout="row wrap"
     fxLayoutAlign="space-evenly">
-      <app-pie-cell *ngFor="let group of selectedFacetGroups"
+      <app-pie-cell *ngFor="let group of displayedFacetGroups"
         [facetType]="facetType"
         [name]="group.name"
         [extractions]="group.extractions"

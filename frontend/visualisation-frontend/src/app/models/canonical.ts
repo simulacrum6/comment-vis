@@ -19,6 +19,10 @@ export class FacetTypes {
   public static Attribute: FacetType = 'attribute';
   public static Aspect: FacetType = 'aspect';
 
+  public static isFacetType(value: string): boolean {
+    return value === 'attribute' || value === 'aspect';
+  }
+
   public static other(type: FacetType) {
     return type === FacetTypes.Attribute ? FacetTypes.Aspect : FacetTypes.Attribute;
   }
@@ -78,10 +82,10 @@ export class ExtractionGroup {
   public readonly extractions: Extraction[];
   public readonly sentimentCount: SentimentCount;
 
-  constructor(name: string, extractions: Extraction[]) {
+  constructor(name: string, extractions: Extraction[], sentimentCount?: SentimentCount) {
     this.name = name;
     this.extractions = extractions;
-    this.sentimentCount = SentimentCount.fromExtractions(extractions);
+    this.sentimentCount = sentimentCount ? sentimentCount : SentimentCount.fromExtractions(extractions);
   }
 }
 

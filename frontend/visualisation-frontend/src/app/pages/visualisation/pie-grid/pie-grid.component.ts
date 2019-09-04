@@ -1,14 +1,27 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material';
 import { Router } from '@angular/router';
-import { Extraction, ExtractionGroup, FacetType } from 'src/app/models/canonical';
+import { SortState } from 'src/app/components/filters/sort-filter/sort';
+import { Extraction, ExtractionGroup, FacetType, FacetTypes } from 'src/app/models/canonical';
 import { SentimentCount } from 'src/app/models/sentiment';
 import { StateService } from 'src/app/services/state.service';
 import { SearchFilterComponent } from '../../../components/filters/search-filter/search-filter.component';
-import { SortState } from 'src/app/components/filters/sort-filter/sort';
 
-interface PieExtractionGroup extends ExtractionGroup {
-  sizeRatio: number;
+
+class PieExtractionGroup extends ExtractionGroup {
+  public sizeRatio: number = 0.25;
+
+  constructor(name: string, extractions: Extraction[], sentimentCount?: SentimentCount) {
+    super(name, extractions, sentimentCount);
+  }
+
+  static fromGroup(group: ExtractionGroup, scalingValue?: number): PieExtractionGroup {
+    const pieGroup = new PieExtractionGroup(group.name, group.extractions, group.sentimentCount);
+    if (scalingValue) {
+      pieGroup.sizeRatio = pieGroup.extractions.length / scalingValue;
+    }
+    return pieGroup;
+  }
 }
 
 @Component({
@@ -17,16 +30,6 @@ interface PieExtractionGroup extends ExtractionGroup {
   styleUrls: ['./pie-grid.component.scss']
 })
 export class PieGridComponent implements OnInit {
-
-  @Input() facetType: FacetType = 'aspect';
-  @Input() scaleSize = true;
-
-  // TODO: add type to model
-  private facetGroups: PieExtractionGroup[];
-  private sortedFacetGroups: PieExtractionGroup[];
-  private searchedFacetGroups: PieExtractionGroup[];
-  private selectedFacetGroups: PieExtractionGroup[];
-  private subGroupType: FacetType = 'attribute';
 
   private breadCrumbPaths = [
     { name: 'Statistics', path: ['/stats'], queryParams: {} },
@@ -38,11 +41,37 @@ export class PieGridComponent implements OnInit {
   private currentPageIndex = 0;
   private currentLength;
 
+  private facetGroups: PieExtractionGroup[];
+  private sortedFacetGroups: PieExtractionGroup[];
+  private searchedFacetGroups: PieExtractionGroup[];
+  private displayedFacetGroups: PieExtractionGroup[];
+
+  private _facetType: FacetType;
+
+  get facetType(): FacetType {
+    return this._facetType;
+  }
+  @Input()
+  set facetType(type: FacetType) {
+    this._facetType = type;
+    this.stateService.facetType.state = type;
+  }
+
+  get subGroupType(): FacetType {
+    return FacetTypes.other(this.facetType);
+  }
+
+  get isAspect(): boolean {
+    return this.facetType === FacetTypes.Aspect;
+  }
+
+  @Input() scaleSize = true;
+
   @ViewChild('searchReference') searchReference: SearchFilterComponent;
 
   constructor(private stateService: StateService, private router: Router) {
-    stateService.sort.loadSafe();
-    stateService.search.loadSafe();
+    const facetManager = this.stateService.facetType;
+    this.facetType = facetManager.hasState ? facetManager.state : FacetTypes.Aspect;
   }
 
   ngOnInit() {
@@ -50,30 +79,36 @@ export class PieGridComponent implements OnInit {
   }
 
   public update() {
-    const extractions = this.stateService.model.state.extractions;
+    const model = this.stateService.model.state;
+    const extractions = model.extractions;
     this.facetGroups = this.stateService.model.state.getGroupList(this.facetType)
-      .map(group => ({
-        ...group,
-        sizeRatio: this.scaleSize ? group.extractions.length / extractions.length : 0.25
-      }));
+      .map(this.toPieGroup(extractions.length));
     this.sortedFacetGroups = this.facetGroups.slice();
     this.searchedFacetGroups = this.facetGroups.slice();
     this.currentLength = this.facetGroups.length;
 
-    this.updateSelectedFacetGroups();
+    this.updateDisplayedFacetGroups();
+  }
+
+  private toPieGroup(scalingValue?: number) {
+    if (this.scaleSize) {
+      return (group: ExtractionGroup) => PieExtractionGroup.fromGroup(group, scalingValue);
+    } else {
+      return PieExtractionGroup.fromGroup;
+    }
   }
 
   public updatePage(event: PageEvent) {
     this.currentPageIndex = event.pageIndex;
     this.currentPageSize = event.pageSize;
     this.currentLength = event.length;
-    this.updateSelectedFacetGroups();
+    this.updateDisplayedFacetGroups();
   }
 
-  private updateSelectedFacetGroups() {
+  private updateDisplayedFacetGroups() {
     const start = this.currentPageIndex * this.currentPageSize;
     const end = (this.currentPageIndex + 1) * this.currentPageSize;
-    this.selectedFacetGroups = this.sortedFacetGroups.filter(value => this.searchedFacetGroups.indexOf(value) !== -1).slice(start, end);
+    this.displayedFacetGroups = this.sortedFacetGroups.filter(value => this.searchedFacetGroups.indexOf(value) !== -1).slice(start, end);
   }
 
   public navigateToDetailPage(facet: string, facetType: FacetType) {
@@ -81,9 +116,8 @@ export class PieGridComponent implements OnInit {
   }
 
   public toggleTypes() {
-    const old = this.facetType;
-    this.facetType = this.subGroupType;
-    this.subGroupType = old;
+    this.stateService.search.reset();
+    this.facetType = FacetTypes.other(this.facetType);
     this.breadCrumbPaths[this.breadCrumbPaths.length - 1].name = this.facetType + 's';
     this.searchReference.clearSearch();
     this.update();
@@ -91,7 +125,7 @@ export class PieGridComponent implements OnInit {
 
   public onSort($event: { name: string, extractions: Extraction[], sentimentCount: SentimentCount, sizeRatio: number }[]) {
     this.sortedFacetGroups = $event;
-    this.updateSelectedFacetGroups();
+    this.updateDisplayedFacetGroups();
   }
 
   public onSearch($event: { name: string, extractions: Extraction[], sentimentCount: SentimentCount, sizeRatio: number }[]) {
