@@ -1,3 +1,5 @@
+import { PageEvent } from '@angular/material';
+
 /**
  * Counts the ocurrences of strings in the given list of strings.
  * Returns a list of value-count tuples. The list can be sorted, using the sort parameter.
@@ -123,4 +125,8 @@ function pipe(...fs) {
 export interface SimpleRoute {
     url: string[];
     queryParams: any;
+}
+
+export interface PaginatorConfig extends PageEvent {
+    pageSizes: number[];
 }

@@ -1,12 +1,13 @@
-import { Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { SortState } from 'src/app/components/filters/sort-filter/sort';
 import { Extraction, ExtractionGroup, FacetType, FacetTypes } from 'src/app/models/canonical';
 import { SentimentCount } from 'src/app/models/sentiment';
 import { StateService } from 'src/app/services/state.service';
 import { SearchFilterComponent } from '../../../components/filters/search-filter/search-filter.component';
-import { Subscription } from 'rxjs';
+import { PaginatorConfig } from 'src/app/models/utils';
 
 
 class PieExtractionGroup extends ExtractionGroup {
@@ -37,10 +38,6 @@ export class PieGridComponent implements OnInit, OnDestroy {
     { name: this.facetType + 's', path: ['/vis/pie'], queryParams: {} }
   ];
 
-  private pageSizes = [25, 35, 50, 75, 150];
-  private currentPageSize = this.pageSizes[1];
-  private currentPageIndex = 0;
-  private currentLength;
 
   private facetGroups: PieExtractionGroup[];
   private sortedFacetGroups: PieExtractionGroup[];
@@ -49,7 +46,37 @@ export class PieGridComponent implements OnInit, OnDestroy {
 
   private subscription = new Subscription();
 
+  private _pageConfig: PaginatorConfig;
   private _facetType: FacetType;
+
+  private get pageSizes() {
+    return this._pageConfig.pageSizes;
+  }
+  private set pageSizes(sizes) {
+    this._pageConfig.pageSizes = sizes;
+  }
+  private get currentPageSize() {
+    return this._pageConfig.pageSize;
+  }
+  private set currentPageSize(size) {
+    this._pageConfig.pageSize = size;
+  }
+  private get currentPageIndex() {
+    return this._pageConfig.pageIndex;
+  }
+  private set currentPageIndex(index) {
+    this._pageConfig.pageIndex = index;
+  }
+  private get currentLength() {
+    return this._pageConfig.length;
+  }
+  private set currentLength(length) {
+    this._pageConfig.length = length;
+  }
+
+  get pageConfig() {
+    return this._pageConfig;
+  }
 
   get facetType(): FacetType {
     return this._facetType;
@@ -75,6 +102,9 @@ export class PieGridComponent implements OnInit, OnDestroy {
   constructor(private stateService: StateService, private router: Router, private route: ActivatedRoute) {
     const facetManager = this.stateService.facetType;
     this.facetType = facetManager.hasState ? facetManager.state : FacetTypes.Aspect;
+    console.log(this.stateService.visPaginator.read())
+    console.log(this.stateService.visPaginator.state)
+    this._pageConfig = this.stateService.visPaginator;
   }
 
   ngOnInit() {
