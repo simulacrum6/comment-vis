@@ -61,6 +61,9 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   }
 
   private getAutocompleteUIOutput(selectedOption: ExtractionGroup | string): string {
+    if (selectedOption === null) {
+      return '';
+    }
     if (typeof selectedOption === 'string') {
       return selectedOption;
     } else {
