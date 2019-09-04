@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ModelStateManager, SortStateManager, StateManager } from './state-manager';
+import { StateManager } from './state-manager';
+import { ModelStateManager } from "./model-state-manager";
+import { SortStateManager } from "./sort-state-manager";
 
 
 // TODO: implement StateManagers for relevant classes.

@@ -1,8 +1,6 @@
 import { mapToNumber, mapToSentiment, Sentiment, SentimentCount } from './sentiment';
 import { sum } from './utils';
-import { default as evaluations } from 'src/app/models/evaulations.ce.json';
-import { default as foursquare } from 'src/app/models/foursquare_gold.ce.json';
-import { default as reviews } from 'src/app/models/reviews.ce.json';
+
 
 export interface StringMap<V> {
   [key: string]: V;
@@ -160,21 +158,6 @@ export function sentimentDifferential(extractions: Extraction[], normalized: boo
   return normalized ? differential / extractions.length : differential;
 }
 
-export enum DemoModel {
-  Foursquare,
-  Reviews,
-  Evaluations
-}
-
-function getDemoModelExtractions(model: DemoModel): Extraction[] {
-  switch (model) {
-    case DemoModel.Foursquare: { return parseJson(foursquare); }
-    case DemoModel.Reviews: { return parseJson(reviews); }
-    case DemoModel.Evaluations: { return parseJson(evaluations); }
-  }
-
-  throw new Error('Tried to load invalid Demo Model!');
-}
 
 export class Model {
   /**
@@ -212,12 +195,6 @@ export class Model {
   static fromJson(json: any[]): Model {
     const extractions = parseJson(json);
     const id = 'custom_json_model';
-    return new Model(extractions, id);
-  }
-
-  static fromDemo(model: DemoModel): Model {
-    const extractions = getDemoModelExtractions(model);
-    const id = DemoModel[model];
     return new Model(extractions, id);
   }
 

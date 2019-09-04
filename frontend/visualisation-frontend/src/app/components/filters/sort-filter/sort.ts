@@ -12,6 +12,10 @@ export interface SortOptionGroup {
   members: SortOption[];
 }
 
+export interface SortOptionRegistry {
+  [identifier: string]: SortOption;
+}
+
 export type SortOrder = 'ascending' | 'descending';
 
 export interface SortOrderOption {
@@ -23,6 +27,7 @@ export interface SortState {
   order: SortOrderOption;
   sort: SortOption;
 }
+
 
 const ascending: SortOrderOption = { viewValue: 'Ascending', order: 'ascending' };
 const descending: SortOrderOption = { viewValue: 'Descending', order: 'descending' };

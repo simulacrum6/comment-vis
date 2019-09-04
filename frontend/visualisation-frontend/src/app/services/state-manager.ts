@@ -1,6 +1,3 @@
-import { SortOption, SortOptions, SortOrderOption, SortOrderOptions, SortState } from 'src/app/components/filters/sort-filter/sort';
-import { Model, parseJson, Extraction, DemoModel } from '../models/canonical';
-
 /**
  * The default `Storage` to use for `StateManagers`
  */
@@ -29,8 +26,6 @@ function makeStorageKey(...identifiers: string[]) {
  * In this case, the State Manager must receive different serializer and deserializer functions to enable successful serialization.
  */
 export class StateManager<T> {
-
-
   protected _defaultValue: T;
   protected _storageKey: string;
   protected _storage: Storage;
@@ -55,13 +50,12 @@ export class StateManager<T> {
    */
   public saveOnSet = true;
 
-
   /**
    * The key under which the state object is stored.
    */
   get storageKey(): string {
     return this._storageKey;
-  };
+  }
 
   /**
    * The default value to be returned, when `loadSafe` fails.
@@ -159,112 +153,5 @@ export class StateManager<T> {
   save() {
     this._storage.setItem(this.storageKey, this.serializer(this.state));
     this._isSaved = true;
-  }
-}
-
-export interface SortOptionRegistry {
-  [identifier: string]: SortOption;
-}
-
-/**
- * Returns a function to deserialize string representations of a `SortState`, using the given `SortOptionRegistry`.
- * A deserializer is required since functions cannot be serialized.
- * The returned deserializer tries to find an appropriate sortFunction in the given registry.
- */
-function makeSortStateDeserializer(registry: SortOptionRegistry): (sortState: string) => SortState {
-  const deserializer = (sortState: string) => {
-    const state: SortState = JSON.parse(sortState); // does not have a sortFunction yet
-    const identifier = state.sort.value;
-    const sortOption = registry[identifier];
-
-    // throw error, if identifier is not in the registry
-    if (sortOption === undefined) {
-      throw new Error(`could not retrieve SortOption from registry.\n found invalid identifier '${identifier}' in storage.`);
-    }
-
-    // build valid SortState from retrieved sortOption
-    return { order: state.order, sort: sortOption };
-  };
-
-  return deserializer;
-}
-
-
-export class SortStateManager extends StateManager<SortState> {
-  /**
-   * A mapping from string identifiers to `SortOption`s.
-   * Used to retrieve the correct sortFunction when reading from the `Storage`.
-   */
-  readonly SortOptionRegistry: SortOptionRegistry;
-
-  /**
-   * Creates a new SortStateManager.
-   * @param registry  the registry to use for looking up sortOptions. Defaults to `SororderOptions`.
-   */
-  constructor(registry: SortOptionRegistry = SortOptions.options) {
-    const key = 'sort';
-    const defaultValue = {
-      order: SortOrderOptions.descending,
-      sort: SortOptions.options.noSort
-    };
-    super(key, defaultValue, DefaultStorage);
-    this.SortOptionRegistry = Object.freeze(registry);
-    this.deserializer = makeSortStateDeserializer(this.SortOptionRegistry);
-  }
-
-  /**
-   * The current sort order option of the sort state.
-   */
-  get order(): SortOrderOption { return this.state.order; }
-  set order(order: SortOrderOption) {
-    this.state = { order, sort: this._state.sort };
-  }
-
-  /**
-   * The current sort option of the sort state.
-   */
-  get sort(): SortOption { return this.state.sort; }
-  set sort(sort: SortOption) {
-    this.state = { order: this._state.order, sort };
-  }
-}
-
-export class ModelStateManager extends StateManager<Model> {
-
-  private _modelId;
-
-  get modelId(): string {
-    return this.state.id;
-  }
-
-  get model(): Model {
-    return this.state;
-  }
-
-  constructor(name = 'model_id', defaultValue = null, storage: Storage = DefaultStorage) {
-    super(name, defaultValue, storage);
-    this.deserializer = this.readFromId;
-    this.serializer = (state: Model) => this.modelId;
-    this._defaultValue = Model.fromDemo(DemoModel.Foursquare);
-  }
-
-  readFromId(id: string): Model {
-    // load demo model if demo model was stored.
-    const demoModel = DemoModel[id];
-
-    // check if custom model.
-    if (demoModel === undefined) {
-      return this.readCustomModelFromId(id);
-    }
-
-    return Model.fromDemo(demoModel);
-  }
-
-  /**
-   * Tries to read a custom model using the given id.\
-   * Throws an error if reading fails.
-   */
-  readCustomModelFromId(id: string): Model {
-    throw new Error(`Could not load model with id ${id}. Custom model loading not implemented yet.`)
   }
 }
