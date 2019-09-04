@@ -50,8 +50,8 @@ export class PieGridComponent implements OnInit {
   }
 
   public update() {
-    const extractions = this.stateService.model.extractions;
-    this.facetGroups = this.stateService.model.getGroupList(this.facetType)
+    const extractions = this.stateService.model.state.extractions;
+    this.facetGroups = this.stateService.model.state.getGroupList(this.facetType)
       .map(group => ({
         ...group,
         sizeRatio: this.scaleSize ? group.extractions.length / extractions.length : 0.25

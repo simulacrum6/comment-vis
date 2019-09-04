@@ -19,12 +19,12 @@ export class DetailViewBaseComponent implements OnInit {
     @Input() facetType$: Observable<FacetType>;
 
     constructor(protected stateService: StateService) {
-        this.stateService.ensureModelIsAvailable();
+        this.stateService.model.loadSafe();
     }
 
     ngOnInit() {
         this.group$ = combineLatest(this.facet$, this.facetType$).pipe(
-            map(facetDescription => this.stateService.model.getGroup(...facetDescription))
+            map(facetDescription => this.stateService.model.state.getGroup(...facetDescription))
         );
         this.extractions$ = this.group$.pipe(
             map(group => group.extractions)

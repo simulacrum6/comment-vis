@@ -110,8 +110,8 @@ export class StatisticsComponent implements OnInit {
   }
 
   constructor(private stateService: StateService, private router: Router, private snackBar: MatSnackBar) {
-    this.stateService.ensureModelIsAvailable();
-    this.extractions = stateService.model.extractions;
+    this.stateService.model.loadSafe();
+    this.extractions = stateService.model.state.extractions;
     this.values = {
       attribute: Extractions.values(this.extractions, 'attribute'),
       aspect: Extractions.values(this.extractions, 'aspect'),

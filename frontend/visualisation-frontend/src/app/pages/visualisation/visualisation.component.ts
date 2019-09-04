@@ -17,7 +17,7 @@ export class VisualisationComponent implements OnInit {
   ];
 
   constructor(private stateService: StateService, private snackBar: MatSnackBar, private router: Router) {
-    this.stateService.ensureModelIsAvailable();
+    this.stateService.model.loadSafe();
   }
 
   ngOnInit() { }

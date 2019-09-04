@@ -1,4 +1,5 @@
 import { SortOption, SortOptions, SortOrderOption, SortOrderOptions, SortState } from 'src/app/components/filters/sort-filter/sort';
+import { Model, parseJson, Extraction, DemoModel } from '../models/canonical';
 
 /**
  * The default `Storage` to use for `StateManagers`
@@ -18,19 +19,20 @@ function makeStorageKey(...identifiers: string[]) {
 }
 
 /**
- * Class for managing the state of Objects of type `T` using a storage.
+ * Class for managing the state of Objects of type `T` using a storage.\
+ *
+ * The State Manager's storage key is used to identify the stored state object and retrieve it from storage.
+ *
+ * For serialization and deserialization, the functions `serializer` and `deserializer` are used.
+ * `JSON.stringify` and `JSON.parse` are used per default.\
+ * More complex objects may not be serializable in this way.
+ * In this case, the State Manager must receive different serializer and deserializer functions to enable successful serialization.
  */
 export class StateManager<T> {
-  /**
-   * The key under which the state object is stored.
-   */
-  readonly StorageKey: string;
 
-  /**
-   * The default value to be returned, when `loadSafe` fails.
-   */
-  readonly DefaultValue: T;
 
+  protected _defaultValue: T;
+  protected _storageKey: string;
   protected _storage: Storage;
   protected _state: T;
   protected _isSaved: boolean;
@@ -53,21 +55,19 @@ export class StateManager<T> {
    */
   public saveOnSet = true;
 
+
   /**
-   * Constructs a new `StateManager`.
-   * @param name  the name of the manager.
-   * @param defaultValue  the defaultValue to return, when `loadSafe` fails.
-   * @param storage  the storage to use.
-   * @param loadAfter  If true `safeLoad` is called after construction.
+   * The key under which the state object is stored.
    */
-  constructor(name: string, defaultValue: T, storage: Storage = DefaultStorage, loadAfter: boolean = false) {
-    this._storage = storage;
-    this.StorageKey = makeStorageKey(name);
-    this.DefaultValue = Object.freeze(defaultValue);
-    this._isSaved = false;
-    if (loadAfter) {
-      this.loadSafe();
-    }
+  get storageKey(): string {
+    return this._storageKey;
+  };
+
+  /**
+   * The default value to be returned, when `loadSafe` fails.
+   */
+  get defaultValue(): T {
+    return this._defaultValue;
   }
 
   /**
@@ -97,11 +97,29 @@ export class StateManager<T> {
     return this._isSaved;
   }
 
+
+  /**
+   * Constructs a new `StateManager`.
+   * @param name  the name of the manager.
+   * @param defaultValue  the defaultValue to return, when `loadSafe` fails.
+   * @param storage  the storage to use.
+   * @param loadAfter  If true `safeLoad` is called after construction.
+   */
+  constructor(name: string, defaultValue: T, storage: Storage = DefaultStorage, loadAfter: boolean = false) {
+    this._storage = storage;
+    this._storageKey = makeStorageKey(name);
+    this._defaultValue = Object.freeze(defaultValue);
+    this._isSaved = false;
+    if (loadAfter) {
+      this.loadSafe();
+    }
+  }
+
   /**
    * Reads the state object stored under the `StorageKey`.
    */
   read(): T {
-    const stored = this._storage.getItem(this.StorageKey);
+    const stored = this._storage.getItem(this.storageKey);
     return this.deserializer(stored);
   }
 
@@ -130,7 +148,7 @@ export class StateManager<T> {
    * Reads the state object stored under the `StorageKey` and sets the new state.\
    * Returns `DefaultValue`, if reading fails.
    */
-  loadSafe(fallBack = this.DefaultValue) {
+  loadSafe(fallBack = this.defaultValue) {
     const state = this.readSafe();
     this.state = state !== null ? state : fallBack;
   }
@@ -139,7 +157,7 @@ export class StateManager<T> {
    * Saves the current state in the storage.
    */
   save() {
-    this._storage.setItem(this.StorageKey, this.serializer(this.state));
+    this._storage.setItem(this.storageKey, this.serializer(this.state));
     this._isSaved = true;
   }
 }
@@ -208,5 +226,45 @@ export class SortStateManager extends StateManager<SortState> {
   get sort(): SortOption { return this.state.sort; }
   set sort(sort: SortOption) {
     this.state = { order: this._state.order, sort };
+  }
+}
+
+export class ModelStateManager extends StateManager<Model> {
+
+  private _modelId;
+
+  get modelId(): string {
+    return this.state.id;
+  }
+
+  get model(): Model {
+    return this.state;
+  }
+
+  constructor(name = 'model_id', defaultValue = null, storage: Storage = DefaultStorage) {
+    super(name, defaultValue, storage);
+    this.deserializer = this.readFromId;
+    this.serializer = (state: Model) => this.modelId;
+    this._defaultValue = Model.fromDemo(DemoModel.Foursquare);
+  }
+
+  readFromId(id: string): Model {
+    // load demo model if demo model was stored.
+    const demoModel = DemoModel[id];
+
+    // check if custom model.
+    if (demoModel === undefined) {
+      return this.readCustomModelFromId(id);
+    }
+
+    return Model.fromDemo(demoModel);
+  }
+
+  /**
+   * Tries to read a custom model using the given id.\
+   * Throws an error if reading fails.
+   */
+  readCustomModelFromId(id: string): Model {
+    throw new Error(`Could not load model with id ${id}. Custom model loading not implemented yet.`)
   }
 }
