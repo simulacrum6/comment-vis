@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 import { histogram } from 'datalib';
 import { Label } from 'ng2-charts';
@@ -9,13 +9,17 @@ import { mapToSentiment, mapToSentimentStatement, SentimentCount, Sentiments } f
 import { valueCounts } from 'src/app/models/utils';
 import { StateService } from 'src/app/services/state.service';
 import { DefaultColorStrings } from 'src/environments/constants';
+import { Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dataset-overview',
   templateUrl: './statistics.html',
   styleUrls: ['./statistics.scss']
 })
-export class StatisticsComponent implements OnInit {
+export class StatisticsComponent implements OnInit, OnDestroy {
+
+  private subscription = new Subscription();
 
   private breadCrumbPaths = [
     { name: 'Statistics', path: ['/stats']}
@@ -109,8 +113,10 @@ export class StatisticsComponent implements OnInit {
     return this.valueCounts.attribute.length > this.maxRankingDisplayItems;
   }
 
-  constructor(private stateService: StateService, private router: Router, private snackBar: MatSnackBar) {
-    this.stateService.model.loadSafe();
+  constructor(private stateService: StateService, private router: Router, private route: ActivatedRoute) {
+    this.stateService.loadSafe();
+
+
     this.extractions = stateService.model.state.extractions;
     this.values = {
       attribute: Extractions.values(this.extractions, 'attribute'),
@@ -213,5 +219,25 @@ export class StatisticsComponent implements OnInit {
     this.router.navigate(['/detail'], { queryParams: { facet, facetType } });
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    const urlSubscription = this.route.url.subscribe(
+      url => {
+        const path = ['/' + url.join('/')];
+        const state = this.stateService.lastPage.state;
+        this.stateService.lastPage.state = {...state, url: path };
+      }
+    );
+    const paramSubScription = this.route.params.subscribe(
+      params => {
+        const state = this.stateService.lastPage.state;
+        this.stateService.lastPage.state = {...state, queryParams: params };
+      }
+    );
+    this.subscription.add(urlSubscription);
+    this.subscription.add(paramSubScription);
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
 }

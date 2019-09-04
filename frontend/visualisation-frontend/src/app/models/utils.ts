@@ -119,3 +119,8 @@ function pipe(...fs) {
     let f = fs.shift();
     return (...xs) => fs.reduce(compose, f)(...xs);
 }
+
+export interface SimpleRoute {
+    url: string[];
+    queryParams: any;
+}

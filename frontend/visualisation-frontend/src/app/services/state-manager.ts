@@ -142,9 +142,9 @@ export class StateManager<T> {
    * Reads the state object stored under the `StorageKey` and sets the new state.\
    * Returns `DefaultValue`, if reading fails.
    */
-  loadSafe(fallBack = this.defaultValue) {
+  loadSafe() {
     const state = this.readSafe();
-    this.state = state !== null ? state : fallBack;
+    this.state = (state !== null) && (state !== undefined)  ? state : this.defaultValue;
   }
 
   /**

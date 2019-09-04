@@ -2,7 +2,7 @@
   <div fxLayout="row" fxLayoutAlign="space-between">
     <mat-card-title-group>
       <mat-card-title>{{ facet$ | async }} - Details</mat-card-title>
-      <mat-card-subtitle><app-breadcrumb [paths]="(breadCrumbPaths$ | async)"></app-breadcrumb></mat-card-subtitle>
+      <mat-card-subtitle><app-breadcrumb [paths]="(breadCrumbPaths | async)"></app-breadcrumb></mat-card-subtitle>
     </mat-card-title-group>
     <div>
       <!-- TODO: activate, once implemented -->
@@ -14,8 +14,9 @@
       </a>
       <a mat-button
         [routerLink]="returnLink"
+        [queryParams]="returnParams"
         matTooltip="close detail view"
-        [disabled]="true">
+        [disabled]="false">
         <mat-icon>close</mat-icon>
       </a>
     </div>

@@ -1,11 +1,12 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { PageEvent } from '@angular/material';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { SortState } from 'src/app/components/filters/sort-filter/sort';
 import { Extraction, ExtractionGroup, FacetType, FacetTypes } from 'src/app/models/canonical';
 import { SentimentCount } from 'src/app/models/sentiment';
 import { StateService } from 'src/app/services/state.service';
 import { SearchFilterComponent } from '../../../components/filters/search-filter/search-filter.component';
+import { Subscription } from 'rxjs';
 
 
 class PieExtractionGroup extends ExtractionGroup {
@@ -29,7 +30,7 @@ class PieExtractionGroup extends ExtractionGroup {
   templateUrl: './pie-grid.component.html',
   styleUrls: ['./pie-grid.component.scss']
 })
-export class PieGridComponent implements OnInit {
+export class PieGridComponent implements OnInit, OnDestroy {
 
   private breadCrumbPaths = [
     { name: 'Statistics', path: ['/stats'], queryParams: {} },
@@ -45,6 +46,8 @@ export class PieGridComponent implements OnInit {
   private sortedFacetGroups: PieExtractionGroup[];
   private searchedFacetGroups: PieExtractionGroup[];
   private displayedFacetGroups: PieExtractionGroup[];
+
+  private subscription = new Subscription();
 
   private _facetType: FacetType;
 
@@ -69,13 +72,32 @@ export class PieGridComponent implements OnInit {
 
   @ViewChild('searchReference') searchReference: SearchFilterComponent;
 
-  constructor(private stateService: StateService, private router: Router) {
+  constructor(private stateService: StateService, private router: Router, private route: ActivatedRoute) {
     const facetManager = this.stateService.facetType;
     this.facetType = facetManager.hasState ? facetManager.state : FacetTypes.Aspect;
   }
 
   ngOnInit() {
     this.update();
+    const urlSubscription = this.route.url.subscribe(
+      url => {
+        const path = ['/vis/' + url.join('/')];
+        const state = this.stateService.lastPage.state;
+        this.stateService.lastPage.state = {...state, url: path };
+      }
+    );
+    const paramSubScription = this.route.params.subscribe(
+      params => {
+        const state = this.stateService.lastPage.state;
+        this.stateService.lastPage.state = {...state, queryParams: params };
+      }
+    );
+    this.subscription.add(urlSubscription);
+    this.subscription.add(paramSubScription);
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   public update() {

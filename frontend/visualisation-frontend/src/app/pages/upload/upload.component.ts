@@ -28,7 +28,9 @@ export class UploadComponent implements OnInit {
     }
   }
 
-  constructor(private router: Router, private ar: ActivatedRoute, private stateService: StateService) {}
+  constructor(private router: Router, private ar: ActivatedRoute, private stateService: StateService) {
+    this.stateService.loadSafe();
+  }
 
   ngOnInit() { }
 

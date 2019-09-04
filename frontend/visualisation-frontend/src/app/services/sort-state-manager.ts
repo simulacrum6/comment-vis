@@ -9,7 +9,7 @@ import { DefaultStorage, StateManager } from './state-manager';
 export function makeSortStateDeserializer(registry: SortOptionRegistry): (sortState: string) => SortState {
   const deserializer = (sortState: string) => {
     const state: SortState = JSON.parse(sortState); // does not have a sortFunction yet
-    const identifier = state.sort.value;
+    const identifier = state ? state.sort.value : undefined;
     const sortOption = registry[identifier];
 
     // throw error, if identifier is not in the registry

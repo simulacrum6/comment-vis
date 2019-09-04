@@ -19,7 +19,7 @@ export class DetailViewBaseComponent implements OnInit {
     @Input() facetType$: Observable<FacetType>;
 
     constructor(protected stateService: StateService) {
-        this.stateService.model.loadSafe();
+        this.stateService.loadSafe();
     }
 
     ngOnInit() {
