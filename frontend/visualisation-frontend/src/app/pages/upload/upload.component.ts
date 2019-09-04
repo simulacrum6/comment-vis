@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSelectChange } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { StateService } from 'src/app/services/state.service';
 import { Model } from 'src/app/models/canonical';
 import { DemoModel, DemoModels } from 'src/app/models/demo';
+import { StateService } from 'src/app/services/state.service';
 
 @Component({
   selector: 'app-upload',
@@ -18,23 +18,13 @@ export class UploadComponent implements OnInit {
     { viewValue: 'Lecture Evaluations', value: DemoModel.Evaluations }
   ];
 
-  private _dataset: any | DemoModel;
-
-  get dataset() {
-    if (this._dataset === undefined) {
-      return null;
-    }
-
-    return this._dataset;
-  }
+  private model: Model;
 
   set dataset(dataset: any) {
     if (dataset instanceof MatSelectChange) {
-      this._dataset = dataset.value;
-      this.stateService.model.state = DemoModels.getModel(dataset.value);
+      this.model = DemoModels.getModel(dataset.value);
     } else {
-      this._dataset = dataset;
-      this.stateService.model.state = Model.fromJson(dataset);
+      this.model = Model.fromJson(dataset);
     }
   }
 
@@ -43,6 +33,8 @@ export class UploadComponent implements OnInit {
   ngOnInit() { }
 
   submit(): void {
+    this.stateService.clear();
+    this.stateService.model.state = this.model;
     this.router.navigate(['stats']);
   }
 }

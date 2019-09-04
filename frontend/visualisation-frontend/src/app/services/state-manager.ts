@@ -154,4 +154,26 @@ export class StateManager<T> {
     this._storage.setItem(this.storageKey, this.serializer(this.state));
     this._isSaved = true;
   }
+
+  /**
+   * Clears both state and storage.
+   */
+  clear() {
+    this.clearState();
+    this.clearStorage();
+  }
+
+  /**
+   * Clears the current state.
+   */
+  clearState() {
+    this._state = null;
+  }
+
+  /**
+   * Clears the storage.
+   */
+  clearStorage() {
+    this._storage.clear();
+  }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { StateManager } from './state-manager';
-import { ModelStateManager } from "./model-state-manager";
-import { SortStateManager } from "./sort-state-manager";
+import { ModelStateManager } from './model-state-manager';
+import { SortStateManager } from './sort-state-manager';
 
 
 // TODO: implement StateManagers for relevant classes.
@@ -10,11 +10,22 @@ import { SortStateManager } from "./sort-state-manager";
   providedIn: 'root'
 })
 export class StateService {
+
+  private managers: StateManager<any>[];
+
   public sort: SortStateManager = new SortStateManager();
   public search: StateManager<string> = new StateManager<string>('search', '');
   public model: ModelStateManager = new ModelStateManager();
 
   constructor() {
+    this.managers = [ this.sort, this.search, this.model ];
+  }
 
+  clear() {
+    this.managers.forEach(manager => manager.clear());
+  }
+
+  loadSafe() {
+    this.managers.forEach(manager => manager.loadSafe());
   }
 }
