@@ -48,8 +48,8 @@ export class ModelTransformation {
               countB = sentimentsB.negative;
               break;
             default:
-              countA = sentimentsA.getOverallCount();
-              countB = sentimentsB.getOverallCount();
+              countA = sentimentsA.total;
+              countB = sentimentsB.total;
           }
           if (sortOrder === 'ascending') {
             return countA - countB;

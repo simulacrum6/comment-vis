@@ -144,9 +144,9 @@ export class StatisticsComponent implements OnInit, OnDestroy {
     this.mood = mapToSentimentStatement(sentimentDiff);
 
     if (sentimentDiff <= - 0.5) {
-      this.moodPercent = Math.round((this.sentimentCounts.negative / this.sentimentCounts.getOverallCount()) * 100) + '% negative comments';
+      this.moodPercent = Math.round((this.sentimentCounts.negative / this.sentimentCounts.total) * 100) + '% negative comments';
     } else {
-      this.moodPercent = Math.round((this.sentimentCounts.positive / this.sentimentCounts.getOverallCount()) * 100) + '% positive comments';
+      this.moodPercent = Math.round((this.sentimentCounts.positive / this.sentimentCounts.total) * 100) + '% positive comments';
     }
 
     /** Warnings **/
