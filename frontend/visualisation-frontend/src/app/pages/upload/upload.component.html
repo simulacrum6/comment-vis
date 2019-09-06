@@ -1,19 +1,43 @@
+<mat-card class="content">
+  <mat-card-title>Dataset Selection</mat-card-title>
 
-<form>
-  <mat-form-field>
-    <mat-label>Select a dataset...</mat-label>
-    <mat-select (selectionChange)="dataset = $event">
-      <mat-option *ngFor="let demo of demoDatasets"
-        [value]="demo.value">
-        {{ demo.viewValue }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+  <mat-card-content>
 
-  <button mat-button
-    type="button"
-    color="primary"
-    (click)="submit()">
-    Upload
-  </button>
-</form>
+    <div class="form-group">
+      <h3>Upload your own Dataset</h3>
+      <div class="upload">
+        <input class="upload_input"
+               type="file"
+               id="file"
+               accept="application/json"
+               (change)="handleFileInput($event.target.files)">
+      </div>
+      <span *ngIf="uploadedInvalidDataset" class="light" matTooltip="Uploaded invalid Dataset.">Uploaded invalid Dataset.</span>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="existing_dataset">
+      <h3>Or choose an existing Dataset</h3>
+      <mat-form-field class="existing_dataset_form">
+        <mat-label>Choose</mat-label>
+        <mat-select (selectionChange)="dataset = $event">
+          <mat-option *ngFor="let demo of demoDatasets"
+                      [value]="demo.value">
+            {{ demo.viewValue }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="submit">
+      <button mat-flat-button
+              type="button"
+              color="primary"
+              (click)="submit()">
+        Start
+      </button>
+    </div>
+
+  </mat-card-content>
+</mat-card>

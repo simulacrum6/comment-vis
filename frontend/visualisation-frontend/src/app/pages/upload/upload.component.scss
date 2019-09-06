@@ -1,0 +1,36 @@
+mat-card.content {
+  margin: 10px;
+  margin-left: 15%;
+  margin-right: 15%;
+  min-width: 320px;
+  min-height: 90%;
+}
+
+div.existing_dataset {
+  margin-top: 60px;
+}
+
+div.submit {
+  margin-top: 20px;
+}
+
+h3, strong {
+  font-weight: 500;
+}
+
+mat-divider {
+  margin-top: 30px;
+  width: 100%;
+}
+
+mat-form-field.existing_dataset_form {
+  width: 200px;
+}
+
+input.upload_input {
+  width: 300px;
+}
+
+.light {
+  color: rgba(0, 0, 0, 0.54)
+}
