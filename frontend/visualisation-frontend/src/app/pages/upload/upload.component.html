@@ -6,7 +6,7 @@
     <div class="form-group">
       <h3>Upload your own Dataset</h3>
       <div class="upload">
-        <input class="upload_input"
+        <input #upload class="upload_input"
                type="file"
                id="file"
                accept="application/json"
@@ -38,6 +38,7 @@
         Start
       </button>
     </div>
+    <span *ngIf="noDatasetSelected" class="light" matTooltip="No Dataset selected.">No Dataset selected.</span>
 
   </mat-card-content>
 </mat-card>
