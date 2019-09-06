@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 import { histogram } from 'datalib';
 import { Label } from 'ng2-charts';
-import { Extraction, Extractions, FacetType, sentimentDifferential } from 'src/app/models/canonical';
+import { Extraction, Extractions, FacetType, sentimentDifferential, ExtractionGroup } from 'src/app/models/canonical';
 import { mapToSentiment, mapToSentimentStatement, SentimentCount, Sentiments } from 'src/app/models/sentiment';
 import { valueCounts } from 'src/app/models/utils';
 import { StateService } from 'src/app/services/state.service';
@@ -116,6 +116,9 @@ export class StatisticsComponent implements OnInit, OnDestroy {
   constructor(private stateService: StateService, private router: Router, private route: ActivatedRoute) {
     this.stateService.loadSafe();
 
+    // TEST
+    //const g = new ExtractionGroup('test', stateService.model.state.extractions);
+    // TEST
 
     this.extractions = stateService.model.state.extractions;
     this.values = {

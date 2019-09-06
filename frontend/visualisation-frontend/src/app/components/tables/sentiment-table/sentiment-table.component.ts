@@ -58,7 +58,7 @@ export class SentimentTableComponent implements OnInit, OnChanges {
   }
 
   update() {
-    this.groups = Extractions.toGroups(this.extractions, this.facetType, this.facetProperty);
+    this.groups = Extractions.toViewGroups(this.extractions, this.facetType, this.facetProperty);
     this.displayGroups = this.groups.slice();
   }
 

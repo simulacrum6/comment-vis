@@ -1,14 +1,13 @@
 import { mapToNumber, mapToSentiment, Sentiment, SentimentCount } from './sentiment';
-import { sum } from './utils';
-
+import { sum, flatten } from './utils';
 
 export interface StringMap<V> {
   [key: string]: V;
 }
 
 export class Facet {
-  text: string = '';
-  group: string = '';
+  text = '';
+  group = '';
 }
 
 export type FacetProperty = 'text' | 'group';
@@ -74,20 +73,108 @@ export const Extractions = {
    * @param mapper _(optional)_ the mapping function to be used
    */
   values: mapToPropertyValues,
-  toGroups: mapToExtractionGroups
+  toGroups: mapToExtractionGroups,
+  toViewGroups: mapToViewExtractionGroups
 };
 
+
+
 export class ExtractionGroup {
+  // TODO: Implement!
+  public readonly id: string;
   public readonly name: string;
+  // TODO: Implement!
+  public readonly type: ExtractionProperty;
   public readonly extractions: Extraction[];
   public readonly sentimentCount: SentimentCount;
 
-  constructor(name: string, extractions: Extraction[], sentimentCount?: SentimentCount) {
+  constructor(id: string, name: string, type: ExtractionProperty, extractions: Extraction[], sentimentCount?: SentimentCount) {
+    this.id = id;
     this.name = name;
+    this.type = type;
     this.extractions = extractions;
-    this.sentimentCount = sentimentCount ? sentimentCount : SentimentCount.fromExtractions(extractions);
+    this.sentimentCount = sentimentCount === undefined ? SentimentCount.fromExtractions(extractions) : sentimentCount;
   }
 }
+
+/**
+ * ExtractionGroup that is only temporarily available and does not belong to the model.
+ * Ids are not unique.
+ */
+export class ViewExtractionGroup implements ExtractionGroup {
+  public readonly id = 'VIEW_EXTRACTION_GROUP';
+  public readonly name: string;
+  public readonly type: ExtractionProperty;
+  public readonly extractions: Extraction[];
+  public readonly sentimentCount: SentimentCount;
+
+  constructor(name: string, type: ExtractionProperty, extractions: Extraction[]) {
+    this.name = name;
+    this.type = type;
+    this.extractions = extractions;
+    this.sentimentCount = SentimentCount.fromExtractions(this.extractions);
+  }
+}
+
+export class NestedExtractionGroup implements ExtractionGroup {
+  public readonly name: string;
+  // TODO: Implement!
+  public readonly type: ExtractionProperty;
+
+  public get id(): string {
+    return this._id;
+  }
+
+  public get extractions(): Extraction[] {
+    if (this.members === null) {
+      return this.original.extractions;
+    }
+    if (this._extractions === null) {
+      this._extractions = this.memberExtractions.concat(this.original.extractions);
+    }
+    return this._extractions;
+  }
+
+  public get sentimentCount(): SentimentCount {
+    if (this.members === null) {
+      return this.original.sentimentCount;
+    }
+    if (this._sentimentCount === null) {
+      this._sentimentCount = SentimentCount.fromExtractions(this.extractions);
+    }
+    return this._sentimentCount;
+  }
+
+  protected get memberExtractions(): Extraction[] {
+    const extractions = this.members.map(group => group.extractions);
+    return flatten(extractions);
+  }
+
+
+  /**
+   * The ExtractionGroup at its initial state.
+   */
+  protected get original(): ExtractionGroup {
+    return this._original;
+  }
+
+  protected _id: string;
+  protected _extractions: Extraction[] = null;
+  protected _sentimentCount: SentimentCount = null;
+  protected _original: ExtractionGroup;
+
+  /**
+   * Contains all subgroups that were merged into this ExtractionGroup.
+   */
+  protected members: ExtractionGroup[] = null;
+
+  constructor(id: string, name: string, type: ExtractionProperty, extractions: Extraction[], sentimentCount?: SentimentCount) {
+    this.name = name;
+    this._original = new ExtractionGroup(id, name, type, extractions, sentimentCount);
+  }
+}
+
+// TODO: ExtractionGroups.pop, .strip, .remove, .reset
 
 /**
  * A function, mapping an extraction to one of its property values.
@@ -145,9 +232,40 @@ function groupByFlat(extractions: Extraction[],
   return Object.values(groupMap);
 }
 
-function mapToExtractionGroups(extractions: Extraction[], property: ExtractionProperty, facetProperty: FacetProperty = 'group') {
+function mapToExtractionGroups(
+  idGenerator: () => string,
+  extractions: Extraction[],
+  property: ExtractionProperty,
+  facetProperty: FacetProperty = 'group'
+  ) {
   const groupMap = groupBy(extractions, property, facetProperty);
-  return Object.entries(groupMap).map(entry => new ExtractionGroup(...entry));
+  return Object.entries(groupMap).map(entry => {
+    const name = entry[0];
+    const exs = entry[1];
+    return new ExtractionGroup(idGenerator(), name, property, exs);
+  });
+}
+
+function mapToViewExtractionGroups (
+  extractions: Extraction[],
+  property: ExtractionProperty,
+  facetProperty: FacetProperty = 'group'
+): ExtractionGroup[] {
+  const groupMap = groupBy(extractions, property, facetProperty);
+  return Object.entries(groupMap).map(entry => {
+    const name = entry[0];
+    const exs = entry[1];
+    return new ViewExtractionGroup(name, property, exs);
+  });
+}
+
+
+function makeIdGenerator() {
+  let start = -1;
+  return () => {
+    start++;
+    return start.toString()
+  }
 }
 
 // TODO: move to sentiment?
@@ -184,10 +302,13 @@ export class Model {
     sentiment: ExtractionGroup[]
   };
 
-  private _id;
+  private modelId: string;
+  private idGenerator: () => string;
 
   constructor(public readonly extractions: Extraction[], id: string = 'custom') {
-    this._id = id;
+    this.modelId = id;
+    this.idGenerator = makeIdGenerator();
+
     this.groupMaps = { aspect: null, attribute: null, comment: null, sentiment: null };
     this.groupLists = { aspect: null, attribute: null, comment: null, sentiment: null };
   }
@@ -203,7 +324,7 @@ export class Model {
   }
 
   get id(): string {
-    return this._id;
+    return this.modelId;
   }
 
   get aspects(): Facet[] {
@@ -253,7 +374,12 @@ export class Model {
   public getGroupList(property: ExtractionProperty): ExtractionGroup[] {
     if (this.groupLists[property] === null) {
       this.groupLists[property] = Object.entries(this.getGroupMap(property))
-        .map(entry => new ExtractionGroup(...entry));
+        .map(entry => {
+          const id = this.idGenerator();
+          const name = entry[0];
+          const extractions = entry[1];
+          return new ExtractionGroup(id, name, property, extractions);
+        });
     }
 
     return this.groupLists[property];
@@ -280,13 +406,13 @@ export class Model {
    * @return  The corresponding ExtractionGroup, empty ExtractionGroup if group does not exist.
    */
   public getGroup(name: string, property: ExtractionProperty): ExtractionGroup {
-    const extractions = this.getGroupMap(property)[name];
-
+    let extractions = this.getGroupMap(property)[name];
     if (extractions === undefined) {
-      return new ExtractionGroup(name, []);
+      extractions = [];
     }
 
-    return new ExtractionGroup(name, extractions);
+    const id = this.idGenerator();
+    return new ExtractionGroup(id, name, property, extractions);
   }
 }
 
