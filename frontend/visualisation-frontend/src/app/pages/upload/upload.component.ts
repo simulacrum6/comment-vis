@@ -53,7 +53,7 @@ export class UploadComponent implements OnInit {
     fileReader.onloadend = event => {
       console.log('uploaded file: ' + fileReader.result);
       try {
-        this.dataset = JSON.parse(fileReader.result);
+        this.dataset = JSON.parse(fileReader.result as string);
       } catch (exception) {
         this.uploadedInvalidDataset = true;
       }
