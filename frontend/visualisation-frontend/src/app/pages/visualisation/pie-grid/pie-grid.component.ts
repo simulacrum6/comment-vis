@@ -133,7 +133,7 @@ export class PieGridComponent implements OnInit, OnDestroy {
   public update() {
     const model = this.stateService.model.state;
     const extractions = model.extractions;
-    this.facetGroups = this.stateService.model.state.getGroupList(this.facetType)
+    this.facetGroups = this.stateService.model.state.getGroupsFor(this.facetType)
       .map(this.toPieGroup(extractions.length));
     this.sortedFacetGroups = this.facetGroups.slice();
     this.searchedFacetGroups = this.facetGroups.slice();

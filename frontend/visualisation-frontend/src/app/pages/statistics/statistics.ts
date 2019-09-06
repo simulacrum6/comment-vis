@@ -117,7 +117,8 @@ export class StatisticsComponent implements OnInit, OnDestroy {
     this.stateService.loadSafe();
 
     // TEST
-    //const g = new ExtractionGroup('test', stateService.model.state.extractions);
+    const map: Map<string, string> = new Map();
+    console.log(map.get('foo'));
     // TEST
 
     this.extractions = stateService.model.state.extractions;
