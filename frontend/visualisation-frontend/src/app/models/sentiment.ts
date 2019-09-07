@@ -111,6 +111,37 @@ export function mapToSentimentStatement(value: number) {
     return 'extremely negative';
 }
 
+/**
+ *  compares the given values and maps them to a statement
+ *  @param overallPercent the overall percentage of positive comments
+ *  @param percent the percentage of positive comments for the comparison with the overall value
+ */
+export function mapToCompareSentimentStatement(overallPercent: number, percent: number): string {
+  const difference = overallPercent - percent;
+  if (difference < -50) {
+    return 'extremely above average';
+  }
+  if (difference < -20) {
+    return 'above average';
+  }
+  if (difference < -10) {
+    return 'slightly above average';
+  }
+  if (difference < 10) {
+    return 'around average';
+  }
+  if (difference < 20) {
+    return 'slightly below average';
+  }
+  if (difference < 30) {
+    return 'below average';
+  }
+  if (difference < 50) {
+    return 'below average';
+  }
+  return 'extremely below average';
+}
+
 export function controversy(counts: SentimentCount) {
     const difference = counts.positive - counts.negative;
     const sum = counts.positive + counts.negative;

@@ -22,7 +22,14 @@
     </div>
   </div>
   <mat-card-content>
+    <div>
+      The overall mood of the Dataset is <strong>{{ overallMood | async }}</strong> with <strong>{{ overallMoodPercent | async }}</strong>.<br>
+      The mood of this {{ facetType$ | async }} {{ facet$ | async }} is <strong>{{ facetMood | async }}</strong> with <strong>{{ facetMoodPercent | async }}</strong>.
+      This is <strong> {{ facetMoodEvaluation | async }}</strong>.
+
+    </div>
     <div #topWrapper
+      class="top_wrapper"
       fxLayout="row wrap"
       fxLayoutAlign="space-evenly">
       <app-pie [extractions]="extractions$ | async" [by]="subGroupType$ | async"></app-pie>
