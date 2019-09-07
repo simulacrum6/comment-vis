@@ -99,22 +99,12 @@ export const Extractions = {
   toViewGroups: mapToViewExtractionGroups
 };
 
-
-
-export class ExtractionGroup {
-  public readonly id: string;
-  public readonly name: string;
-  public readonly type: ExtractionProperty;
-  public readonly extractions: Extraction[];
-  public readonly sentimentCount: SentimentCount;
-
-  constructor(id: string, name: string, type: ExtractionProperty, extractions: Extraction[], sentimentCount?: SentimentCount) {
-    this.id = id;
-    this.name = name;
-    this.type = type;
-    this.extractions = extractions;
-    this.sentimentCount = sentimentCount === undefined ? SentimentCount.fromExtractions(extractions) : sentimentCount;
-  }
+export interface ExtractionGroup {
+  readonly id: string;
+  readonly name: string;
+  readonly type: ExtractionProperty;
+  readonly extractions: Extraction[];
+  readonly sentimentCount: SentimentCount;
 }
 
 /**
@@ -171,7 +161,7 @@ export class NestedExtractionGroup implements ExtractionGroup {
     this.id = id;
     this.name = name;
     this.type = type;
-    this.original = new ExtractionGroup(id, name, type, extractions, sentimentCount);
+    this.original = { id, name, type, extractions, sentimentCount };
   }
 
   /**
@@ -285,16 +275,16 @@ function groupByFlat(extractions: Extraction[],
 }
 
 function mapToExtractionGroups(
-  idGenerator: () => string,
+  idGenerator: IdGenerator,
   extractions: Extraction[],
   property: ExtractionProperty,
   facetProperty: FacetProperty = 'group'
-  ) {
+  ): ExtractionGroup[] {
   const groupMap = groupBy(extractions, property, facetProperty);
   return Object.entries(groupMap).map(entry => {
     const name = entry[0];
     const exs = entry[1];
-    return new ExtractionGroup(idGenerator(), name, property, exs);
+    return { id: idGenerator(), name, type: property, extractions: exs, sentimentCount: SentimentCount.fromExtractions(exs) };
   });
 }
 
@@ -369,7 +359,7 @@ export class Model {
   private idToExtractionGroup: Map<string, NestedExtractionGroup>;
 
   private modelId: string;
-  private idGenerator: () => string;
+  private idGenerator: IdGenerator;
 
   constructor(extractions: RawExtraction[], id: string = 'custom') {
     // initialize properties

@@ -10,11 +10,20 @@ import { SearchFilterComponent } from '../../../components/filters/search-filter
 import { PaginatorConfig } from 'src/app/models/utils';
 
 
-class PieExtractionGroup extends ExtractionGroup {
+class PieExtractionGroup implements ExtractionGroup {
+  public id: string;
+  public name: string;
+  public type: ExtractionProperty;
+  public extractions: Extraction[];
+  public sentimentCount: SentimentCount;
   public sizeRatio = 0.25;
 
   constructor(id: string, name: string, type: ExtractionProperty, extractions: Extraction[], sentimentCount?: SentimentCount) {
-    super(id, name, type, extractions, sentimentCount);
+    this.id = id;
+    this.name = name;
+    this.type = type;
+    this.extractions = extractions;
+    this.sentimentCount = sentimentCount === undefined ? SentimentCount.fromExtractions(extractions) : sentimentCount;
   }
 
   static fromGroup(group: ExtractionGroup, scalingValue?: number): PieExtractionGroup {
