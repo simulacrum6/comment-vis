@@ -22,7 +22,7 @@ export class ModelTransformation {
 
     const model = this.parentComponent.stateService.model.state;
     if (this.parentComponent.aspectname) {
-      const extractions: Extraction[] = model.aspectGroupMap[this.parentComponent.aspectname];
+      const extractions: Extraction[] = model.getExtractionsByName(this.parentComponent.aspectname, 'aspect');
       if (extractions) {
         const extractionsByAttributeGroup: Extraction[][] = Extractions.groupByFlat(extractions, 'attribute');
 
@@ -48,8 +48,8 @@ export class ModelTransformation {
               countB = sentimentsB.negative;
               break;
             default:
-              countA = sentimentsA.getOverallCount();
-              countB = sentimentsB.getOverallCount();
+              countA = sentimentsA.total;
+              countB = sentimentsB.total;
           }
           if (sortOrder === 'ascending') {
             return countA - countB;

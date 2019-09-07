@@ -1,4 +1,4 @@
-import { Extraction, parseJson, Model } from './canonical';
+import { Extraction, parseJson, Model, RawExtraction } from './canonical';
 import { default as evaluations } from 'src/app/models/evaulations.ce.json';
 import { default as foursquare } from 'src/app/models/foursquare_gold.ce.json';
 import { default as reviews } from 'src/app/models/reviews.ce.json';
@@ -12,12 +12,12 @@ export enum DemoModel {
 export class DemoModels {
 
     static getModel(model: DemoModel): Model {
-        const extractions = DemoModels.getExtractions(model);
+        const extractions = DemoModels.getRawExtractions(model);
         const id = DemoModels.getId(model);
         return new Model(extractions, id);
     }
 
-    static getExtractions(model: DemoModel): Extraction[] {
+    static getRawExtractions(model: DemoModel): RawExtraction[] {
         switch (model) {
           case DemoModel.Foursquare: { return parseJson(foursquare); }
           case DemoModel.Reviews: { return parseJson(reviews); }

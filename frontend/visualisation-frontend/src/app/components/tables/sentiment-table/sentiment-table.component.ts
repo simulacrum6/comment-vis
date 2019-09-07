@@ -3,6 +3,7 @@ import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { SortOption, SortOptions } from 'src/app/components/filters/sort-filter/sort';
 import { Extraction, ExtractionGroup, Extractions, FacetProperty, FacetType } from 'src/app/models/canonical';
+import { SentimentCount } from 'src/app/models/sentiment';
 
 export class SentimentCountRow {
   group: string;
@@ -12,7 +13,7 @@ export class SentimentCountRow {
   total: number;
 
   public static fromExtractionGroup(group: ExtractionGroup): SentimentCountRow {
-    const row = { group: group.name, ...group.sentimentCount, total: group.sentimentCount.getOverallCount()};
+    const row = { group: group.name, ...group.sentimentCount, total: group.sentimentCount.total};
     return row;
   }
 }
@@ -57,7 +58,7 @@ export class SentimentTableComponent implements OnInit, OnChanges {
   }
 
   update() {
-    this.groups = Extractions.toGroups(this.extractions, this.facetType, this.facetProperty);
+    this.groups = Extractions.toViewGroups(this.extractions, this.facetType, this.facetProperty);
     this.displayGroups = this.groups.slice();
   }
 

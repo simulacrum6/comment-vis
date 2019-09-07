@@ -3,22 +3,31 @@ import { PageEvent } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SortState } from 'src/app/components/filters/sort-filter/sort';
-import { Extraction, ExtractionGroup, FacetType, FacetTypes } from 'src/app/models/canonical';
+import { Extraction, ExtractionGroup, FacetType, FacetTypes, ExtractionProperty } from 'src/app/models/canonical';
 import { SentimentCount } from 'src/app/models/sentiment';
 import { StateService } from 'src/app/services/state.service';
 import { SearchFilterComponent } from '../../../components/filters/search-filter/search-filter.component';
 import { PaginatorConfig } from 'src/app/models/utils';
 
 
-class PieExtractionGroup extends ExtractionGroup {
-  public sizeRatio: number = 0.25;
+class PieExtractionGroup implements ExtractionGroup {
+  public id: string;
+  public name: string;
+  public type: ExtractionProperty;
+  public extractions: Extraction[];
+  public sentimentCount: SentimentCount;
+  public sizeRatio = 0.25;
 
-  constructor(name: string, extractions: Extraction[], sentimentCount?: SentimentCount) {
-    super(name, extractions, sentimentCount);
+  constructor(id: string, name: string, type: ExtractionProperty, extractions: Extraction[], sentimentCount?: SentimentCount) {
+    this.id = id;
+    this.name = name;
+    this.type = type;
+    this.extractions = extractions;
+    this.sentimentCount = sentimentCount === undefined ? SentimentCount.fromExtractions(extractions) : sentimentCount;
   }
 
   static fromGroup(group: ExtractionGroup, scalingValue?: number): PieExtractionGroup {
-    const pieGroup = new PieExtractionGroup(group.name, group.extractions, group.sentimentCount);
+    const pieGroup = new PieExtractionGroup(group.id, group.name, group.type, group.extractions, group.sentimentCount);
     if (scalingValue) {
       pieGroup.sizeRatio = pieGroup.extractions.length / scalingValue;
     }
@@ -133,7 +142,7 @@ export class PieGridComponent implements OnInit, OnDestroy {
   public update() {
     const model = this.stateService.model.state;
     const extractions = model.extractions;
-    this.facetGroups = this.stateService.model.state.getGroupList(this.facetType)
+    this.facetGroups = this.stateService.model.state.getGroupsFor(this.facetType)
       .map(this.toPieGroup(extractions.length));
     this.sortedFacetGroups = this.facetGroups.slice();
     this.searchedFacetGroups = this.facetGroups.slice();
@@ -175,12 +184,12 @@ export class PieGridComponent implements OnInit, OnDestroy {
     this.update();
   }
 
-  public onSort($event: { name: string, extractions: Extraction[], sentimentCount: SentimentCount, sizeRatio: number }[]) {
+  public onSort($event: PieExtractionGroup[]) {
     this.sortedFacetGroups = $event;
     this.updateDisplayedFacetGroups();
   }
 
-  public onSearch($event: { name: string, extractions: Extraction[], sentimentCount: SentimentCount, sizeRatio: number }[]) {
+  public onSearch($event: PieExtractionGroup[]) {
     this.searchedFacetGroups = $event;
     this.updatePage({ pageIndex: 0, pageSize: this.currentPageSize, length: this.searchedFacetGroups.length });
   }

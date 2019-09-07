@@ -15,10 +15,14 @@ export class SentimentCount {
     public neutral = 0;
     public unknown = 0;
 
+    public get total(): number {
+        return this.positive + this.negative + this.neutral + this.unknown;
+    }
+
     public static fromArray(sentiments: Sentiment[]): SentimentCount {
         const count = new SentimentCount();
         for (const sentiment of sentiments) {
-            count.inc(sentiment);
+            SentimentCount.inc(count, sentiment);
         }
         return count;
     }
@@ -28,18 +32,13 @@ export class SentimentCount {
         return SentimentCount.fromArray(sentiments);
     }
 
-    public inc(sentiment: Sentiment, count: number = 1): void {
-        this[sentiment] += count;
+    public static inc(sentimentCount: SentimentCount, sentiment: Sentiment, count: number = 1): void {
+        sentimentCount[sentiment] += count;
     }
 
-    public dec(sentiment: Sentiment, count: number = 1): void {
-        this[sentiment] -= count;
+    public static dec(sentimentCount: SentimentCount, sentiment: Sentiment, count: number = 1): void {
+        sentimentCount[sentiment] -= count;
     }
-
-    public getOverallCount(): number {
-      return this.positive + this.neutral + this.negative + this.unknown;
-    }
-
 }
 
 /**

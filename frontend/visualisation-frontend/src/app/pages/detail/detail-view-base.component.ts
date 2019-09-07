@@ -24,7 +24,7 @@ export class DetailViewBaseComponent implements OnInit {
 
     ngOnInit() {
         this.group$ = combineLatest(this.facet$, this.facetType$).pipe(
-            map(facetDescription => this.stateService.model.state.getGroup(...facetDescription))
+            map(facetDescription => this.stateService.model.state.getGroupByName(...facetDescription))
         );
         this.extractions$ = this.group$.pipe(
             map(group => group.extractions)
