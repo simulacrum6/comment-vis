@@ -1,5 +1,5 @@
 import { mapToNumber, mapToSentiment, Sentiment, SentimentCount } from './sentiment';
-import { sum, flatten } from './utils';
+import { flatten, sum } from './utils';
 
 export interface StringMap<V> {
   [key: string]: V;
@@ -87,6 +87,11 @@ export const Extractions = {
    */
   groupByFlat,
   /**
+   * Same as groupBy, but returns a list of [name, extractions] tuples.
+   * @see groupBy
+   */
+  groupAsEntries,
+  /**
    * Maps a given list of extractions to the values of the specified properties.
    * If no mapping function is provided, it is automatically inferred from the parameters.
    * @param extractions the extractions to be mapped
@@ -95,7 +100,6 @@ export const Extractions = {
    * @param mapper _(optional)_ the mapping function to be used
    */
   values: mapToPropertyValues,
-  toGroups: mapToExtractionGroups,
   toViewGroups: mapToViewExtractionGroups
 };
 
@@ -239,53 +243,17 @@ function groupBy(extractions: Extraction[],
   return groups;
 }
 
-function toNestedExtractionGroups(
+function groupAsEntries(
   extractions: Extraction[],
   property: ExtractionProperty,
-  idGenerator: IdGenerator
-  ): NestedExtractionGroup[] {
-  const groupNameToExtractions = groupBy(extractions, property);
-  const entries = Object.entries(groupNameToExtractions);
-  const groups = entries.map(entry => {
-    const name = entry[0];
-    const exs = entry[1];
-    return new NestedExtractionGroup(idGenerator(), name, property, exs);
-  });
-  return groups;
+  facetProperty: FacetProperty = 'group')
+  : [string, Extraction[]][] {
+  return Object.entries(groupBy(extractions, property, facetProperty));
 }
 
-function toExtractionMap(groups: ExtractionGroup[]): StringMap<Extraction[]> {
-  const names = groups.map(group => group.name);
-  const map: StringMap<Extraction[]> = {};
-  groups.forEach(group => map[group.name] = group.extractions);
-  return map;
-}
-
-function toGroupMap(groups: NestedExtractionGroup[]): StringMap<NestedExtractionGroup> {
-  const map: StringMap<NestedExtractionGroup> = {};
-  groups.forEach(group => map[group.name] = group);
-  return map;
-}
-
-function groupByFlat(extractions: Extraction[],
-                     property: ExtractionProperty,
-                     facetProperty: FacetProperty = 'group'): Extraction[][] {
-  const groupMap = groupBy(extractions, property, facetProperty);
-  return Object.values(groupMap);
-}
-
-function mapToExtractionGroups(
-  idGenerator: IdGenerator,
-  extractions: Extraction[],
-  property: ExtractionProperty,
-  facetProperty: FacetProperty = 'group'
-  ): ExtractionGroup[] {
-  const groupMap = groupBy(extractions, property, facetProperty);
-  return Object.entries(groupMap).map(entry => {
-    const name = entry[0];
-    const exs = entry[1];
-    return { id: idGenerator(), name, type: property, extractions: exs, sentimentCount: SentimentCount.fromExtractions(exs) };
-  });
+function groupByFlat(extractions: Extraction[], property: ExtractionProperty, facetProperty: FacetProperty = 'group'): Extraction[][] {
+const groupMap = groupBy(extractions, property, facetProperty);
+return Object.values(groupMap);
 }
 
 function mapToViewExtractionGroups (
@@ -300,7 +268,6 @@ function mapToViewExtractionGroups (
     return new ViewExtractionGroup(name, property, exs);
   });
 }
-
 
 function makeIdGenerator() {
   let start = -1;
@@ -325,6 +292,9 @@ export function sentimentDifferential(extractions: Extraction[], normalized: boo
 
 export class Model {
   public readonly extractions: Extraction[];
+  public get id(): string {
+    return this.modelId;
+  }
 
   /**
    * Group name to group maps for the model.
@@ -379,8 +349,8 @@ export class Model {
     // generate ExtractionGroups for each property
     const properties: ExtractionProperty[] = [ 'aspect', 'attribute', 'comment', 'sentiment' ]
     for (const property of  properties) {
-      const groups = toNestedExtractionGroups(this.extractions, property, this.idGenerator);
-      const groupMap = toGroupMap(groups);
+      const groups = this.makeExtractionGroups(this.extractions, property);
+      const groupMap = Model.toGroupMap(groups);
       this.nameToGroup[property] = groupMap;
       this.groupLists[property] = groups;
 
@@ -401,8 +371,21 @@ export class Model {
     return new Model(extractions, id);
   }
 
-  get id(): string {
-    return this.modelId;
+  private static toGroupMap(groups: NestedExtractionGroup[]): StringMap<NestedExtractionGroup> {
+    const map: StringMap<NestedExtractionGroup> = {};
+    groups.forEach(group => map[group.name] = group);
+    return map;
+  }
+
+  private makeExtractionGroups(extractions: Extraction[], property: ExtractionProperty): NestedExtractionGroup[] {
+    const groupNameToExtractions = groupBy(extractions, property);
+    const entries = Object.entries(groupNameToExtractions);
+    const groups = entries.map(entry => {
+      const name = entry[0];
+      const exs = entry[1];
+      return new NestedExtractionGroup(this.idGenerator(), name, property, exs);
+    });
+    return groups;
   }
 
   public groupIsInModel(id: string): boolean {
@@ -454,6 +437,28 @@ export class Model {
       throw new Error(`Extraction with id ${id} does not exist!`);
     }
     return this.idToExtractionGroup.get(id);
+  }
+
+  /**
+   * Returns the subgroups for the given extraction group.
+   * @param group  The group to get subgroups for.
+   * @param type   The type of the subgroups to get.
+   * @return  A list of ExtractionGroups.
+   */
+  public getSubGroups(group: ExtractionGroup, type: ExtractionProperty): ViewExtractionGroup[] {
+    return Extractions.groupAsEntries(group.extractions, type)
+      .map(([name, extractions]) => new ViewExtractionGroup(name, type, extractions));
+  }
+
+  /**
+   * Returns the subgroups for the given extraction group.
+   * @param group  The group to get subgroups for.
+   * @param type   The type of the subgroups to get.
+   * @return  A list of ExtractionGroups.
+   */
+  public getSubGroupsById(id: string, type: ExtractionProperty): ViewExtractionGroup[] {
+    const group = this.getGroupById(id);
+    return this.getSubGroups(group, type);
   }
 
   /**

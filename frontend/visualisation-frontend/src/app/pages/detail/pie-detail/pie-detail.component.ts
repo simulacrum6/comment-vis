@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, flatMap } from 'rxjs/operators';
 import { Extractions } from 'src/app/models/canonical';
 import { StateService } from 'src/app/services/state.service';
 import { DetailViewBaseComponent } from '../detail-view-base.component';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-pie-detail',
@@ -32,8 +31,9 @@ export class PieDetailComponent extends DetailViewBaseComponent implements OnIni
 
   ngOnInit() {
     super.ngOnInit();
-    this.comments = this.extractions$.pipe(
-      map(extractions => Object.keys(Extractions.groupBy(extractions, 'comment')))
+    this.comments = this.group$.pipe(
+      map(group => this.model.getSubGroups(group, 'comment')),
+      map(groups => groups.map(group => group.name))
     );
     this.members = combineLatest(this.extractions$, this.facetType$).pipe(
       map(([extractions, facetType]) => new Set(extractions.map(e => e[facetType].text)))
