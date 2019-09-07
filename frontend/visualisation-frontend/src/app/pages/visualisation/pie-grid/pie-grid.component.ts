@@ -3,11 +3,13 @@ import { PageEvent } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SortState } from 'src/app/components/filters/sort-filter/sort';
-import { Extraction, ExtractionGroup, FacetType, FacetTypes, ExtractionProperty } from 'src/app/models/canonical';
+import { Extraction, ExtractionGroup, FacetType, FacetTypes, ExtractionProperty, Model } from 'src/app/models/canonical';
 import { SentimentCount } from 'src/app/models/sentiment';
 import { StateService } from 'src/app/services/state.service';
 import { SearchFilterComponent } from '../../../components/filters/search-filter/search-filter.component';
 import { PaginatorConfig } from 'src/app/models/utils';
+import { CdkAccordion } from '@angular/cdk/accordion';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 
 class PieExtractionGroup implements ExtractionGroup {
@@ -108,6 +110,10 @@ export class PieGridComponent implements OnInit, OnDestroy {
 
   @ViewChild('searchReference') searchReference: SearchFilterComponent;
 
+  private get model(): Model {
+    return this.stateService.model.state;
+  }
+
   constructor(private stateService: StateService, private router: Router, private route: ActivatedRoute) {
     const facetManager = this.stateService.facetType;
     this.facetType = facetManager.hasState ? facetManager.state : FacetTypes.Aspect;
@@ -196,5 +202,20 @@ export class PieGridComponent implements OnInit, OnDestroy {
 
   public onSortStateChange(state: SortState) {
     this.stateService.sort.state = state;
+  }
+
+  public onDrop($event: CdkDragDrop<ExtractionGroup>) {
+    if (!$event.isPointerOverContainer) {
+      return;
+    }
+    const mergee = $event.previousContainer.data;
+    const receiver = $event.container.data;
+    if (receiver.id === mergee.id) {
+      console.warn('don\'t bite your own tail!');
+      return;
+    }
+    console.log(`${receiver.name} gobbled up ${mergee.name}`);
+    this.model.merge(receiver, mergee).map(this.toPieGroup(this.model.extractions.length));
+    this.update();
   }
 }

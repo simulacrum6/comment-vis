@@ -7,6 +7,7 @@
       Click on a {{ facetType }} to see more details. <br>
       Use the toggle to switch between aspects and attributes.
     </p>
+    <!-- Toolbar -->
     <div #toggle fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px">
       <div>
           <label>Attribute</label>
@@ -17,6 +18,7 @@
             Aspect
           </mat-slide-toggle>
       </div>
+      <!-- Search, Sort and Filter -->
       <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
         <div>
           <app-search-filter #searchReference
@@ -34,16 +36,28 @@
         </div>
       </div>
     </div>
-    <div class='pie-grid'
-    fxLayout="row wrap"
-    fxLayoutAlign="space-evenly">
-      <app-pie-cell *ngFor="let group of displayedFacetGroups"
-        [facetType]="facetType"
-        [name]="group.name"
-        [extractions]="group.extractions"
-        [size]="group.sizeRatio"
-        (click)="navigateToDetailPage(group.name, facetType)">
-      </app-pie-cell>
+    <!-- Main Visualisation Area -->
+    <div cdkDropListGroup
+      class='pie-grid'
+      fxLayout="row wrap"
+      fxLayoutAlign="space-evenly">
+      <div *ngFor="let group of displayedFacetGroups"
+        cdkDrag
+        cdkDropList
+        cdkDropListSortingDisabled
+        [cdkDropListData]="group"
+        (cdkDropListDropped)="onDrop($event)">
+        <ng-template cdkDragPlaceholder>
+          <div></div>
+        </ng-template>
+        <app-pie-cell
+          [facetType]="facetType"
+          [name]="group.name"
+          [extractions]="group.extractions"
+          [size]="group.sizeRatio"
+          (click)="navigateToDetailPage(group.name, facetType)">
+        </app-pie-cell>
+      </div>
     </div>
     <mat-paginator
       [length]="currentLength"
