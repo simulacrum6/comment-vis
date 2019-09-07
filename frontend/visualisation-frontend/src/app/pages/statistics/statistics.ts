@@ -117,9 +117,38 @@ export class StatisticsComponent implements OnInit, OnDestroy {
     this.stateService.loadSafe();
 
     // TEST
-    const map: Map<string, string> = new Map();
-    console.log(map.get('foo'));
-    // TEST
+    const model = this.stateService.model.state;
+    console.log('TEST GETTERS')
+    const aspects = model.getGroupsFor('aspect');
+    const a = aspects[0];
+    const b = aspects[1];
+    const c = aspects[2];
+    console.log(b);
+    console.log(model.getGroupById(b.id));
+    console.log(model.getGroupByName(b.name, b.type));
+
+    console.log('TEST MERGE');
+    console.log(`Extractions in a and b: ${a.extractions.length + b.extractions.length}`);
+    console.log(`Extractions before in a: ${a.extractions.length}`);
+    console.log(`Extractions before in b: ${b.extractions.length}`);
+    console.log(`Extractions before in c: ${c.extractions.length}`);
+    const newAspects = model.merge(a,b);
+    console.log(`Extractions after in a: ${a.extractions.length}`);
+    console.log(`aspects before: ${aspects.length}, aspects after: ${newAspects.length}`);
+
+    console.log(`NESTED MERGING`);
+    console.log(`Extractions in c: ${c.extractions.length}`);
+    console.log(`Current Aspects ${model.merge(b,c).length}`);
+    console.log(`Aspects from model after merge ${model.getGroupsFor('aspect').length}`);
+    console.log(`Extractions in a: ${a.extractions.length}`); // FAILED!
+    console.log(`Extractions in updated model a ${model.getGroupsFor('aspect')[0].extractions.length}`)
+    console.log(a);
+
+    console.log(`SPLITTING`);
+    model.split(a,b);
+    console.log(`Aspects in a after split of b: ${a.extractions.length}`);
+    console.log(`Current Aspects ${model.getGroupsFor('aspect').length}`)
+
 
     this.extractions = stateService.model.state.extractions;
     this.values = {
