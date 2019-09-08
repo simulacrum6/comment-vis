@@ -1,16 +1,16 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 import { histogram } from 'datalib';
 import { Label } from 'ng2-charts';
-import { Extraction, Extractions, FacetType, sentimentDifferential, ExtractionGroup } from 'src/app/models/canonical';
+import { Subscription } from 'rxjs';
+import { Extraction, Extractions, FacetType, sentimentDifferential } from 'src/app/models/canonical';
 import { mapToSentiment, mapToSentimentStatement, SentimentCount, Sentiments } from 'src/app/models/sentiment';
 import { valueCounts } from 'src/app/models/utils';
+import { FilterGenerator } from 'src/app/services/filter';
+import { FilterService } from 'src/app/services/filter.service';
 import { StateService } from 'src/app/services/state.service';
 import { DefaultColorStrings } from 'src/environments/constants';
-import { Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dataset-overview',
@@ -113,9 +113,8 @@ export class StatisticsComponent implements OnInit, OnDestroy {
     return this.valueCounts.attribute.length > this.maxRankingDisplayItems;
   }
 
-  constructor(private stateService: StateService, private router: Router, private route: ActivatedRoute) {
+  constructor(private stateService: StateService, private router: Router, private route: ActivatedRoute, private filterService: FilterService) {
     this.stateService.loadSafe();
-
     this.extractions = stateService.model.state.extractions;
     this.values = {
       attribute: Extractions.values(this.extractions, 'attribute'),

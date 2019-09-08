@@ -1,4 +1,4 @@
-import { PaginatorConfig } from '../models/utils';
+import { PaginatorConfig } from '../../models/utils';
 import { StateManager } from './state-manager';
 
 const DefaultPaginatorConfig: PaginatorConfig = {

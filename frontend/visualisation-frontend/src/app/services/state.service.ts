@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { FacetType, FacetTypes } from '../models/canonical';
 import { SimpleRoute } from '../models/utils';
-import { ModelStateManager } from './model-state-manager';
-import { SortStateManager } from './sort-state-manager';
-import { StateManager } from './state-manager';
-import { PaginatorStateManager } from './paginator-state-manager';
+import { FilterServiceStateManager } from './state-manager/filter-service-state-manager';
+import { ModelStateManager } from './state-manager/model-state-manager';
+import { PaginatorStateManager } from './state-manager/paginator-state-manager';
+import { SortStateManager } from './state-manager/sort-state-manager';
+import { StateManager } from './state-manager/state-manager';
 
 const stats: SimpleRoute = { url: ['/stats/'], queryParams: {} };
 
@@ -23,9 +24,10 @@ export class StateService {
   public facetType: StateManager<FacetType> = new StateManager('facet_type', FacetTypes.Aspect);
   public lastPage: StateManager<SimpleRoute> = new StateManager('last_non_detail_page', stats);
   public visPaginator: PaginatorStateManager = new PaginatorStateManager('visualisation_paginator');
+  public filter: FilterServiceStateManager = new FilterServiceStateManager();
 
   constructor() {
-    this.managers = [ this.sort, this.search, this.model, this.facetType, this.lastPage, this.visPaginator ];
+    this.managers = [ this.sort, this.search, this.model, this.facetType, this.lastPage, this.visPaginator, this.filter ];
   }
 
   clear() {

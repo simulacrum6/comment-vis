@@ -1,6 +1,6 @@
-import { Model } from '../models/canonical';
+import { Model } from '../../models/canonical';
 import { StateManager, DefaultStorage } from './state-manager';
-import { DemoModels, DemoModel } from '../models/demo';
+import { DemoModels, DemoModel } from '../../models/demo';
 
 export class ModelStateManager extends StateManager<Model> {
 

@@ -1,61 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ExtractionGroup, IdGenerator } from '../models/canonical';
+import { ExtractionGroup } from '../models/canonical';
 import { StateService } from './state.service';
-import UUID from 'uuid4';
-
-type Filter = (group: ExtractionGroup) => boolean;
-
-type FilterType = 'shun' | 'keep';
-
-export class FilterOption {
-  constructor(public id: string, public name: string, public value: any, public filterFunction: Filter) {}
-}
-
-export enum DefaultFilterName {
-  StartsWith = 'starts_with',
-  IdEquals = 'id_equals'
-}
-
-export class FilterGenerator {
-  public static readonly id: IdGenerator = UUID;
-
-  /**
-   * Maps available filter names to their generator functions.
-   */
-  public registry: Map<string, (value: any) => FilterOption> = new Map();
-  /**
-   * Returns the names of the available filters.
-   * Only filters in this list can be used with the `generate` function.
-   */
-  public get availableFilters(): string[] {
-    return Array.from(this.registry.keys());
-  }
-
-  constructor() {
-    this.registry.set(DefaultFilterName.StartsWith, FilterGenerator.startsWith);
-    this.registry.set(DefaultFilterName.IdEquals, FilterGenerator.idEquals);
-  }
-
-  public static startsWith(start: string, id: string = FilterGenerator.id()): FilterOption {
-    const name = DefaultFilterName.StartsWith;
-    const filter = (group: ExtractionGroup) => group.name.startsWith(start);
-    return new FilterOption(id, name, start, filter);
-  }
-  public static idEquals(groupId: string, id: string = FilterGenerator.id()): FilterOption {
-    const name = DefaultFilterName.IdEquals;
-    const filter = (group: ExtractionGroup) => group.id === groupId;
-    return new FilterOption(id, name, id, filter);
-  }
-
-  public generate(filter: string, value: any): FilterOption {
-    if (!this.registry.has(filter)) {
-      throw new Error(`Filter with name '${filter}' is not available.`);
-    }
-    const generator = this.registry.get(filter);
-    return generator(value);
-  }
-}
+import { FilterServiceState } from './state-manager/filter-service-state-manager';
+import { FilterOption, Filter, FilterType } from './filter';
 
 @Injectable({
   providedIn: 'root'
@@ -117,8 +65,23 @@ export class FilterService {
       return shuns.every(f => f(group));
     };
   }
+  private get state(): FilterServiceState {
+    return {
+      keep: this.keepFilters,
+      shun: this.shunFilters,
+      filterAfterChange: this.filterAfterChange
+    };
+  }
 
-  constructor(private stateService: StateService) { }
+  constructor(private stateService: StateService) {
+    stateService.loadSafe();
+    const state = stateService.filter.state;
+    this.keepFilters = state.keep;
+    this.shunFilters = state.shun;
+    this.filterAfterChange = state.filterAfterChange;
+    this.onChange();
+    console.log(this.state);
+  }
 
   public add(option: FilterOption, type: FilterType = 'shun') {
     // do nothing, if filter is already in activeFilter list
@@ -144,6 +107,11 @@ export class FilterService {
     } else {
       this.getFilterOptions(type)[index] = option;
     }
+    this.onChange();
+  }
+  public clearFilters() {
+    this.keepFilters = [];
+    this.shunFilters = [];
     this.onChange();
   }
 
@@ -173,5 +141,6 @@ export class FilterService {
     if (this.filterAfterChange) {
       this._filteredData.next(this.applyFilters());
     }
+    this.stateService.filter.state = this.state;
   }
 }

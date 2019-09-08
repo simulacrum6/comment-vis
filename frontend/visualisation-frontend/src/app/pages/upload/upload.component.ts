@@ -1,10 +1,9 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatSelectChange } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import {Model} from 'src/app/models/canonical';
+import { Model } from 'src/app/models/canonical';
 import { DemoModel, DemoModels } from 'src/app/models/demo';
 import { StateService } from 'src/app/services/state.service';
-import { FilterService, FilterGenerator } from 'src/app/services/filter.service';
 
 @Component({
   selector: 'app-upload',
