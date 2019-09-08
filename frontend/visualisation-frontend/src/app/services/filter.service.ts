@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ExtractionGroup } from '../models/canonical';
+import { ExtractionGroup, IdGenerator } from '../models/canonical';
 import { StateService } from './state.service';
+import UUID from 'uuid4';
 
 type Filter = (group: ExtractionGroup) => boolean;
 
 type FilterType = 'shun' | 'keep';
 
-class FilterOption {
-  constructor(public readonly name: string, public readonly value: any, public readonly filterFunction: Filter) {}
+export class FilterOption {
+  constructor(public id: string, public name: string, public value: any, public filterFunction: Filter) {}
 }
 
 export enum DefaultFilterName {
@@ -16,7 +17,9 @@ export enum DefaultFilterName {
   IdEquals = 'id_equals'
 }
 
-class FilterGenerator {
+export class FilterGenerator {
+  public static readonly id: IdGenerator = UUID;
+
   /**
    * Maps available filter names to their generator functions.
    */
@@ -34,15 +37,15 @@ class FilterGenerator {
     this.registry.set(DefaultFilterName.IdEquals, FilterGenerator.idEquals);
   }
 
-  public static startsWith(start: string): FilterOption {
+  public static startsWith(start: string, id: string = FilterGenerator.id()): FilterOption {
     const name = DefaultFilterName.StartsWith;
     const filter = (group: ExtractionGroup) => group.name.startsWith(start);
-    return new FilterOption(name, start, filter);
+    return new FilterOption(id, name, start, filter);
   }
-  public static idEquals(id: string): FilterOption {
+  public static idEquals(groupId: string, id: string = FilterGenerator.id()): FilterOption {
     const name = DefaultFilterName.IdEquals;
-    const filter = (group: ExtractionGroup) => group.id === id;
-    return new FilterOption(name, id, filter);
+    const filter = (group: ExtractionGroup) => group.id === groupId;
+    return new FilterOption(id, name, id, filter);
   }
 
   public generate(filter: string, value: any): FilterOption {
@@ -72,7 +75,6 @@ export class FilterService {
   private _data: ExtractionGroup[] = [];
   private _filteredData: BehaviorSubject<ExtractionGroup[]> = new BehaviorSubject([]);
 
-  public filterGenerator: FilterGenerator = new FilterGenerator();
   /**
    * Observable of the filtered data.
    */
@@ -118,30 +120,29 @@ export class FilterService {
 
   constructor(private stateService: StateService) { }
 
-  public add(filter: string, value: any, type: FilterType = 'shun') {
+  public add(option: FilterOption, type: FilterType = 'shun') {
     // do nothing, if filter is already in activeFilter list
-    if (this.findIndex(filter, value, type) !== -1) {
+    if (this.findIndex(option, type) !== -1) {
       return;
     }
-    const option = this.filterGenerator.generate(filter, value);
     this.getFilterOptions(type).push(option);
     this.onChange();
   }
-  public remove(filter: string, value: any, type: FilterType = 'shun') {
-    const index = this.findIndex(filter, value);
+  public remove(option: FilterOption, type: FilterType = 'shun') {
+    const index = this.findIndex(option, type);
     if (index === -1) {
-      console.log(`could not remove filter [${name},${value}], since it is not an active filter`);
+      console.log(`could not remove FilterOption{${option.id}}, since it is not an active filter`);
     } else {
       this.getFilterOptions(type).splice(index, 1);
     }
     this.onChange();
   }
-  public change(filter: string, oldValue: any, newValue: any, type: FilterType = 'shun') {
-    const index = this.findIndex(filter, oldValue, type);
+  public change(option: FilterOption, type: FilterType = 'shun') {
+    const index = this.findIndex(option, type);
     if (index === -1) {
-      console.log(`could not change filter [${filter},${oldValue}], since it is not an active filter`);
+      console.log(`could not change FilterOption{${option.id}}, since it is not an active filter`);
     } else {
-      this.getFilterOptions(type)[index] = this.filterGenerator.generate(filter, newValue);
+      this.getFilterOptions(type)[index] = option;
     }
     this.onChange();
   }
@@ -150,8 +151,8 @@ export class FilterService {
    * Finds the index of the given combination of filter name, value and type in the active filters.
    * Returns -1 if combination is not part of the active filters.
    */
-  private findIndex(filter: string, value: any, type: FilterType = 'shun'): number {
-    const finder = (option: FilterOption) => (option.name === filter) && (option.value === value);
+  private findIndex(option: FilterOption, type: FilterType = 'shun'): number {
+    const finder = (other: FilterOption) => (other.id === option.id);
     const options = this.getFilterOptions(type);
     return options.findIndex(finder);
   }

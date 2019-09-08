@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {Model} from 'src/app/models/canonical';
 import { DemoModel, DemoModels } from 'src/app/models/demo';
 import { StateService } from 'src/app/services/state.service';
-import { FilterService } from 'src/app/services/filter.service';
+import { FilterService, FilterGenerator } from 'src/app/services/filter.service';
 
 @Component({
   selector: 'app-upload',
@@ -35,18 +35,8 @@ export class UploadComponent implements OnInit {
     this.noDatasetSelected = false;
   }
 
-  constructor(private router: Router, private ar: ActivatedRoute, private stateService: StateService, private filterService: FilterService) {
+  constructor(private router: Router, private ar: ActivatedRoute, private stateService: StateService) {
     this.stateService.loadSafe();
-    // test
-    const data = this.stateService.model.state.getGroupsFor('aspect');
-    this.filterService.data = data;
-    this.filterService.add('starts_with', 'w');
-    const filtered = this.filterService.filteredData;
-    console.log(`before ${data.length}, after ${filtered.length}`);
-    this.filterService.change('starts_with', 'w', 'a');
-    console.log(this.filterService.filteredData.length);
-    this.filterService.add('id_equals', '3560', 'keep');
-    console.log(this.filterService.filteredData);
   }
 
   ngOnInit() { }
