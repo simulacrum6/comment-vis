@@ -1,5 +1,4 @@
 import { default as Color } from 'color';
-import { Sentiment, Sentiments } from 'src/app/models/sentiment';
 
 /** View **/
 

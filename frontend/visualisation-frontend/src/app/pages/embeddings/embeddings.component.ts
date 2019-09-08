@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {ChartDataSets, ChartOptions, ChartType} from 'chart.js';
 import {Extraction} from '../../models/canonical';
+import {getMixedWeightedSentimentColor} from '../../models/sentiment';
+import Color = require('color');
 
 @Component({
   selector: 'app-embeddings',
@@ -53,6 +55,11 @@ export class EmbeddingsComponent implements OnInit {
         y: bubble.yPosition,
         r: bubble.size}];
       dataset.label = bubble.label;
+      const color: Color = getMixedWeightedSentimentColor(bubble.sentimentRatio);
+      dataset.backgroundColor = color.alpha(0.6).toString();
+      dataset.hoverBackgroundColor = color.alpha(0.8).toString();
+      dataset.borderColor = color.toString();
+      dataset.hoverBorderColor = color.alpha(0.8).toString();
       this.chartData.push(dataset);
     });
 
@@ -69,34 +76,38 @@ class Bubble {
   xPosition: number;
   // Position on y-axis - values 0 - 100
   yPosition: number;
-  // Relative quanitity of mentions - values 0 - 100
+  // Relative quantity of mentions - values 0 - 100
   size: number;
+  // Name of the facet
   label: string;
+  // Ratio of sentiments - values -1 to 1
+  sentimentRatio: number;
 
-  constructor(xPosition: number, yPosition: number, size: number, label: string) {
+  constructor(xPosition: number, yPosition: number, size: number, label: string, sentimentRatio: number) {
     this.xPosition = xPosition;
     this.yPosition = yPosition;
     this.size = size;
     this.label = label;
+    this.sentimentRatio = sentimentRatio;
   }
 
 // TODO when embeddings are there
-  public static public fromExtractions(extractions: Extraction[]): Bubble[] {
+  public static fromExtractions(extractions: Extraction[]): Bubble[] {
     return [];
   }
 
   public static generateExampleData(): Bubble[] {
-    const bubble0 = new Bubble(0, 0, 0, 'bubble0');
-    const bubble1 = new Bubble(8, 8, 8, 'bubble1');
-    const bubble2 = new Bubble(16, 16, 16, 'bubble2');
-    const bubble3 = new Bubble(24, 24, 24, 'bubble3');
-    const bubble4 = new Bubble(32, 32, 32, 'bubble4');
-    const bubble5 = new Bubble(40, 40, 40, 'bubble5');
-    const bubble6 = new Bubble(48, 48, 48, 'bubble6');
-    const bubble7 = new Bubble(56, 56, 56, 'bubble7');
-    const bubble8 = new Bubble(64, 64, 64, 'bubble8');
-    const bubble9 = new Bubble(72, 72, 72, 'bubble9');
-    const bubble10 = new Bubble(100, 100, 4, 'bubble10');
+    const bubble0 = new Bubble(0, 0, 0, 'bubble0', 0.1);
+    const bubble1 = new Bubble(8, 8, 8, 'bubble1', 0.3);
+    const bubble2 = new Bubble(16, 16, 16, 'bubble2', 0.5);
+    const bubble3 = new Bubble(24, 24, 24, 'bubble3', 0.7);
+    const bubble4 = new Bubble(32, 32, 32, 'bubble4', 1.0);
+    const bubble5 = new Bubble(40, 40, 40, 'bubble5', 0);
+    const bubble6 = new Bubble(48, 48, 48, 'bubble6', -0.1);
+    const bubble7 = new Bubble(56, 56, 56, 'bubble7', -0.3);
+    const bubble8 = new Bubble(64, 64, 64, 'bubble8', -0.5);
+    const bubble9 = new Bubble(72, 72, 72, 'bubble9', -0.7);
+    const bubble10 = new Bubble(100, 100, 4, 'bubble10', -1.0);
     return [bubble0, bubble1, bubble2, bubble3, bubble4, bubble5, bubble6, bubble7, bubble8, bubble9, bubble10];
   }
 

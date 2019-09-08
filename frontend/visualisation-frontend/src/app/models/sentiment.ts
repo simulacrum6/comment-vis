@@ -1,4 +1,6 @@
 import { Extraction } from './canonical';
+import Color = require('color');
+import {SentimentColors} from '../../environments/constants';
 
 export enum Sentiment {
     Positive = 'positive',
@@ -140,6 +142,13 @@ export function mapToCompareSentimentStatement(overallPercent: number, percent: 
     return 'below average';
   }
   return 'extremely below average';
+}
+
+/**
+ * Get a mixed color representation for a given sentiment ratio.
+ */
+export function getMixedWeightedSentimentColor(sentimentRatio: number): Color {
+  return SentimentColors.neutral.mix(sentimentRatio > 0 ? SentimentColors.positive : SentimentColors.negative, Math.abs(sentimentRatio));
 }
 
 export function controversy(counts: SentimentCount) {
