@@ -112,11 +112,11 @@ export interface ExtractionGroup {
 }
 
 /**
- * ExtractionGroup that is only temporarily available and does not belong to the model.
- * Ids are not unique.
+ * ExtractionGroup that does not belong to the model. \
+ * Intended for some views.
  */
 export class ViewExtractionGroup implements ExtractionGroup {
-  public readonly id = 'VIEW_EXTRACTION_GROUP';
+  public readonly id = null;
   public readonly name: string;
   public readonly type: ExtractionProperty;
   public readonly extractions: Extraction[];
@@ -130,50 +130,52 @@ export class ViewExtractionGroup implements ExtractionGroup {
   }
 }
 
-export class NestedExtractionGroup implements ExtractionGroup {
+/**
+ * ExtractionGroup that is managed by the model. \
+ * NestedExtractionGroups can be added and removed from each other.
+ */
+class NestedExtractionGroup implements ExtractionGroup {
   public readonly id: string;
   public readonly name: string;
   public readonly type: ExtractionProperty;
 
   public get extractions(): Extraction[] {
-    if (!this.hasMembers) {
-      return this.original.extractions;
-    }
-    return this.memberExtractions.concat(this.original.extractions);
+    return !this.hasMembers ? this.original.extractions : this.memberExtractions.concat(this.original.extractions);
   }
-
   public get sentimentCount(): SentimentCount {
-    if (!this.hasMembers) {
-      return this.original.sentimentCount;
-    }
-    return SentimentCount.fromExtractions(this.extractions);
+    return !this.hasMembers ? this.original.sentimentCount : SentimentCount.fromExtractions(this.extractions);
+  }
+  public get hasMembers(): boolean {
+    return this.members.length !== 0;
+  }
+  /**
+   * Returns all groups added to this one.
+   */
+  public get members(): NestedExtractionGroup[] {
+    return this._members;
   }
 
   protected readonly original: ExtractionGroup;
-  protected members: NestedExtractionGroup[] = null;
-
-  protected get hasMembers(): boolean {
-    return this.members !== null || this.members === [];
-  }
-
+  protected _members: NestedExtractionGroup[] = [];
   protected get memberExtractions(): Extraction[] {
     const extractions = this.members.map(group => group.extractions);
     return flatten(extractions);
   }
 
-  constructor(id: string, name: string, type: ExtractionProperty, extractions: Extraction[], sentimentCount?: SentimentCount) {
+  constructor(id: string, name: string, type: ExtractionProperty, extractions: Extraction[]) {
     this.id = id;
     this.name = name;
     this.type = type;
-    this.original = { id, name, type, extractions, sentimentCount };
+    this.original = { id, name, type, extractions, sentimentCount: SentimentCount.fromExtractions(extractions) };
   }
 
   /**
    * Adds other ExtractionGroup to this one's members.
    */
   public add(other: NestedExtractionGroup) {
-    if (!this.hasMembers) {
-      this.members = [];
+    if (other.id === this.id) {
+      console.warn('Cannot add NestedExtractionGroup to itself! Call is ignored');
+      return;
     }
     this.members.push(other);
   }
@@ -492,6 +494,22 @@ export class Model {
     // remove other from list
     const list = this.groupLists[group.type];
     this.groupLists[group.type] = list.filter(g => g.id !== other.id);
+  }
+
+  /**
+   * Returns all groups that were merged into the given ExtractionGroup.
+   */
+  public getMergedGroups(group: ExtractionGroup): ExtractionGroup[] {
+    const nested = this.getNestedGroup(group.id);
+    return nested.members;
+  }
+
+  /**
+   * Returns all groups that were merged into the given ExtractionGroup.
+   */
+  public getMergedGroupsById(id: string): ExtractionGroup[] {
+    const nested = this.getNestedGroup(id);
+    return nested.members;
   }
 
   /**

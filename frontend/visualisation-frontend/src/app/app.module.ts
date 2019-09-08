@@ -25,6 +25,7 @@ import { StatisticsComponent } from './pages/statistics/statistics';
 import { UploadComponent } from './pages/upload/upload.component';
 import { PieGridComponent } from './pages/visualisation/pie-grid/pie-grid.component';
 import { VisualisationComponent } from './pages/visualisation/visualisation.component';
+import { MergedMembersTableComponent } from './components/tables/merged-members-table/merged-members-table.component';
 
 
 @NgModule({
@@ -46,7 +47,8 @@ import { VisualisationComponent } from './pages/visualisation/visualisation.comp
     BreadcrumbComponent,
     SortFilterComponent,
     MiniSorterComponent,
-    SearchFilterComponent
+    SearchFilterComponent,
+    MergedMembersTableComponent
   ],
   imports: [
     BrowserModule,

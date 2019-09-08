@@ -1,0 +1,83 @@
+<table mat-table [dataSource]="tableData">
+  <ng-container cdkColumnDef="group">
+    <th mat-header-cell *matHeaderCellDef> {{ facetType }} </th>
+    <td mat-cell *matCellDef="let row">
+      <a *ngIf="links; else plain"
+        [routerLink]="['/detail']"
+        [queryParams]="{ facet: row.group, facetType: facetType }">
+        {{ row.group }}
+      </a>
+      <ng-template #plain>{{ row.group }}</ng-template>
+    </td>
+  </ng-container>
+
+  <ng-container cdkColumnDef="positive">
+    <th mat-header-cell *matHeaderCellDef>
+      <app-mini-sorter
+        [data]="displayGroups"
+        [sortConfig]="positiveSort"
+        (sort)="onSort($event)">
+        positive
+      </app-mini-sorter>
+      </th>
+    <td mat-cell *matCellDef="let row"> {{ row.positive }} </td>
+  </ng-container>
+
+  <ng-container cdkColumnDef="negative">
+    <th mat-header-cell *matHeaderCellDef>
+      <app-mini-sorter
+        [data]="displayGroups"
+        [sortConfig]="negativeSort"
+        (sort)="onSort($event)">
+        negative
+      </app-mini-sorter>
+    </th>
+    <td mat-cell *matCellDef="let row"> {{row.negative}} </td>
+  </ng-container>
+
+  <ng-container cdkColumnDef="neutral">
+    <th mat-header-cell *matHeaderCellDef>
+      <app-mini-sorter
+        [data]="displayGroups"
+        [sortConfig]="neutralSort"
+        (sort)="onSort($event)">
+        neutral
+      </app-mini-sorter>
+    </th>
+    <td mat-cell *matCellDef="let row"> {{row.neutral}} </td>
+  </ng-container>
+
+  <ng-container cdkColumnDef="total">
+    <th mat-header-cell *matHeaderCellDef>
+      <app-mini-sorter
+        [data]="displayGroups"
+        [sortConfig]="totalSort"
+        (sort)="onSort($event)">
+        total
+      </app-mini-sorter>
+    </th>
+    <td mat-cell *matCellDef="let row"> {{ row.total }} </td>
+  </ng-container>
+
+  <ng-container cdkColumnDef="split">
+    <th mat-header-cell *matHeaderCellDef>
+      split
+    </th>
+    <td mat-cell *matCellDef="let row">
+      <button mat-button
+        color="warn"
+        (click)="split(row.id)"
+        matTooltip="remove from group">
+        <mat-icon>call_split</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="['group', 'positive', 'negative', 'neutral', 'total', 'split']"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['group', 'positive', 'negative', 'neutral', 'total', 'split']"></tr>
+</table>
+
+<mat-paginator #paginator
+  [pageSizeOptions]="[5, 10, 20]"
+  showFirstLastButtons>
+</mat-paginator>

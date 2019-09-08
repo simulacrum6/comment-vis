@@ -2,18 +2,19 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { SortOption, SortOptions } from 'src/app/components/filters/sort-filter/sort';
-import { Extraction, ExtractionGroup, Extractions, FacetProperty, FacetType } from 'src/app/models/canonical';
+import { Extraction, ExtractionGroup, Extractions, FacetProperty, FacetType, ExtractionProperty } from 'src/app/models/canonical';
 import { SentimentCount } from 'src/app/models/sentiment';
 
 export class SentimentCountRow {
-  group: string;
-  positive: number;
-  negative: number;
-  neutral: number;
-  total: number;
+  public id: string;
+  public group: string;
+  public positive: number;
+  public negative: number;
+  public neutral: number;
+  public total: number;
 
   public static fromExtractionGroup(group: ExtractionGroup): SentimentCountRow {
-    const row = { group: group.name, ...group.sentimentCount, total: group.sentimentCount.total};
+    const row = { id: group.id, group: group.name, ...group.sentimentCount, total: group.sentimentCount.total};
     return row;
   }
 }
@@ -24,28 +25,24 @@ export class SentimentCountRow {
   styleUrls: ['./sentiment-table.component.scss']
 })
 export class SentimentTableComponent implements OnInit, OnChanges {
-  @Input() extractions: Extraction[];
-  @Input() facetType: FacetType;
-  @Input() facetProperty: FacetProperty = 'group';
-
   /**
    * Indicates whether router links are active, i.e. whether navigation is possible from the table.
    */
   @Input() links = true;
-
+  @Input() extractions: Extraction[];
+  @Input() facetType: FacetType;
+  @Input() facetProperty: FacetProperty = 'group';
   @ViewChild('paginator') paginator: MatPaginator;
 
-  private groups: ExtractionGroup[];
-  private displayGroups: ExtractionGroup[];
-  private tableData: MatTableDataSource<SentimentCountRow>;
+  protected groups: ExtractionGroup[];
+  protected displayGroups: ExtractionGroup[];
+  protected tableData: MatTableDataSource<SentimentCountRow>;
+  protected positiveSort: SortOption = SortOptions.options.positiveSentiments;
+  protected negativeSort: SortOption = SortOptions.options.negativeSentiments;
+  protected neutralSort: SortOption = SortOptions.options.neutralSentiments;
+  protected totalSort: SortOption = SortOptions.options.popularity;
 
-  // TODO: implement clean
-  private positiveSort: SortOption = SortOptions.options.positiveSentiments;
-  private negativeSort: SortOption = SortOptions.options.negativeSentiments;
-  private neutralSort: SortOption = SortOptions.options.neutralSentiments;
-  private totalSort: SortOption = SortOptions.options.popularity;
-
-  constructor(private router: Router) { }
+  constructor() { }
 
   ngOnInit() {
     this.update();

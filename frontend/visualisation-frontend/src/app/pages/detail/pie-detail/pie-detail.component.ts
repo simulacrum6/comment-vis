@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
-import { map, flatMap } from 'rxjs/operators';
-import { Extractions } from 'src/app/models/canonical';
+import { map } from 'rxjs/operators';
 import { StateService } from 'src/app/services/state.service';
 import { DetailViewBaseComponent } from '../detail-view-base.component';
 
