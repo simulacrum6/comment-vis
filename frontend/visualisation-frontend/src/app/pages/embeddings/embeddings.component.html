@@ -1,0 +1,14 @@
+<mat-card class="content">
+  <mat-card-title>Word Embeddings</mat-card-title>
+
+  <mat-card-content>
+    <div class="chart_container">
+      <canvas #chart baseChart
+              [datasets]="chartData"
+              [options]="chartOptions"
+              [chartType]="chartType"
+              (chartClick)="handleBubbleClick($event)">
+      </canvas>
+    </div>
+  </mat-card-content>
+</mat-card>

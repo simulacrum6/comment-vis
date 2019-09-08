@@ -7,6 +7,7 @@ import { StatisticsComponent } from './pages/statistics/statistics';
 import { UploadComponent } from './pages/upload/upload.component';
 import { PieGridComponent } from './pages/visualisation/pie-grid/pie-grid.component';
 import { VisualisationComponent } from './pages/visualisation/visualisation.component';
+import { EmbeddingsComponent } from './pages/embeddings/embeddings.component';
 
 const routes: Routes = [
   { path: '', component: UploadComponent },
@@ -19,6 +20,7 @@ const routes: Routes = [
       { path: 'bar', component: BarComponent },
     ]
   },
+  { path: 'embeddings', component: EmbeddingsComponent },
   { path: 'detail', component: DetailComponent },
   { path: '**', component: UploadComponent }
 ];

@@ -26,6 +26,7 @@ import { UploadComponent } from './pages/upload/upload.component';
 import { PieGridComponent } from './pages/visualisation/pie-grid/pie-grid.component';
 import { VisualisationComponent } from './pages/visualisation/visualisation.component';
 import { MergedMembersTableComponent } from './components/tables/merged-members-table/merged-members-table.component';
+import { EmbeddingsComponent } from './pages/embeddings/embeddings.component';
 
 
 @NgModule({
@@ -48,7 +49,8 @@ import { MergedMembersTableComponent } from './components/tables/merged-members-
     SortFilterComponent,
     MiniSorterComponent,
     SearchFilterComponent,
-    MergedMembersTableComponent
+    MergedMembersTableComponent,
+    EmbeddingsComponent
   ],
   imports: [
     BrowserModule,
