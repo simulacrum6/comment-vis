@@ -20,6 +20,7 @@ const routes: Routes = [
     ]
   },
   { path: 'detail', component: DetailComponent },
+  { path: '**', component: UploadComponent }
 ];
 
 @NgModule({
