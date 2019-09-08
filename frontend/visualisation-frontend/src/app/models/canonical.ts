@@ -343,6 +343,7 @@ export class Model {
     this.groupLists = { aspect: null, attribute: null, comment: null, sentiment: null };
     this.extractions = extractions.map(ex => Extraction.fromRawExtraction(ex, this.idGenerator));
 
+    // TODO: Not needed? Remove rawextractions?
     // populate id to extraction map
     for (const extraction of this.extractions) {
       this.idToExtraction.set(extraction.id, extraction);
@@ -353,34 +354,54 @@ export class Model {
     for (const property of  properties) {
       const groups = this.makeExtractionGroups(this.extractions, property);
       const groupMap = Model.toGroupMap(groups);
-      this.nameToGroup[property] = groupMap;
       this.groupLists[property] = groups;
+      this.nameToGroup[property] = groupMap;
 
       // populate id to extraction group map
       for (const group of groups) {
         this.idToExtractionGroup.set(group.id, group);
       }
+
+      // merge child with parent group for 'aspect' and 'attribute'
+      if (FacetTypes.isFacetType(property)) {
+        groups.forEach(group => {
+          const facet = group.extractions[0][property] as Facet; // bit hacky
+          let parent = this.nameToGroup[property][facet.group];
+          if (parent === undefined) {
+            parent = new NestedExtractionGroup(this.idGenerator(), facet.group, property, []);
+            this.register(parent)
+          }
+          this.merge(parent, group);
+        });
+      }
     }
   }
 
-  static fromRawExtractions(extractions: RawExtraction[]): Model {
+  public static fromRawExtractions(extractions: RawExtraction[]): Model {
     return new Model(extractions, 'custom');
   }
-
-  static fromJson(json: any[]): Model {
+  public static fromJson(json: any[]): Model {
     const extractions = parseJson(json);
     const id = 'custom_json_model';
     return new Model(extractions, id);
   }
-
   private static toGroupMap(groups: NestedExtractionGroup[]): StringMap<NestedExtractionGroup> {
     const map: StringMap<NestedExtractionGroup> = {};
     groups.forEach(group => map[group.name] = group);
     return map;
   }
 
+  /**
+   * Registers a new ExtractionGroup with the model.
+   */
+  private register(group: NestedExtractionGroup) {
+    this.nameToGroup[group.type][group.name] = group;
+    this.groupLists[group.type].push(group);
+    this.idToExtractionGroup.set(group.id, group);
+  }
   private makeExtractionGroups(extractions: Extraction[], property: ExtractionProperty): NestedExtractionGroup[] {
-    const groupNameToExtractions = groupBy(extractions, property);
+    const isFacet = FacetTypes.isFacetType(property);
+    const groupNameToExtractions =  isFacet ? groupBy(extractions, property, 'text') : groupBy(extractions, property);
     const entries = Object.entries(groupNameToExtractions);
     const groups = entries.map(entry => {
       const name = entry[0];
