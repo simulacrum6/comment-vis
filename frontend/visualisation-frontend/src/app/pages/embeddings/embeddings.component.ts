@@ -20,7 +20,12 @@ export class EmbeddingsComponent implements OnInit {
     },
     tooltips: {
       mode: 'point',
-      intersect: true
+      intersect: true,
+      callbacks: {
+        label: (tooltipItem, data) => {
+          return data.datasets[tooltipItem.datasetIndex].label || '';
+        }
+      }
     },
     scales: {
       xAxes: [{
@@ -39,6 +44,15 @@ export class EmbeddingsComponent implements OnInit {
           display: false
         }
       }]
+    },
+    layout: {
+      // Padding so values on the edge are not easily cut off
+      padding: {
+        left: 20,
+        right: 20,
+        top: 20,
+        bottom: 20
+      }
     }
   };
 
