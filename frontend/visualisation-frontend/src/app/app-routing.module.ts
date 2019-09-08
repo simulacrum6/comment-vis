@@ -18,9 +18,10 @@ const routes: Routes = [
       { path: 'pie', component: PieGridComponent },
       { path: 'tree', component: TreeMapComponent },
       { path: 'bar', component: BarComponent },
+      { path: 'embeddings', component: EmbeddingsComponent },
     ]
   },
-  { path: 'embeddings', component: EmbeddingsComponent },
+
   { path: 'detail', component: DetailComponent },
   { path: '**', component: UploadComponent }
 ];

@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import {ChartDataSets, ChartOptions, ChartType} from 'chart.js';
-import {Extraction} from '../../models/canonical';
-import {getMixedWeightedSentimentColor} from '../../models/sentiment';
+import {Extraction, Model, ExtractionProperty, ExtractionGroup, sentimentDifferential} from '../../models/canonical';
+import {getMixedWeightedSentimentColor, controversy} from '../../models/sentiment';
 import { default as Color } from 'color';
+import { StateService } from 'src/app/services/state.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-embeddings',
@@ -11,6 +13,8 @@ import { default as Color } from 'color';
 })
 export class EmbeddingsComponent implements OnInit {
 
+  private model: Model;
+  private type: ExtractionProperty;
   private bubbles: Bubble[];
   private chartData: ChartDataSets[] = [];
   private chartType: ChartType = 'bubble';
@@ -57,10 +61,16 @@ export class EmbeddingsComponent implements OnInit {
   };
 
 
-  constructor() { }
+  constructor(private stateService: StateService, private router: Router) {
+    stateService.loadSafe();
+  }
 
   ngOnInit() {
-    this.bubbles = Bubble.generateExampleData();
+    this.model = this.stateService.model.state;
+    this.type = this.stateService.facetType.state;
+    const groups = this.model.getGroupsFor(this.type);
+    const occurences = this.model.extractions.length;
+    this.bubbles = groups.map(group => Bubble.fromExtractionGroup(group, occurences));
 
     this.bubbles.forEach(bubble => {
       const dataset: any = {};
@@ -86,6 +96,9 @@ export class EmbeddingsComponent implements OnInit {
 
 class Bubble {
 
+  private static readonly minimumSize = 2;
+  private static readonly scalingFactor = Bubble.minimumSize * 100;
+
   // Position on x-axis - values 0 - 100
   xPosition: number;
   // Position on y-axis - values 0 - 100
@@ -103,6 +116,25 @@ class Bubble {
     this.size = size;
     this.label = label;
     this.sentimentRatio = sentimentRatio;
+  }
+
+  public static scale(value: number): number {
+    // TODO: add to utils.makeInterpolator
+    return Math.sqrt(value) * Bubble.scalingFactor + Bubble.minimumSize;
+  }
+
+  /**
+   * Generates Bubble with random coordinate from ExtractionGroup.
+   */
+  public static fromExtractionGroup(group: ExtractionGroup, totalNumExtractions: number) {
+    const x = Math.random() * 100;
+    const y = Math.random() * 100;
+    const relativeSize = group.extractions.length / totalNumExtractions;
+    const size = Bubble.scale(relativeSize);
+    console.log(size);
+    const name = group.name;
+    const ratio = sentimentDifferential(group.extractions);
+    return new Bubble(x, y, size, name, ratio);
   }
 
 // TODO when embeddings are there
