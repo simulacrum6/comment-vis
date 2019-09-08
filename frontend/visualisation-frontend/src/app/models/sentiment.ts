@@ -1,5 +1,5 @@
 import { Extraction } from './canonical';
-import Color = require('color');
+import { default as Color } from 'color';
 import {SentimentColors} from '../../environments/constants';
 
 export enum Sentiment {

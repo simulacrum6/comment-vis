@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {ChartDataSets, ChartOptions, ChartType} from 'chart.js';
 import {Extraction} from '../../models/canonical';
 import {getMixedWeightedSentimentColor} from '../../models/sentiment';
-import Color = require('color');
+import { default as Color } from 'color';
 
 @Component({
   selector: 'app-embeddings',
