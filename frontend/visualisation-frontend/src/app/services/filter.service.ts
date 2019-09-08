@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { ExtractionGroup } from '../models/canonical';
 import { StateService } from './state.service';
 
@@ -7,39 +8,48 @@ type Filter = (group: ExtractionGroup) => boolean;
 type FilterType = 'shun' | 'keep';
 
 class FilterOption {
-  public type: FilterType = 'shun';
   constructor(public readonly name: string, public readonly value: any, public readonly filterFunction: Filter) {}
 }
 
-enum FilterName {
+export enum DefaultFilterName {
   StartsWith = 'starts_with',
   IdEquals = 'id_equals'
 }
 
 class FilterGenerator {
-  private availableFilters: Map<string, (value: any) => FilterOption> = new Map();
+  /**
+   * Maps available filter names to their generator functions.
+   */
+  public registry: Map<string, (value: any) => FilterOption> = new Map();
+  /**
+   * Returns the names of the available filters.
+   * Only filters in this list can be used with the `generate` function.
+   */
+  public get availableFilters(): string[] {
+    return Array.from(this.registry.keys());
+  }
 
   constructor() {
-    this.availableFilters.set(FilterName.StartsWith, FilterGenerator.startsWith);
-    this.availableFilters.set(FilterName.IdEquals, FilterGenerator.idEquals);
+    this.registry.set(DefaultFilterName.StartsWith, FilterGenerator.startsWith);
+    this.registry.set(DefaultFilterName.IdEquals, FilterGenerator.idEquals);
   }
 
   public static startsWith(start: string): FilterOption {
-    const name = FilterName.StartsWith;
+    const name = DefaultFilterName.StartsWith;
     const filter = (group: ExtractionGroup) => group.name.startsWith(start);
     return new FilterOption(name, start, filter);
   }
   public static idEquals(id: string): FilterOption {
-    const name = FilterName.IdEquals;
+    const name = DefaultFilterName.IdEquals;
     const filter = (group: ExtractionGroup) => group.id === id;
     return new FilterOption(name, id, filter);
   }
 
   public generate(filter: string, value: any): FilterOption {
-    if (!this.availableFilters.has(filter)) {
+    if (!this.registry.has(filter)) {
       throw new Error(`Filter with name '${filter}' is not available.`);
     }
-    const generator = this.availableFilters.get(filter);
+    const generator = this.registry.get(filter);
     return generator(value);
   }
 }
@@ -48,7 +58,6 @@ class FilterGenerator {
   providedIn: 'root'
 })
 export class FilterService {
-
   /**
    * Keep Filters are applied before Shun Filters.
    * If any of their filter function matches the tested ExtractionGroup,
@@ -60,15 +69,42 @@ export class FilterService {
    * They work as you would expect Filters to work.
    */
   private shunFilters: FilterOption[] = [];
-  private filterGenerator: FilterGenerator = new FilterGenerator();
   private _data: ExtractionGroup[] = [];
+  private _filteredData: BehaviorSubject<ExtractionGroup[]> = new BehaviorSubject([]);
 
-  public get filteredData(): ExtractionGroup[] {
-    return this.applyFilters();
-  }
+  public filterGenerator: FilterGenerator = new FilterGenerator();
+  /**
+   * Observable of the filtered data.
+   */
+  public readonly filteredDataChange = this._filteredData.asObservable();
+  /**
+   * Determines if filters are applied immediately after active filters or data were changed. \
+   * If set to `false`, Observers of `filteredDataChange` will only receive updates of the data,
+   * once `filteredData` is accessed.
+   */
+  public filterAfterChange = true;
+  /**
+   * The data to be filtered.
+   */
   public set data(groups: ExtractionGroup[]) {
     this._data = groups;
+    if (this.filterAfterChange) {
+      this._filteredData.next(this.applyFilters());
+    }
   }
+  /**
+   * The filtered data.
+   */
+  public get filteredData(): ExtractionGroup[] {
+    // update if filtered data was not updated yet
+    if (!this.filterAfterChange) {
+      this._filteredData.next(this.applyFilters());
+    }
+    return this._filteredData.getValue();
+  }
+  /**
+   * Function to be applied to each ExtractionGroup in data.
+   */
   private get filterFunction(): Filter {
     return (group: ExtractionGroup) => {
       const keeps = this.keepFilters.map(opt => opt.filterFunction);
@@ -89,6 +125,7 @@ export class FilterService {
     }
     const option = this.filterGenerator.generate(filter, value);
     this.getFilterOptions(type).push(option);
+    this.onChange();
   }
   public remove(filter: string, value: any, type: FilterType = 'shun') {
     const index = this.findIndex(filter, value);
@@ -97,6 +134,7 @@ export class FilterService {
     } else {
       this.getFilterOptions(type).splice(index, 1);
     }
+    this.onChange();
   }
   public change(filter: string, oldValue: any, newValue: any, type: FilterType = 'shun') {
     const index = this.findIndex(filter, oldValue, type);
@@ -105,6 +143,7 @@ export class FilterService {
     } else {
       this.getFilterOptions(type)[index] = this.filterGenerator.generate(filter, newValue);
     }
+    this.onChange();
   }
 
   /**
@@ -123,7 +162,15 @@ export class FilterService {
     const filter = this.filterFunction.bind(this);
     return this._data.filter(filter);
   }
+  /**
+   * Returns either all 'shun' filters or all 'keep' filters.
+   */
   private getFilterOptions(type: FilterType): FilterOption[] {
     return type === 'shun' ? this.shunFilters : this.keepFilters;
+  }
+  private onChange() {
+    if (this.filterAfterChange) {
+      this._filteredData.next(this.applyFilters());
+    }
   }
 }
