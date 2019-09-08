@@ -369,9 +369,10 @@ export class Model {
           let parent = this.nameToGroup[property][facet.group];
           if (parent === undefined) {
             parent = new NestedExtractionGroup(this.idGenerator(), facet.group, property, []);
-            this.register(parent)
+            this.register(parent);
+            this.merge(parent, group);
           }
-          this.merge(parent, group);
+
         });
       }
     }
