@@ -49,15 +49,12 @@
       </mat-expansion-panel>
       <mat-expansion-panel #groupPanel>
           <mat-expansion-panel-header>
-            <mat-panel-title>Members</mat-panel-title>
+            <mat-panel-title>Merged groups</mat-panel-title>
             <mat-panel-description>all members of this {{ facetType$ | async }}'s group</mat-panel-description>
           </mat-expansion-panel-header>
-          <app-sentiment-table
-            [extractions]="extractions$ | async"
-            [facetType]="facetType$ | async"
-            [links]="false"
-            facetProperty="text">
-          </app-sentiment-table>
+          <app-merged-members-table
+            [group]="group$ | async">
+          </app-merged-members-table>
       </mat-expansion-panel>
     </div>
   </mat-card-content>

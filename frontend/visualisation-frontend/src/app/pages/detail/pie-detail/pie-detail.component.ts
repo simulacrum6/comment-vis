@@ -93,7 +93,7 @@ class MoodWrapper {
   }
 
   public getMoodPercentText() {
-    if (sentimentDifferential <= - 0.5) {
+    if (this.sentimentDifferential <= - 0.5) {
       return Math.round((this.sentimentCount.negative / this.sentimentCount.total) * 100) + '% negative comments';
     } else {
       return Math.round((this.sentimentCount.positive / this.sentimentCount.total) * 100) + '% positive comments';
