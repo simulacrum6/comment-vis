@@ -370,9 +370,10 @@ export class Model {
           if (parent === undefined) {
             parent = new NestedExtractionGroup(this.idGenerator(), facet.group, property, []);
             this.register(parent);
+          }
+          if (parent.id !== group.id) {
             this.merge(parent, group);
           }
-
         });
       }
     }
@@ -512,10 +513,14 @@ export class Model {
   }
 
   protected add(group: NestedExtractionGroup, other: NestedExtractionGroup) {
-    group.add(other);
-    // remove other from list
-    const list = this.groupLists[group.type];
-    this.groupLists[group.type] = list.filter(g => g.id !== other.id);
+    if (group.id !== other.id) {
+      group.add(other);
+      // remove other from list
+      const list = this.groupLists[group.type];
+      this.groupLists[group.type] = list.filter(g => g.id !== other.id);
+    } else {
+      console.warn('Cannot add group to itself. Call is ignored.');
+    }
   }
 
   /**
