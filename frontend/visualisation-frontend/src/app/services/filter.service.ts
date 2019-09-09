@@ -82,6 +82,7 @@ export class FilterService {
 
   constructor(private stateService: StateService) {
     if (this.persistState) {
+      stateService.filter.loadSafe();
       const state = stateService.filter.state;
       this.keepFilters = state.keep;
       this.shunFilters = state.shun;

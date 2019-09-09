@@ -69,7 +69,8 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     const id = this.searchFilter.id;
     this.searchFilter = FilterGenerator.startsWith(term, id);
     this.stateService.search.state = this.searchFilter;
-    if (term) {
+    // remove filter, if term is empty
+    if (term !== '') {
       this.filterService.set(this.searchFilter);
     } else {
       this.filterService.remove(this.searchFilter);

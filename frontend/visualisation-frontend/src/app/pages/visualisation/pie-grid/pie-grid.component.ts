@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { PageEvent, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
 import { SortState } from 'src/app/components/filters/sort-filter/sort';
 import { Extraction, ExtractionGroup, FacetType, FacetTypes, ExtractionProperty, Model } from 'src/app/models/canonical';
 import { SentimentCount } from 'src/app/models/sentiment';
@@ -45,22 +45,22 @@ class PieExtractionGroup implements ExtractionGroup {
 })
 export class PieGridComponent implements OnInit, OnDestroy {
 
-  private breadCrumbPaths = [
-    { name: 'Statistics', path: ['/stats'], queryParams: {} },
-    { name: this.facetType + 's', path: ['/vis/pie'], queryParams: {} }
-  ];
-
-
-  private facetGroups: PieExtractionGroup[];
-  private sortedFacetGroups: PieExtractionGroup[];
-  private searchedFacetGroups: PieExtractionGroup[];
+  private facetGroups: ExtractionGroup[];
+  private sortedFacetGroups: ExtractionGroup[];
+  private searchedFacetGroups: ExtractionGroup[];
   private displayedFacetGroups: PieExtractionGroup[];
-
   private subscription = new Subscription();
+  private totalExtractionCount: number;
 
   private _pageConfig: PaginatorConfig;
   private _facetType: FacetType;
 
+  private get breadCrumbPaths() {
+    return [
+      { name: 'Statistics', path: ['/stats'], queryParams: {} },
+      { name: this.facetType + 's', path: ['/vis/pie'], queryParams: {} }
+    ];
+  }
   private get pageSizes() {
     return this._pageConfig.pageSizes;
   }
@@ -79,107 +79,116 @@ export class PieGridComponent implements OnInit, OnDestroy {
   private set currentPageIndex(index) {
     this._pageConfig.pageIndex = index;
   }
-  private get currentLength() {
+  private get groupCount() {
     return this._pageConfig.length;
   }
-  private set currentLength(length) {
+  private set groupCount(length) {
     this._pageConfig.length = length;
   }
-
-  get pageConfig() {
-    return this._pageConfig;
-  }
-
-  get facetType(): FacetType {
-    return this._facetType;
-  }
-  @Input()
-  set facetType(type: FacetType) {
-    this._facetType = type;
-    this.stateService.facetType.state = type;
-  }
-
-  get subGroupType(): FacetType {
-    return FacetTypes.other(this.facetType);
-  }
-
-  get isAspect(): boolean {
-    return this.facetType === FacetTypes.Aspect;
-  }
-
-  @Input() scaleSize = true;
-
-  @ViewChild('searchReference') searchReference: SearchFilterComponent;
-
   private get model(): Model {
     return this.stateService.model.state;
   }
 
+  public get pageConfig() {
+    return this._pageConfig;
+  }
+  public get facetType(): FacetType {
+    return this._facetType;
+  }
+
+  @Input()
+  public set facetType(type: FacetType) {
+    this._facetType = type;
+    this.stateService.facetType.state = type;
+  }
+  public get subGroupType(): FacetType {
+    return FacetTypes.other(this.facetType);
+  }
+  public get isAspect(): boolean {
+    return this.facetType === FacetTypes.Aspect;
+  }
+  /**
+   * Whether the size of displayed facet groups should depend on their mention count.
+   */
+  @Input()
+  public scaleSize = true;
+  @ViewChild('searchReference')
+  public searchReference: SearchFilterComponent;
+
+
   constructor(private stateService: StateService, private router: Router, private route: ActivatedRoute, private snackBar: MatSnackBar, private filterService: FilterService) {
-    const facetManager = this.stateService.facetType;
-    this.facetType = facetManager.hasState ? facetManager.state : FacetTypes.Aspect;
-    this.filterService.filteredDataChange.subscribe(group => console.log(group.length));
-    this._pageConfig = this.stateService.visPaginator;
   }
 
   ngOnInit() {
-    this.update();
-    const urlSubscription = this.route.url.subscribe(
-      url => {
+    // retrieve info from stateService
+    const facetManager = this.stateService.facetType;
+    this.facetType = facetManager.hasState ? facetManager.state : FacetTypes.Aspect;
+    this._pageConfig = this.stateService.visPaginator;
+    // debugging output
+    const debug = this.filterService.filteredDataChange.subscribe(group => {
+      console.log(group.length);
+      console.log(this.filterService.filteredData.length);
+    });
+
+    // set up url for detail page return.
+    const urlSubscription = combineLatest(this.route.url, this.route.params).subscribe(
+      ([url, params]) => {
         const path = ['/vis/' + url.join('/')];
-        const state = this.stateService.lastPage.state;
-        this.stateService.lastPage.state = {...state, url: path };
-      }
-    );
-    const paramSubScription = this.route.params.subscribe(
-      params => {
-        const state = this.stateService.lastPage.state;
-        this.stateService.lastPage.state = {...state, queryParams: params };
-      }
-    );
-    this.subscription.add(urlSubscription);
-    this.subscription.add(paramSubScription);
+        this.stateService.lastPage.state = { url: path, queryParams: params };
+    });
+    this.subscription = urlSubscription;
+    this.subscription.add(debug);
+
+    this.initialize();
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
 
-  public update() {
-    const model = this.stateService.model.state;
-    const extractions = model.extractions;
+  /**
+   * Performs a full initialization.
+   * Updates the model, and all related values.
+   */
+  public initialize() {
+    const extractions = this.model.extractions;
     const groups = this.stateService.model.state.getGroupsFor(this.facetType);
-    this.facetGroups = groups.map(this.toPieGroup(extractions.length));
+
+    this.totalExtractionCount = extractions.length;
     this.filterService.data = groups;
+    this.facetGroups = groups;
     this.sortedFacetGroups = this.facetGroups.slice();
     this.searchedFacetGroups = this.facetGroups.slice();
-    console.log(this.searchedFacetGroups.length);
-    this.currentLength = this.facetGroups.length;
+    this.groupCount = this.facetGroups.length;
 
     this.updateDisplayedFacetGroups();
   }
 
+  public updatePaginator(event: PageEvent) {
+    this.currentPageIndex = event.pageIndex;
+    this.currentPageSize = event.pageSize;
+    this.groupCount = event.length;
+    this.updateDisplayedFacetGroups();
+  }
+
+  private updateDisplayedFacetGroups() {
+    // calculate indices to display
+    const start = this.currentPageIndex * this.currentPageSize;
+    const end = (this.currentPageIndex + 1) * this.currentPageSize;
+    const toPieGroup = this.toPieGroup(this.totalExtractionCount);
+    this.displayedFacetGroups = this.sortedFacetGroups
+      .filter(value => this.searchedFacetGroups.findIndex((group) => group.id === value.id) !== -1)
+      .slice(start, end)
+      .map(toPieGroup);
+  }
+
   private toPieGroup(scalingValue?: number) {
+    // ignore scaling if scale size is false
     if (this.scaleSize) {
       return (group: ExtractionGroup) => PieExtractionGroup.fromGroup(group, scalingValue);
     } else {
       return PieExtractionGroup.fromGroup;
     }
-  }
-
-  public updatePage(event: PageEvent) {
-    this.currentPageIndex = event.pageIndex;
-    this.currentPageSize = event.pageSize;
-    this.currentLength = event.length;
-    this.updateDisplayedFacetGroups();
-  }
-
-  private updateDisplayedFacetGroups() {
-    const start = this.currentPageIndex * this.currentPageSize;
-    const end = (this.currentPageIndex + 1) * this.currentPageSize;
-    this.displayedFacetGroups = this.sortedFacetGroups
-      .filter(value => this.searchedFacetGroups.findIndex((group) => group.id === value.id) !== -1)
-      .slice(start, end);
   }
 
   public navigateToDetailPage(facet: string, facetType: FacetType) {
@@ -189,9 +198,8 @@ export class PieGridComponent implements OnInit, OnDestroy {
   public toggleTypes() {
     this.stateService.search.reset();
     this.facetType = FacetTypes.other(this.facetType);
-    this.breadCrumbPaths[this.breadCrumbPaths.length - 1].name = this.facetType + 's';
     this.searchReference.clearSearch();
-    this.update();
+    this.initialize();
   }
 
   public onSort($event: PieExtractionGroup[]) {
@@ -199,9 +207,9 @@ export class PieGridComponent implements OnInit, OnDestroy {
     this.updateDisplayedFacetGroups();
   }
 
-  public onSearch($event: PieExtractionGroup[]) {
+  public onSearch(searchTerm: string) {
     this.searchedFacetGroups = this.filterService.filteredData.map(this.toPieGroup(this.stateService.model.state.extractions.length));
-    this.updatePage({ pageIndex: 0, pageSize: this.currentPageSize, length: this.searchedFacetGroups.length });
+    this.updatePaginator({ pageIndex: 0, pageSize: this.currentPageSize, length: this.searchedFacetGroups.length });
   }
 
   public onSortStateChange(state: SortState) {
@@ -220,13 +228,13 @@ export class PieGridComponent implements OnInit, OnDestroy {
     }
     console.log(`${receiver.name} gobbled up ${mergee.name}`);
     this.model.merge(receiver, mergee).map(this.toPieGroup(this.model.extractions.length));
-    this.update();
+    this.initialize();
     const snackRef = this.snackBar.open(`Merged '${mergee.name}' into '${receiver.name}'`, 'undo', { duration: 5000 });
     snackRef.onAction()
       .subscribe(() => {
         console.log(`disentangling ${mergee.name} from ${receiver.name}`);
         this.model.split(receiver, mergee);
-        this.update();
+        this.initialize();
       });
   }
 }

@@ -59,11 +59,11 @@
       </div>
     </div>
     <mat-paginator
-      [length]="currentLength"
+      [length]="groupCount"
       [pageIndex]="currentPageIndex"
       [pageSize]="currentPageSize"
       [pageSizeOptions]="pageSizes"
-      (page)=updatePage($event)>
+      (page)=updatePaginator($event)>
     </mat-paginator>
   </mat-card-content>
 </mat-card>
