@@ -115,7 +115,6 @@ export class PieGridComponent implements OnInit, OnDestroy {
   @ViewChild('searchReference')
   public searchReference: SearchFilterComponent;
 
-
   constructor(private stateService: StateService, private router: Router, private route: ActivatedRoute, private snackBar: MatSnackBar, private filterService: FilterService) {
   }
 
@@ -124,11 +123,8 @@ export class PieGridComponent implements OnInit, OnDestroy {
     const facetManager = this.stateService.facetType;
     this.facetType = facetManager.hasState ? facetManager.state : FacetTypes.Aspect;
     this._pageConfig = this.stateService.visPaginator;
-    // debugging output
-    const debug = this.filterService.filteredDataChange.subscribe(group => {
-      console.log(group.length);
-      console.log(this.filterService.filteredData.length);
-    });
+
+    this.initialize();
 
     // set up url for detail page return.
     const urlSubscription = combineLatest(this.route.url, this.route.params).subscribe(
@@ -136,10 +132,12 @@ export class PieGridComponent implements OnInit, OnDestroy {
         const path = ['/vis/' + url.join('/')];
         this.stateService.lastPage.state = { url: path, queryParams: params };
     });
-    this.subscription = urlSubscription;
-    this.subscription.add(debug);
-
-    this.initialize();
+    // set up auto update when new sorted values arrive
+    const filterSubscription = this.filterService.filteredDataChange.subscribe(
+      filtered => this.onFilter(filtered)
+    );
+    this.subscription.add(urlSubscription);
+    this.subscription.add(filterSubscription);
   }
 
   ngOnDestroy() {
@@ -207,8 +205,8 @@ export class PieGridComponent implements OnInit, OnDestroy {
     this.updateDisplayedFacetGroups();
   }
 
-  public onSearch(searchTerm: string) {
-    this.searchedFacetGroups = this.filterService.filteredData.map(this.toPieGroup(this.stateService.model.state.extractions.length));
+  public onFilter(filtered: ExtractionGroup[]) {
+    this.searchedFacetGroups = filtered;
     this.updatePaginator({ pageIndex: 0, pageSize: this.currentPageSize, length: this.searchedFacetGroups.length });
   }
 

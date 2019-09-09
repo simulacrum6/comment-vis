@@ -21,9 +21,7 @@
       <!-- Search, Sort and Filter -->
       <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
         <div>
-          <app-search-filter #searchReference
-            [filterService]="filterService"
-            (searchTermChange)="onSearch($event)">
+          <app-search-filter #searchReference [filterService]="filterService">
           </app-search-filter>
         </div>
         <div>
