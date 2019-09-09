@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ChartDataSets, ChartOptions, ChartType} from 'chart.js';
-import { Extraction, Model, ExtractionProperty, ExtractionGroup, sentimentDifferential} from '../../models/canonical';
+import {Extraction, Model, ExtractionProperty, ExtractionGroup, sentimentDifferential, FacetType} from '../../models/canonical';
 import { getMixedWeightedSentimentColor } from '../../models/sentiment';
 import { default as Color } from 'color';
 import { StateService } from 'src/app/services/state.service';
@@ -70,22 +70,12 @@ export class EmbeddingsComponent implements OnInit {
       zoom: {
         pan: {
           enabled: true,
-          mode: 'xy',
-          onPan: function({chart}) { console.log(`I'm panning!!!`); },
-          onPanComplete: function({chart}) { console.log(`I was panned!!!`); }
+          mode: 'xy'
         },
         zoom: {
           enabled: true,
           drag: false,
           mode: 'xy',
-          rangeMin: {
-            x: 0,
-            y: 0
-          },
-          rangeMax: {
-            x: null,
-            y: null
-          },
           speed: 0.1,
         }
       }
@@ -123,7 +113,21 @@ export class EmbeddingsComponent implements OnInit {
   }
 
   // TODO: What should happen here
-  handleBubbleClick(event: any) {}
+  handleBubbleClick(event: any) {
+    if (event.active.length > 0) {
+      const chart = event.active[0]._chart;
+      const activePoints = chart.getElementAtEvent(event.event);
+      if (activePoints.length > 0) {
+        const clickedElementIndex = activePoints[0]._datasetIndex;
+        const label = chart.data.datasets[clickedElementIndex].label;
+        this.navigateToDetailPage(label, this.stateService.facetType.state);
+      }
+    }
+  }
+
+  private navigateToDetailPage(facet: string, facetType: FacetType) {
+    this.router.navigate(['/detail'], { queryParams: { facet, facetType } });
+  }
 }
 
 class Bubble {
