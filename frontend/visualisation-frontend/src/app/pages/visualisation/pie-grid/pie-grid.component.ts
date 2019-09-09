@@ -9,6 +9,8 @@ import { StateService } from 'src/app/services/state.service';
 import { SearchFilterComponent } from '../../../components/filters/search-filter/search-filter.component';
 import { PaginatorConfig } from 'src/app/models/utils';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { FilterService } from 'src/app/services/filter.service';
+import { FilterGenerator } from 'src/app/services/filter';
 
 
 class PieExtractionGroup implements ExtractionGroup {
@@ -113,11 +115,10 @@ export class PieGridComponent implements OnInit, OnDestroy {
     return this.stateService.model.state;
   }
 
-  constructor(private stateService: StateService, private router: Router, private route: ActivatedRoute, private snackBar: MatSnackBar) {
+  constructor(private stateService: StateService, private router: Router, private route: ActivatedRoute, private snackBar: MatSnackBar, private filterService: FilterService) {
     const facetManager = this.stateService.facetType;
     this.facetType = facetManager.hasState ? facetManager.state : FacetTypes.Aspect;
-    console.log(this.stateService.visPaginator.read())
-    console.log(this.stateService.visPaginator.state)
+    this.filterService.filteredDataChange.subscribe(group => console.log(group.length));
     this._pageConfig = this.stateService.visPaginator;
   }
 
@@ -147,10 +148,12 @@ export class PieGridComponent implements OnInit, OnDestroy {
   public update() {
     const model = this.stateService.model.state;
     const extractions = model.extractions;
-    this.facetGroups = this.stateService.model.state.getGroupsFor(this.facetType)
-      .map(this.toPieGroup(extractions.length));
+    const groups = this.stateService.model.state.getGroupsFor(this.facetType);
+    this.facetGroups = groups.map(this.toPieGroup(extractions.length));
+    this.filterService.data = groups;
     this.sortedFacetGroups = this.facetGroups.slice();
     this.searchedFacetGroups = this.facetGroups.slice();
+    console.log(this.searchedFacetGroups.length);
     this.currentLength = this.facetGroups.length;
 
     this.updateDisplayedFacetGroups();
@@ -174,7 +177,9 @@ export class PieGridComponent implements OnInit, OnDestroy {
   private updateDisplayedFacetGroups() {
     const start = this.currentPageIndex * this.currentPageSize;
     const end = (this.currentPageIndex + 1) * this.currentPageSize;
-    this.displayedFacetGroups = this.sortedFacetGroups.filter(value => this.searchedFacetGroups.indexOf(value) !== -1).slice(start, end);
+    this.displayedFacetGroups = this.sortedFacetGroups
+      .filter(value => this.searchedFacetGroups.findIndex((group) => group.id === value.id) !== -1)
+      .slice(start, end);
   }
 
   public navigateToDetailPage(facet: string, facetType: FacetType) {
@@ -195,7 +200,7 @@ export class PieGridComponent implements OnInit, OnDestroy {
   }
 
   public onSearch($event: PieExtractionGroup[]) {
-    this.searchedFacetGroups = $event;
+    this.searchedFacetGroups = this.filterService.filteredData.map(this.toPieGroup(this.stateService.model.state.extractions.length));
     this.updatePage({ pageIndex: 0, pageSize: this.currentPageSize, length: this.searchedFacetGroups.length });
   }
 

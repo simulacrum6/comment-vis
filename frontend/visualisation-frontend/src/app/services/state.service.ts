@@ -6,6 +6,8 @@ import { ModelStateManager } from './state-manager/model-state-manager';
 import { PaginatorStateManager } from './state-manager/paginator-state-manager';
 import { SortStateManager } from './state-manager/sort-state-manager';
 import { StateManager } from './state-manager/state-manager';
+import { FilterOption, FilterGenerator } from './filter';
+import { FilterOptionStateManager } from './state-manager/filter-option-state-manager';
 
 const stats: SimpleRoute = { url: ['/stats/'], queryParams: {} };
 
@@ -19,7 +21,7 @@ export class StateService {
   private managers: StateManager<any>[];
 
   public sort: SortStateManager = new SortStateManager();
-  public search: StateManager<string> = new StateManager('search', '');
+  public search: FilterOptionStateManager = new FilterOptionStateManager('search', FilterGenerator.startsWith(''));
   public model: ModelStateManager = new ModelStateManager();
   public facetType: StateManager<FacetType> = new StateManager('facet_type', FacetTypes.Aspect);
   public lastPage: StateManager<SimpleRoute> = new StateManager('last_non_detail_page', stats);
@@ -27,7 +29,15 @@ export class StateService {
   public filter: FilterServiceStateManager = new FilterServiceStateManager();
 
   constructor() {
-    this.managers = [ this.sort, this.search, this.model, this.facetType, this.lastPage, this.visPaginator, this.filter ];
+    this.managers = [
+      this.sort,
+      this.search,
+      this.model,
+      this.facetType,
+      this.lastPage,
+      this.visPaginator,
+      this.filter
+    ];
   }
 
   clear() {

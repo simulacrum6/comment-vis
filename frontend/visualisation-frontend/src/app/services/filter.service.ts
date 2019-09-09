@@ -34,6 +34,10 @@ export class FilterService {
    */
   public filterAfterChange = true;
   /**
+   * Determines whether the state should be stored.
+   */
+  public persistState = true;
+  /**
    * The data to be filtered.
    */
   public set data(groups: ExtractionGroup[]) {
@@ -51,6 +55,9 @@ export class FilterService {
       this._filteredData.next(this.applyFilters());
     }
     return this._filteredData.getValue();
+  }
+  public get activeFilters() {
+    return { keeps: this.keepFilters, shuns: this.shunFilters };
   }
   /**
    * Function to be applied to each ExtractionGroup in data.
@@ -74,11 +81,14 @@ export class FilterService {
   }
 
   constructor(private stateService: StateService) {
-    stateService.loadSafe();
-    const state = stateService.filter.state;
-    this.keepFilters = state.keep;
-    this.shunFilters = state.shun;
-    this.filterAfterChange = state.filterAfterChange;
+    if (this.persistState) {
+      const state = stateService.filter.state;
+      this.keepFilters = state.keep;
+      this.shunFilters = state.shun;
+      this.filterAfterChange = state.filterAfterChange;
+    } else {
+      this.clearFilters();
+    }
     this.onChange();
     console.log(this.state);
   }
@@ -89,6 +99,20 @@ export class FilterService {
       return;
     }
     this.getFilterOptions(type).push(option);
+    this.onChange();
+  }
+  public set(option: FilterOption, type: FilterType = 'shun') {
+    const index = this.findIndex(option, type);
+    if (index === -1) {
+      this.getFilterOptions(type).push(option);
+    } else {
+      const oldOpt = this.getFilterOptions(type)[index];
+      if (oldOpt.value === option.value && oldOpt.name === option.value) {
+        console.log(`options were identical. ignoring call.`)
+        return;
+      }
+      this.getFilterOptions(type)[index] = option;
+    }
     this.onChange();
   }
   public remove(option: FilterOption, type: FilterType = 'shun') {
@@ -120,9 +144,8 @@ export class FilterService {
    * Returns -1 if combination is not part of the active filters.
    */
   private findIndex(option: FilterOption, type: FilterType = 'shun'): number {
-    const finder = (other: FilterOption) => (other.id === option.id);
     const options = this.getFilterOptions(type);
-    return options.findIndex(finder);
+    return options.findIndex((other: FilterOption) => other.id === option.id);
   }
   /**
    * Applies all active filter functions to the given group.
@@ -141,6 +164,8 @@ export class FilterService {
     if (this.filterAfterChange) {
       this._filteredData.next(this.applyFilters());
     }
-    this.stateService.filter.state = this.state;
+    if (this.persistState) {
+      this.stateService.filter.state = this.state;
+    }
   }
 }

@@ -22,9 +22,8 @@
       <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
         <div>
           <app-search-filter #searchReference
-            [data]="facetGroups"
-            [(searchTerm)]="stateService.search.state"
-            (searchResults)="onSearch($event)">
+            [filterService]="filterService"
+            (searchTermChange)="onSearch($event)">
           </app-search-filter>
         </div>
         <div>

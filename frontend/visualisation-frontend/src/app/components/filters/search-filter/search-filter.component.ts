@@ -3,19 +3,9 @@ import { FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { debounceTime, map, mapTo } from 'rxjs/internal/operators';
 import { ExtractionGroup } from 'src/app/models/canonical';
-
-
-function mapToName(value: ExtractionGroup | string, index: number, fallback = ''): string {
-  if (value === null) {
-    return fallback;
-  }
-
-  if (typeof value === 'string') {
-    return value;
-  }
-
-  return value.name;
-}
+import { FilterGenerator, FilterOption } from 'src/app/services/filter';
+import { FilterService } from 'src/app/services/filter.service';
+import { StateService } from 'src/app/services/state.service';
 
 @Component({
   selector: 'app-search-filter',
@@ -23,46 +13,47 @@ function mapToName(value: ExtractionGroup | string, index: number, fallback = ''
   styleUrls: ['./search-filter.component.scss']
 })
 export class SearchFilterComponent implements OnInit, OnDestroy {
-  /**
-   * The input data which will be filtered
-   */
-  @Input() data: ExtractionGroup[];
-
-  get searchTerm(): string {
-    return this._term;
-  }
-  @Input() set searchTerm(term: string) {
-    this._term = term;
-  }
-
-  @Output() searchTermChange: EventEmitter<string> = new EventEmitter();
 
   /**
-   * Emits filtered data that meet the search criteria.
+   * The filterService connected to the component.
    */
-  @Output() searchResults: EventEmitter<ExtractionGroup[]> = new EventEmitter();
+  @Input()
+  public filterService: FilterService;
+  /**
+   * The current search term, displayed by the component.
+   */
+  public get searchTerm(): string {
+    return this.searchFilter.value;
+  }
+  @Input()
+  public set searchTerm(term: string) {
+    this.searchFilter.value = term;
+    this.searchTermChange.emit(term);
+  }
+  @Output()
+  public searchTermChange: EventEmitter<string> = new EventEmitter();
 
-  private _term;
   private inputForm = new FormControl('');
   private subscription: Subscription = new Subscription();
+  private searchFilter = FilterGenerator.startsWith('');
 
-  constructor() {
-    const searchTermChange = this.inputForm.valueChanges.pipe(
-      debounceTime(200),
-      map(mapToName)
-    );
-    const searchResults = searchTermChange.pipe(
-      map(name => this.data.filter(extractionGroup => extractionGroup.name.toLowerCase().startsWith(name.toLowerCase())))
-    );
-
-    const searchTermSubscription = searchTermChange.subscribe(this.searchTermChange);
-    const searchResultSubscription = searchResults.subscribe(this.searchResults);
-    this.subscription.add(searchResultSubscription);
-    this.subscription.add(searchTermSubscription);
-  }
+  constructor(private stateService: StateService) {}
 
   ngOnInit() {
+    if (this.stateService.search.hasState) {
+      this.searchFilter = this.stateService.search.state;
+    }
+    if (this.searchTerm) {
+      this.filterService.set(this.searchFilter);
+    }
     this.inputForm.setValue(this.searchTerm);
+    const searchTermChange = this.inputForm.valueChanges.pipe(
+      debounceTime(200),
+      map(this.getAutocompleteUIOutput)
+    );
+    const searchTermSubscription = searchTermChange.subscribe(term => this.onSearchTermChange(term));
+    this.subscription = searchTermSubscription;
+
   }
 
   ngOnDestroy() {
@@ -71,6 +62,18 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
 
   clearSearch() {
     this.inputForm.reset();
+  }
+
+  private onSearchTermChange(term: string) {
+    this.searchTermChange.emit(term);
+    const id = this.searchFilter.id;
+    this.searchFilter = FilterGenerator.startsWith(term, id);
+    this.stateService.search.state = this.searchFilter;
+    if (term) {
+      this.filterService.set(this.searchFilter);
+    } else {
+      this.filterService.remove(this.searchFilter);
+    }
   }
 
   private getAutocompleteUIOutput(selectedOption: ExtractionGroup | string): string {
