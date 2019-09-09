@@ -8,6 +8,10 @@ export interface FilterServiceState {
   }
 
 export class FilterServiceStateManager extends StateManager<FilterServiceState> {
+    get defaultValue(): FilterServiceState {
+        return {...this._defaultValue};
+    }
+
     constructor() {
         super('filter_service', { keep: [], shun: [], filterAfterChange: true });
         this.deserializer = (stored: string) => {

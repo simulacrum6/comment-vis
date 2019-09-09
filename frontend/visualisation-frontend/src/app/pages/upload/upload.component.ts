@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Model } from 'src/app/models/canonical';
 import { DemoModel, DemoModels } from 'src/app/models/demo';
 import { StateService } from 'src/app/services/state.service';
+import { FilterGenerator } from 'src/app/services/filter';
+import { FilterService } from 'src/app/services/filter.service';
 
 @Component({
   selector: 'app-upload',
@@ -34,7 +36,7 @@ export class UploadComponent implements OnInit {
     this.noDatasetSelected = false;
   }
 
-  constructor(private router: Router, private ar: ActivatedRoute, private stateService: StateService) {
+  constructor(private router: Router, private ar: ActivatedRoute, private stateService: StateService, private filterService: FilterService) {
     this.stateService.loadSafe();
   }
 
@@ -47,6 +49,7 @@ export class UploadComponent implements OnInit {
     }
 
     this.stateService.clear();
+    this.filterService.clearFilters(); // TODO: buggy, find out why
     this.stateService.model.state = this.model;
     this.router.navigate(['stats']);
   }
