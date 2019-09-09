@@ -10,7 +10,7 @@
                type="file"
                id="file"
                accept="application/json"
-               (change)="handleFileInput($event.target.files)">
+               (change)="handleFileUpload($event.target.files)">
       </div>
       <span *ngIf="uploadedInvalidDataset" class="light" matTooltip="Uploaded invalid Dataset.">Uploaded invalid Dataset.</span>
     </div>
@@ -21,7 +21,7 @@
       <h3>Or choose an existing Dataset</h3>
       <mat-form-field class="existing_dataset_form">
         <mat-label>Choose</mat-label>
-        <mat-select (selectionChange)="dataset = $event">
+        <mat-select [(ngModel)]="demoValue" (selectionChange)="resetUpload()">
           <mat-option *ngFor="let demo of demoDatasets"
                       [value]="demo.value">
             {{ demo.viewValue }}
