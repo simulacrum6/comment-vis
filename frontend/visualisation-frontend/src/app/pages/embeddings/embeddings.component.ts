@@ -29,7 +29,9 @@ export class EmbeddingsComponent implements OnInit {
       intersect: true,
       callbacks: {
         label: (tooltipItem, data) => {
-          return data.datasets[tooltipItem.datasetIndex].label || '';
+          const label = data.datasets[tooltipItem.datasetIndex].label || '';
+          const size = Math.round(data.datasets[tooltipItem.datasetIndex].data[0].r);
+          return `${label}: ${size}`;
         }
       }
     },
