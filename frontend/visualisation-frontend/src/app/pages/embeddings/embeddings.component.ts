@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ChartDataSets, ChartOptions, ChartType} from 'chart.js';
+import { ChartDataSets, ChartOptions, ChartType, ChartPoint} from 'chart.js';
 import {Extraction, Model, ExtractionProperty, ExtractionGroup, sentimentDifferential, FacetType} from '../../models/canonical';
-import { getMixedWeightedSentimentColor } from '../../models/sentiment';
+import { getMixedWeightedSentimentColor, controversy } from '../../models/sentiment';
 import { default as Color } from 'color';
 import { StateService } from 'src/app/services/state.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import 'chartjs-plugin-zoom';
+import { Subscription, combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-embeddings',
@@ -14,15 +15,14 @@ import 'chartjs-plugin-zoom';
 })
 export class EmbeddingsComponent implements OnInit {
 
+  private urlSub: Subscription;
   private model: Model;
   private type: ExtractionProperty;
   private bubbles: Bubble[];
   private chartData: ChartDataSets[] = [];
   private chartType: ChartType = 'bubble';
   private chartOptions: ChartOptions = {
-    legend: {
-      display: false
-    },
+    legend: { display: false },
     responsive: true,
     tooltips: {
       mode: 'point',
@@ -30,63 +30,42 @@ export class EmbeddingsComponent implements OnInit {
       callbacks: {
         label: (tooltipItem, data) => {
           const label = data.datasets[tooltipItem.datasetIndex].label || '';
-          const size = Math.round(data.datasets[tooltipItem.datasetIndex].data[0].r);
+          const chartPoint = data.datasets[tooltipItem.datasetIndex].data[0] as ChartPoint;
+          const size = Math.round(chartPoint.r);
           return `${label}: ${size}`;
         }
       }
     },
     scales: {
       xAxes: [{
-        ticks: {
-          beginAtZero: true,
-          min: 0,
-          max: 100,
-          display: false
-        },
-        gridLines: {
-          display: false
-        }
+        ticks: { beginAtZero: true, min: 0, max: 100, display: false },
+        gridLines: { display: false }
       }],
       yAxes: [{
-        ticks: {
-          beginAtZero: true,
-          min: 0,
-          max: 100,
-          display: false
-        },
-        gridLines: {
-          display: false
-        }
+        ticks: { beginAtZero: true, min: 0, max: 100, display: false },
+        gridLines: { display: false }
       }]
     },
     layout: {
       // Padding so values on the edge are not easily cut off
-      padding: {
-        left: 20,
-        right: 20,
-        top: 20,
-        bottom: 20
-      }
+      padding: { left: 20, right: 20, top: 20, bottom: 20 }
     },
     plugins: {
       zoom: {
-        pan: {
-          enabled: true,
-          mode: 'xy'
-        },
-        zoom: {
-          enabled: true,
-          drag: false,
-          mode: 'xy',
-          speed: 0.1,
-        }
+        pan: { enabled: true, mode: 'xy' },
+        zoom: { enabled: true, drag: false, mode: 'xy', speed: 0.1, }
       }
     }
   };
 
-
-  constructor(private stateService: StateService, private router: Router) {
+  constructor(private stateService: StateService, private router: Router, private route: ActivatedRoute) {
     stateService.loadSafe();
+    // set up url for return from detail page.
+    this.urlSub = combineLatest(this.route.url, this.route.params).subscribe(
+      ([url, params]) => {
+        const path = ['/vis/' + url.join('/')];
+        this.stateService.lastPage.state = { url: path, queryParams: params };
+    });
   }
 
   ngOnInit() {
@@ -94,7 +73,13 @@ export class EmbeddingsComponent implements OnInit {
     this.type = this.stateService.facetType.state;
     const groups = this.model.getGroupsFor(this.type);
     const occurences = this.model.extractions.length;
-    this.bubbles = groups.map(group => Bubble.fromExtractionGroup(group, occurences));
+    const occurencePercentage = (group: ExtractionGroup) => group.extractions.length / occurences;
+    // alternative sizing functions.
+    const positive = (g: ExtractionGroup) => sentimentDifferential(g.extractions) / 750;
+    const clear = (g: ExtractionGroup) => Math.abs(positive(g)) * 3;
+    const clearMinimumCount = (g: ExtractionGroup) => g.extractions.length > 3 ? clear(g) : 0;
+    const controversial = (g: ExtractionGroup) => controversy(g.sentimentCount) / 1000;
+    this.bubbles = groups.map(group => Bubble.fromExtractionGroup(group, controversial));
 
     this.bubbles.forEach(bubble => {
       const dataset: any = {};
@@ -110,8 +95,6 @@ export class EmbeddingsComponent implements OnInit {
       dataset.hoverBorderColor = color.alpha(0.8).toString();
       this.chartData.push(dataset);
     });
-
-    console.log(this.chartData);
   }
 
   // TODO: What should happen here
@@ -133,7 +116,6 @@ export class EmbeddingsComponent implements OnInit {
 }
 
 class Bubble {
-
   private static readonly minimumSize = 2;
   private static readonly scalingFactor = Bubble.minimumSize * 100;
 
@@ -163,13 +145,14 @@ class Bubble {
 
   /**
    * Generates Bubble with random coordinate from ExtractionGroup.
+   * @param group the group to convert to a bubble.
+   * @param valueMapper maps group to a value, representing the size of the Bubble.
    */
-  public static fromExtractionGroup(group: ExtractionGroup, totalNumExtractions: number) {
+  public static fromExtractionGroup(group: ExtractionGroup, valueMapper: (g: ExtractionGroup) => number) {
     const x = Math.random() * 100;
     const y = Math.random() * 100;
-    const relativeSize = group.extractions.length / totalNumExtractions;
-    const size = Bubble.scale(relativeSize);
-    console.log(size);
+    const value = valueMapper(group);
+    const size = Bubble.scale(value);
     const name = group.name;
     const ratio = sentimentDifferential(group.extractions);
     return new Bubble(x, y, size, name, ratio);
