@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {ChartDataSets, ChartOptions, ChartType} from 'chart.js';
-import {Extraction, Model, ExtractionProperty, ExtractionGroup, sentimentDifferential} from '../../models/canonical';
-import {getMixedWeightedSentimentColor, controversy} from '../../models/sentiment';
+import { ChartDataSets, ChartOptions, ChartType} from 'chart.js';
+import { Extraction, Model, ExtractionProperty, ExtractionGroup, sentimentDifferential} from '../../models/canonical';
+import { getMixedWeightedSentimentColor } from '../../models/sentiment';
 import { default as Color } from 'color';
 import { StateService } from 'src/app/services/state.service';
 import { Router } from '@angular/router';
+import 'chartjs-plugin-zoom';
 
 @Component({
   selector: 'app-embeddings',
@@ -22,6 +23,7 @@ export class EmbeddingsComponent implements OnInit {
     legend: {
       display: false
     },
+    responsive: true,
     tooltips: {
       mode: 'point',
       intersect: true,
@@ -38,6 +40,9 @@ export class EmbeddingsComponent implements OnInit {
           min: 0,
           max: 100,
           display: false
+        },
+        gridLines: {
+          display: false
         }
       }],
       yAxes: [{
@@ -45,6 +50,9 @@ export class EmbeddingsComponent implements OnInit {
           beginAtZero: true,
           min: 0,
           max: 100,
+          display: false
+        },
+        gridLines: {
           display: false
         }
       }]
@@ -56,6 +64,30 @@ export class EmbeddingsComponent implements OnInit {
         right: 20,
         top: 20,
         bottom: 20
+      }
+    },
+    plugins: {
+      zoom: {
+        pan: {
+          enabled: true,
+          mode: 'xy',
+          onPan: function({chart}) { console.log(`I'm panning!!!`); },
+          onPanComplete: function({chart}) { console.log(`I was panned!!!`); }
+        },
+        zoom: {
+          enabled: true,
+          drag: false,
+          mode: 'xy',
+          rangeMin: {
+            x: 0,
+            y: 0
+          },
+          rangeMax: {
+            x: null,
+            y: null
+          },
+          speed: 0.1,
+        }
       }
     }
   };
