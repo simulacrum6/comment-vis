@@ -37,7 +37,8 @@ export class EmbeddingsComponent implements OnInit, OnDestroy {
     dragData: true,
     dragX: true,
     onDragStart: this.onDragStart,
-    onDragEnd: this.onDragEnd,
+    onDrag: this.onDrag,
+    onDragEnd: this.onDragEnd.bind(this),
     tooltips: {
       mode: 'point',
       intersect: true,
@@ -73,6 +74,7 @@ export class EmbeddingsComponent implements OnInit, OnDestroy {
   };
   private chartData: ChartDataSets[] = [];
   private dragState: DragState = new DragState();
+  private copyPoints: ChartPoint[] = []
 
   private get chart(): Chart {
     return this.chartDirective.chart;
@@ -150,6 +152,9 @@ export class EmbeddingsComponent implements OnInit, OnDestroy {
       dataset.hoverBorderColor = color.alpha(0.8).toString();
       return dataset;
     });
+    this.copyPoints = this.chartData
+      .map(ds => ds.data[0] as ChartPoint)
+      .map((dp: ChartPoint) => ({...dp}));
   }
 
   private get onDragStart() {
@@ -159,26 +164,36 @@ export class EmbeddingsComponent implements OnInit, OnDestroy {
     };
   }
 
-  private get onDragEnd() {
+  private get onDrag() {
     return (event: MouseEvent, datasetIndex: number, index: number, value: any) => {
-      // get ratios for conversion
       const widthRatio = this.dragState.element._chart.canvas.width / EmbeddingsComponent.ScaleMax;
       const heigthRatio = this.dragState.element._chart.canvas.height / EmbeddingsComponent.ScaleMax;
 
-      // find intersecting groups
-      const group = this.groups[datasetIndex];
-      const interSectingGroups = this.dragState
-        .findIntersectingPoints(widthRatio, heigthRatio)
-        .filter(i => i !== datasetIndex && i > -1)
-        .map(i => this.groups[i]);
+      const intersected = this.dragState.findIntersectingPoints(widthRatio, heigthRatio)[0];
+      this.chart.data.datasets.forEach((ds, i) => {
+        const copy = this.copyPoints[i];
+        ds.data[0] = i === intersected ? {...copy, r: copy.r * 1.5 } : copy;
+      });
+    };
+  }
+
+  private get onDragEnd() {
+    return (event: MouseEvent, datasetIndex: number, index: number, value: any) => {
+      if (this.dragState.intersected.length === 0) {
+        return;
+      }
 
       // merge bubble with first intersected bubble, should probably get the closest one, though...
-      if (interSectingGroups.length > 0 && this.mergeOnDrop) {
-        this.model.merge(group, interSectingGroups[0]);
+      const group = this.groups[datasetIndex];
+      const i = this.dragState.intersected[0];
+      const intersected = this.groups[i];
+      if (this.dragState.intersected.length > 0 && this.mergeOnDrop) {
+        console.log(`merging ${intersected.name} into ${group.name}`);
+        this.model.merge(group, intersected);
         this.update();
       }
 
-      this.dragState.element = null;
+      this.dragState.reset();
     };
   }
 }
@@ -194,6 +209,12 @@ function toChartPoint(element: PseudoElement) {
 
 class DragState {
   public element: PseudoElement = null;
+  public intersected: number[] = [];
+
+  public reset() {
+    this.element = null;
+    this.intersected = [];
+  }
 
   /**
    * Finds all ChartPoints in the dataset, intersected by the current element;
@@ -215,9 +236,11 @@ class DragState {
       return distanceToPoint(other) < point.r;
     };
 
-    return this.element._chart.data.datasets
+    this.intersected = this.element._chart.data.datasets
       .map(e => e.data[0]) // ChartPoint
-      .map((p, i) => intersects(p) ?  i : -1);
+      .map((p, i) => intersects(p) ?  i : -1)
+      .filter(i => i !== this.element._datasetIndex && i > -1);
+    return this.intersected;
   }
 }
 
