@@ -6,7 +6,8 @@
       <canvas #chart="base-chart" baseChart
               [datasets]="chartData"
               [options]="chartOptions"
-              [chartType]="chartType">
+              chartType="bubble"
+              (chartClick)="handleBubbleClick($event)">
       </canvas>
     </div>
   </mat-card-content>
