@@ -1,29 +1,43 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ChartDataSets, ChartOptions, ChartType, ChartPoint} from 'chart.js';
 import {Extraction, Model, ExtractionProperty, ExtractionGroup, sentimentDifferential, FacetType} from '../../models/canonical';
 import { getMixedWeightedSentimentColor, controversy } from '../../models/sentiment';
 import { default as Color } from 'color';
 import { StateService } from 'src/app/services/state.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import 'chartjs-plugin-zoom';
 import { Subscription, combineLatest } from 'rxjs';
+import { BaseChartDirective } from 'ng2-charts';
+import { Chart } from 'chart.js';
+import 'chartjs-plugin-zoom';
+import 'chartjs-plugin-dragdata';
 
 @Component({
   selector: 'app-embeddings',
   templateUrl: './embeddings.component.html',
   styleUrls: ['./embeddings.component.scss']
 })
-export class EmbeddingsComponent implements OnInit {
+export class EmbeddingsComponent implements OnInit, OnDestroy {
+  public static readonly ScaleMin = 0;
+  public static readonly ScaleMax = 100;
 
-  private urlSub: Subscription;
-  private model: Model;
-  private type: ExtractionProperty;
-  private bubbles: Bubble[];
-  private chartData: ChartDataSets[] = [];
+  public groups: ExtractionGroup[] = [];
+
+  @ViewChild('chart')
+  private chartDirective: BaseChartDirective;
+
+  private mergeOnDrop = true;
+  private urlSub: Subscription = new Subscription();
+  private model: Model = null;
+  private type: ExtractionProperty = 'aspect';
+  private bubbles: Bubble[] = [];
   private chartType: ChartType = 'bubble';
-  private chartOptions: ChartOptions = {
+  private chartOptions = {
     legend: { display: false },
     responsive: true,
+    dragData: true,
+    dragX: true,
+    onDragStart: this.onDragStart,
+    onDragEnd: this.onDragEnd,
     tooltips: {
       mode: 'point',
       intersect: true,
@@ -38,11 +52,11 @@ export class EmbeddingsComponent implements OnInit {
     },
     scales: {
       xAxes: [{
-        ticks: { beginAtZero: true, min: 0, max: 100, display: false },
+        ticks: { beginAtZero: true, min: EmbeddingsComponent.ScaleMin, max: EmbeddingsComponent.ScaleMax, display: false },
         gridLines: { display: false }
       }],
       yAxes: [{
-        ticks: { beginAtZero: true, min: 0, max: 100, display: false },
+        ticks: { beginAtZero: true, min: EmbeddingsComponent.ScaleMin, max: EmbeddingsComponent.ScaleMax, display: false },
         gridLines: { display: false }
       }]
     },
@@ -52,14 +66,23 @@ export class EmbeddingsComponent implements OnInit {
     },
     plugins: {
       zoom: {
-        pan: { enabled: true, mode: 'xy' },
-        zoom: { enabled: true, drag: false, mode: 'xy', speed: 0.1, }
+        pan: { enabled: false, mode: 'xy' },
+        zoom: { enabled: false, drag: false, mode: 'xy', speed: 0.1, }
       }
     }
   };
+  private chartData: ChartDataSets[] = [];
+  private dragState: DragState = new DragState();
+
+  private get chart(): Chart {
+    return this.chartDirective.chart;
+  }
+  private get canvas(): HTMLElement {
+    return (this.chartDirective as any).element.nativeElement as HTMLElement;
+  }
 
   constructor(private stateService: StateService, private router: Router, private route: ActivatedRoute) {
-    stateService.loadSafe();
+
     // set up url for return from detail page.
     this.urlSub = combineLatest(this.route.url, this.route.params).subscribe(
       ([url, params]) => {
@@ -69,19 +92,51 @@ export class EmbeddingsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.update();
+  }
+
+  ngOnDestroy(): void {
+    this.urlSub.unsubscribe();
+  }
+
+  public update() {
+    this.stateService.loadSafe();
     this.model = this.stateService.model.state;
     this.type = this.stateService.facetType.state;
-    const groups = this.model.getGroupsFor(this.type);
+    this.groups = this.model.getGroupsFor(this.type);
+
     const occurences = this.model.extractions.length;
+
+    // sizing functions.
     const occurencePercentage = (group: ExtractionGroup) => group.extractions.length / occurences;
-    // alternative sizing functions.
     const positive = (g: ExtractionGroup) => sentimentDifferential(g.extractions) / 750;
     const clear = (g: ExtractionGroup) => Math.abs(positive(g)) * 3;
     const clearMinimumCount = (g: ExtractionGroup) => g.extractions.length > 3 ? clear(g) : 0;
     const controversial = (g: ExtractionGroup) => controversy(g.sentimentCount) / 1000;
-    this.bubbles = groups.map(group => Bubble.fromExtractionGroup(group, controversial));
 
-    this.bubbles.forEach(bubble => {
+    // generate data
+    this.bubbles = this.groups.map(group => Bubble.fromExtractionGroup(group, controversial));
+    this.fillChartData(this.bubbles);
+  }
+
+  public handleBubbleClick({ event, active }: { event: MouseEvent, active: any[] }) {
+    if (active.length > 0) {
+      const chart: Chart = active[0]._chart;
+      const activePoints: any[] = chart.getElementAtEvent(event);
+      if (activePoints.length > 0) {
+        const clickedElementIndex = activePoints[0]._datasetIndex;
+        const label = chart.data.datasets[clickedElementIndex].label;
+        this.navigateToDetailPage(label, this.stateService.facetType.state);
+      }
+    }
+  }
+
+  private navigateToDetailPage(facet: string, facetType: FacetType) {
+    this.router.navigate(['/detail'], { queryParams: { facet, facetType } });
+  }
+
+  private fillChartData(bubbles: Bubble[]) {
+    this.chartData = bubbles.map(bubble => {
       const dataset: any = {};
       dataset.data = [{
         x: bubble.xPosition,
@@ -93,25 +148,76 @@ export class EmbeddingsComponent implements OnInit {
       dataset.hoverBackgroundColor = color.alpha(0.8).toString();
       dataset.borderColor = color.toString();
       dataset.hoverBorderColor = color.alpha(0.8).toString();
-      this.chartData.push(dataset);
+      return dataset;
     });
   }
 
-  // TODO: What should happen here
-  handleBubbleClick(event: any) {
-    if (event.active.length > 0) {
-      const chart = event.active[0]._chart;
-      const activePoints = chart.getElementAtEvent(event.event);
-      if (activePoints.length > 0) {
-        const clickedElementIndex = activePoints[0]._datasetIndex;
-        const label = chart.data.datasets[clickedElementIndex].label;
-        this.navigateToDetailPage(label, this.stateService.facetType.state);
-      }
-    }
+  private get onDragStart() {
+    return (event: MouseEvent, element: PseudoElement) => {
+      this.dragState.element = element;
+      console.log(toChartPoint(element));
+    };
   }
 
-  private navigateToDetailPage(facet: string, facetType: FacetType) {
-    this.router.navigate(['/detail'], { queryParams: { facet, facetType } });
+  private get onDragEnd() {
+    return (event: MouseEvent, datasetIndex: number, index: number, value: any) => {
+      // get ratios for conversion
+      const widthRatio = this.dragState.element._chart.canvas.width / EmbeddingsComponent.ScaleMax;
+      const heigthRatio = this.dragState.element._chart.canvas.height / EmbeddingsComponent.ScaleMax;
+
+      // find intersecting groups
+      const group = this.groups[datasetIndex];
+      const interSectingGroups = this.dragState
+        .findIntersectingPoints(widthRatio, heigthRatio)
+        .filter(i => i !== datasetIndex && i > -1)
+        .map(i => this.groups[i]);
+
+      // merge bubble with first intersected bubble, should probably get the closest one, though...
+      if (interSectingGroups.length > 0 && this.mergeOnDrop) {
+        this.model.merge(group, interSectingGroups[0]);
+        this.update();
+      }
+
+      this.dragState.element = null;
+    };
+  }
+}
+
+interface PseudoElement {
+  _chart: Chart;
+  _datasetIndex: number;
+}
+
+function toChartPoint(element: PseudoElement) {
+  return element._chart.data.datasets[element._datasetIndex].data[0] as ChartPoint;
+}
+
+class DragState {
+  public element: PseudoElement = null;
+
+  /**
+   * Finds all ChartPoints in the dataset, intersected by the current element;
+   */
+  public findIntersectingPoints(xRatio = 1, yRatio = 1) {
+    if (!this.element) {
+      return;
+    }
+
+    const point = toChartPoint(this.element);
+    // euclidean distance to point, mapped to canvas space...
+    const distanceToPoint = (other) => {
+      const dx2 = Math.pow((point.x as number - other.x) * xRatio, 2);
+      const dy2 = Math.pow((point.y as number - other.y) * yRatio, 2);
+      return Math.sqrt(dx2 + dy2);
+    };
+    // intersects if distance is smaller than the point's radius
+    const intersects = (other) => {
+      return distanceToPoint(other) < point.r;
+    };
+
+    return this.element._chart.data.datasets
+      .map(e => e.data[0]) // ChartPoint
+      .map((p, i) => intersects(p) ?  i : -1);
   }
 }
 
@@ -162,20 +268,4 @@ class Bubble {
   public static fromExtractions(extractions: Extraction[]): Bubble[] {
     return [];
   }
-
-  public static generateExampleData(): Bubble[] {
-    const bubble0 = new Bubble(0, 0, 0, 'bubble0', 0.1);
-    const bubble1 = new Bubble(8, 8, 8, 'bubble1', 0.3);
-    const bubble2 = new Bubble(16, 16, 16, 'bubble2', 0.5);
-    const bubble3 = new Bubble(24, 24, 24, 'bubble3', 0.7);
-    const bubble4 = new Bubble(32, 32, 32, 'bubble4', 1.0);
-    const bubble5 = new Bubble(40, 40, 40, 'bubble5', 0);
-    const bubble6 = new Bubble(48, 48, 48, 'bubble6', -0.1);
-    const bubble7 = new Bubble(56, 56, 56, 'bubble7', -0.3);
-    const bubble8 = new Bubble(64, 64, 64, 'bubble8', -0.5);
-    const bubble9 = new Bubble(72, 72, 72, 'bubble9', -0.7);
-    const bubble10 = new Bubble(100, 100, 4, 'bubble10', -1.0);
-    return [bubble0, bubble1, bubble2, bubble3, bubble4, bubble5, bubble6, bubble7, bubble8, bubble9, bubble10];
-  }
-
 }

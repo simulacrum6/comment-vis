@@ -3,11 +3,10 @@
 
   <mat-card-content>
     <div class="chart_container">
-      <canvas #chart baseChart
+      <canvas #chart="base-chart" baseChart
               [datasets]="chartData"
               [options]="chartOptions"
-              [chartType]="chartType"
-              (chartClick)="handleBubbleClick($event)">
+              [chartType]="chartType">
       </canvas>
     </div>
   </mat-card-content>
