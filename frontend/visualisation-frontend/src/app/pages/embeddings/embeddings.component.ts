@@ -10,6 +10,7 @@ import { BaseChartDirective } from 'ng2-charts';
 import { Chart } from 'chart.js';
 import 'chartjs-plugin-zoom';
 import 'chartjs-plugin-dragdata';
+import { group } from '@angular/animations';
 
 @Component({
   selector: 'app-embeddings',
@@ -75,6 +76,7 @@ export class EmbeddingsComponent implements OnInit, OnDestroy {
   private chartData: ChartDataSets[] = [];
   private dragState: DragState = new DragState();
   private copyPoints: ChartPoint[] = []
+  private layout = Bubble.randomLayout(10000);
 
   private get chart(): Chart {
     return this.chartDirective.chart;
@@ -117,7 +119,7 @@ export class EmbeddingsComponent implements OnInit, OnDestroy {
     const controversial = (g: ExtractionGroup) => controversy(g.sentimentCount) / 1000;
 
     // generate data
-    this.bubbles = this.groups.map(group => Bubble.fromExtractionGroup(group, controversial));
+    this.bubbles = Bubble.fromLayout(this.groups, this.layout, occurencePercentage);
     this.fillChartData(this.bubbles);
   }
 
@@ -233,7 +235,7 @@ class DragState {
     };
     // intersects if distance is smaller than the point's radius
     const intersects = (other) => {
-      return distanceToPoint(other) < point.r;
+      return distanceToPoint(other) < other.r;
     };
 
     this.intersected = this.element._chart.data.datasets
@@ -272,19 +274,36 @@ class Bubble {
     return Math.sqrt(value) * Bubble.scalingFactor + Bubble.minimumSize;
   }
 
+  public static randomLayout(n: number): { x: number, y: number }[] {
+    const layout = [];
+    while(layout.length < n) {
+      layout.push({ x: Math.random() * 100, y: Math.random() * 100 });
+    }
+    return layout;
+  }
+
   /**
    * Generates Bubble with random coordinate from ExtractionGroup.
    * @param group the group to convert to a bubble.
    * @param valueMapper maps group to a value, representing the size of the Bubble.
    */
-  public static fromExtractionGroup(group: ExtractionGroup, valueMapper: (g: ExtractionGroup) => number) {
-    const x = Math.random() * 100;
-    const y = Math.random() * 100;
+  public static fromExtractionGroup(group: ExtractionGroup, x: number, y: number, valueMapper: (g: ExtractionGroup) => number) {
     const value = valueMapper(group);
     const size = Bubble.scale(value);
     const name = group.name;
     const ratio = sentimentDifferential(group.extractions);
     return new Bubble(x, y, size, name, ratio);
+  }
+
+  public static fromLayout(groups: ExtractionGroup[], layout: { x: number, y: number }[], valueMapper: (g: ExtractionGroup) => number) {
+    if (groups.length > layout.length) {
+      throw new Error(`too few points provided! got ${layout.length}, need ${groups.length}`);
+    }
+    return groups.map((group, i) => {
+      const x = layout[i].x;
+      const y = layout[i].y;
+      return Bubble.fromExtractionGroup(group, x, y, valueMapper);
+    });
   }
 
 // TODO when embeddings are there
