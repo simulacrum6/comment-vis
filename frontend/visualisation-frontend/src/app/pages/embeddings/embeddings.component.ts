@@ -11,6 +11,7 @@ import { Chart } from 'chart.js';
 import 'chartjs-plugin-zoom';
 import 'chartjs-plugin-dragdata';
 import { group } from '@angular/animations';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-embeddings',
@@ -85,7 +86,7 @@ export class EmbeddingsComponent implements OnInit, OnDestroy {
     return (this.chartDirective as any).element.nativeElement as HTMLElement;
   }
 
-  constructor(private stateService: StateService, private router: Router, private route: ActivatedRoute) {
+  constructor(private stateService: StateService, private router: Router, private route: ActivatedRoute, private snackBar: MatSnackBar) {
 
     // set up url for return from detail page.
     this.urlSub = combineLatest(this.route.url, this.route.params).subscribe(
@@ -97,6 +98,9 @@ export class EmbeddingsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.update();
+    // deactivate animations after first load.
+    const opts: any = this.chartOptions;
+    opts.animation = { duration: 0 };
   }
 
   ngOnDestroy(): void {
@@ -181,17 +185,27 @@ export class EmbeddingsComponent implements OnInit, OnDestroy {
 
   private get onDragEnd() {
     return (event: MouseEvent, datasetIndex: number, index: number, value: any) => {
-      if (this.dragState.intersected.length === 0) {
-        return;
-      }
+      // update layout
+      const point = toChartPoint(this.dragState.element);
+      this.layout[datasetIndex] = { x: point.x as number , y: point.y as number };
 
-      // merge bubble with first intersected bubble, should probably get the closest one, though...
-      const group = this.groups[datasetIndex];
-      const i = this.dragState.intersected[0];
-      const intersected = this.groups[i];
-      if (this.dragState.intersected.length > 0 && this.mergeOnDrop) {
-        console.log(`merging ${intersected.name} into ${group.name}`);
-        this.model.merge(group, intersected);
+      // merge bubble with first intersected bubble
+      if (this.dragState.intersected.length > 0) {
+        const i = this.dragState.intersected[0];
+        const draggedGroup = this.groups[datasetIndex];
+        const targetGroup = this.groups[i];
+        const removedPoint = this.layout.splice(i, 1)[0];
+
+        this.model.merge(draggedGroup, targetGroup);
+        this.snackBar.open(`Merged '${targetGroup.name}' into '${draggedGroup.name}'`, 'undo', { duration: 5000 })
+          .onAction()
+          .subscribe(
+            () => {
+              this.model.split(draggedGroup, targetGroup);
+              this.layout.splice(this.groups.length, 0, removedPoint);
+              this.update();
+            }
+          );
         this.update();
       }
 
