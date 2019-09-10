@@ -7,9 +7,8 @@
     <div>
       <!-- TODO: activate, once implemented -->
       <a mat-button
-        [routerLink]="previousDetailLink"
-        matTooltip="go to previous detail view"
-        [disabled]="true">
+        (click)="history.back()"
+        matTooltip="go to previous page">
         <mat-icon>arrow_back</mat-icon>
       </a>
       <a mat-button
@@ -24,7 +23,7 @@
   <mat-card-content>
     <div>
       The overall mood of the Dataset is <strong>{{ overallMood | async }}</strong> with <strong>{{ overallMoodPercent | async }}</strong>.<br>
-      The mood of this {{ facetType$ | async }} {{ facet$ | async }} is <strong>{{ facetMood | async }}</strong> with <strong>{{ facetMoodPercent | async }}</strong>.
+      The mood of this {{ facetType$ | async }} {{ facet$ | async }} is <strong>{{ facetMood | async }}</strong> with <strong>{{ facetMoodPercent | async }}</strong>.<br>
       This is <strong> {{ facetMoodEvaluation | async }}</strong>.
 
     </div>
