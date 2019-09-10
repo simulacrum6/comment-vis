@@ -24,6 +24,8 @@
     "@angular/router": "~7.2.0",
     "@types/color": "^3.0.0",
     "chart.js": "^2.8.0",
+    "chartjs-plugin-dragdata": "^1.0.4",
+    "chartjs-plugin-zoom": "^0.7.3",
     "color": "^3.1.1",
     "core-js": "^2.5.4",
     "datalib": "^1.9.2",
