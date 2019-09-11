@@ -39,11 +39,11 @@ class PieExtractionGroup implements ExtractionGroup {
 }
 
 @Component({
-  selector: 'app-pie-grid',
-  templateUrl: './pie-grid.component.html',
-  styleUrls: ['./pie-grid.component.scss']
+  selector: 'app-compare',
+  templateUrl: './compare.component.html',
+  styleUrls: ['./compare.component.scss']
 })
-export class PieGridComponent implements OnInit, OnDestroy {
+export class CompareComponent implements OnInit, OnDestroy {
 
   private facetGroups: ExtractionGroup[];
   private sortedFacetGroups: ExtractionGroup[];

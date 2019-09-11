@@ -23,7 +23,7 @@ import { DetailComponent } from './pages/detail/detail.component';
 import { PieDetailComponent } from './pages/detail/pie-detail/pie-detail.component';
 import { StatisticsComponent } from './pages/statistics/statistics';
 import { UploadComponent } from './pages/upload/upload.component';
-import { PieGridComponent } from './pages/visualisation/pie-grid/pie-grid.component';
+import { CompareComponent } from './pages/visualisation/compare/compare.component';
 import { VisualisationComponent } from './pages/visualisation/visualisation.component';
 import { MergedMembersTableComponent } from './components/tables/merged-members-table/merged-members-table.component';
 import { BubbleComponent } from './components/visualisations/bubble/bubble.component';
@@ -39,7 +39,7 @@ import { LayoutComponent } from './components/controls/layout/layout.component';
     VisualisationComponent,
     BarComponent,
     PieComponent,
-    PieGridComponent,
+    CompareComponent,
     StatisticsComponent,
     TreeMapComponent,
     DetailComponent,
