@@ -1,0 +1,8 @@
+<div class="chart_container">
+  <canvas #chart="base-chart" baseChart
+          [datasets]="chartData"
+          [options]="chartOptions"
+          chartType="bubble"
+          (chartClick)="handleBubbleClick($event)">
+  </canvas>
+</div>

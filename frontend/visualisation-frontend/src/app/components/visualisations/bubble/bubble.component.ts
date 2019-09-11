@@ -8,16 +8,16 @@ import { default as Color } from 'color';
 import { BaseChartDirective } from 'ng2-charts';
 import { combineLatest, Subscription } from 'rxjs';
 import { StateService } from 'src/app/services/state.service';
-import { Extraction, ExtractionGroup, FacetType, Model, sentimentDifferential } from '../../models/canonical';
-import { controversy, getMixedWeightedSentimentColor } from '../../models/sentiment';
+import { Extraction, ExtractionGroup, FacetType, Model, sentimentDifferential } from '../../../models/canonical';
+import { controversy, getMixedWeightedSentimentColor } from '../../../models/sentiment';
 import { Chart } from 'chart.js';
 
 @Component({
-  selector: 'app-embeddings',
-  templateUrl: './embeddings.component.html',
-  styleUrls: ['./embeddings.component.scss']
+  selector: 'app-bubble',
+  templateUrl: './bubble.component.html',
+  styleUrls: ['./bubble.component.scss']
 })
-export class EmbeddingsComponent implements OnInit, OnDestroy {
+export class BubbleComponent implements OnInit, OnDestroy {
   public static readonly ScaleMin = 0;
   public static readonly ScaleMax = 100;
 
@@ -51,11 +51,11 @@ export class EmbeddingsComponent implements OnInit, OnDestroy {
     },
     scales: {
       xAxes: [{
-        ticks: { beginAtZero: true, min: EmbeddingsComponent.ScaleMin, max: EmbeddingsComponent.ScaleMax, display: false },
+        ticks: { beginAtZero: true, min: BubbleComponent.ScaleMin, max: BubbleComponent.ScaleMax, display: false },
         gridLines: { display: false }
       }],
       yAxes: [{
-        ticks: { beginAtZero: true, min: EmbeddingsComponent.ScaleMin, max: EmbeddingsComponent.ScaleMax, display: false },
+        ticks: { beginAtZero: true, min: BubbleComponent.ScaleMin, max: BubbleComponent.ScaleMax, display: false },
         gridLines: { display: false }
       }]
     },
@@ -168,8 +168,8 @@ export class EmbeddingsComponent implements OnInit, OnDestroy {
   }
   private get onDrag() {
     return (event: MouseEvent, datasetIndex: number, index: number, value: any) => {
-      const widthRatio = this.dragState.element._chart.canvas.width / EmbeddingsComponent.ScaleMax;
-      const heigthRatio = this.dragState.element._chart.canvas.height / EmbeddingsComponent.ScaleMax;
+      const widthRatio = this.dragState.element._chart.canvas.width / BubbleComponent.ScaleMax;
+      const heigthRatio = this.dragState.element._chart.canvas.height / BubbleComponent.ScaleMax;
       const closest: number = this.dragState.findIntersectingPoints(widthRatio, heigthRatio);
 
       // enlarge closest point, keep others the same
