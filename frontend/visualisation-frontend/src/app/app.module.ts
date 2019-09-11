@@ -27,6 +27,7 @@ import { PieGridComponent } from './pages/visualisation/pie-grid/pie-grid.compon
 import { VisualisationComponent } from './pages/visualisation/visualisation.component';
 import { MergedMembersTableComponent } from './components/tables/merged-members-table/merged-members-table.component';
 import { BubbleComponent } from './components/visualisations/bubble/bubble.component';
+import { ExploreComponent } from './pages/visualisation/explore/explore.component';
 
 
 @NgModule({
@@ -50,7 +51,8 @@ import { BubbleComponent } from './components/visualisations/bubble/bubble.compo
     MiniSorterComponent,
     SearchFilterComponent,
     MergedMembersTableComponent,
-    BubbleComponent
+    BubbleComponent,
+    ExploreComponent
   ],
   imports: [
     BrowserModule,

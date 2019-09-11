@@ -2,3 +2,12 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+mat-card.content {
+margin: 10px 15%;
+min-width: 320px;
+}
+
+h3, strong {
+font-weight: 500;
+}

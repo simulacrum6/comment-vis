@@ -8,6 +8,7 @@ import { UploadComponent } from './pages/upload/upload.component';
 import { PieGridComponent } from './pages/visualisation/pie-grid/pie-grid.component';
 import { VisualisationComponent } from './pages/visualisation/visualisation.component';
 import { BubbleComponent } from './components/visualisations/bubble/bubble.component';
+import { ExploreComponent } from './pages/visualisation/explore/explore.component';
 
 const routes: Routes = [
   { path: '', component: UploadComponent },
@@ -18,7 +19,7 @@ const routes: Routes = [
       { path: 'pie', component: PieGridComponent },
       { path: 'tree', component: TreeMapComponent },
       { path: 'bar', component: BarComponent },
-      { path: 'bubble', component: BubbleComponent },
+      { path: 'explore', component: ExploreComponent },
     ]
   },
 
