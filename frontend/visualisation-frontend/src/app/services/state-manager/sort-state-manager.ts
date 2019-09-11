@@ -1,4 +1,4 @@
-import { SortOption, SortOptionRegistry, SortOptions, SortOrderOption, SortOrderOptions, SortState } from 'src/app/components/filters/sort-filter/sort';
+import { SortOption, SortOptionRegistry, SortOptions, SortOrderOption, SortOrderOptions, SortState } from 'src/app/components/controls/filters/sort-filter/sort';
 import { DefaultStorage, StateManager } from './state-manager';
 
 /**

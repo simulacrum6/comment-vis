@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
-import { SortOption, SortOptions } from 'src/app/components/filters/sort-filter/sort';
+import { SortOption, SortOptions } from 'src/app/components/controls/filters/sort-filter/sort';
 import { Extraction, ExtractionGroup, Extractions, FacetProperty, FacetType, ExtractionProperty } from 'src/app/models/canonical';
 import { SentimentCount } from 'src/app/models/sentiment';
 
