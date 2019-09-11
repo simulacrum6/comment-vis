@@ -28,6 +28,8 @@ import { VisualisationComponent } from './pages/visualisation/visualisation.comp
 import { MergedMembersTableComponent } from './components/tables/merged-members-table/merged-members-table.component';
 import { BubbleComponent } from './components/visualisations/bubble/bubble.component';
 import { ExploreComponent } from './pages/visualisation/explore/explore.component';
+import { SizeScalingComponent } from './components/controls/size-scaling/size-scaling.component';
+import { LayoutComponent } from './components/controls/layout/layout.component';
 
 
 @NgModule({
@@ -52,7 +54,9 @@ import { ExploreComponent } from './pages/visualisation/explore/explore.componen
     SearchFilterComponent,
     MergedMembersTableComponent,
     BubbleComponent,
-    ExploreComponent
+    ExploreComponent,
+    SizeScalingComponent,
+    LayoutComponent
   ],
   imports: [
     BrowserModule,
