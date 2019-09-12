@@ -11,7 +11,7 @@ import { StateService } from 'src/app/services/state.service';
 import { Extraction, ExtractionGroup, FacetType, Model, sentimentDifferential } from '../../../models/canonical';
 import { controversy, getMixedWeightedSentimentColor } from '../../../models/sentiment';
 import { Chart } from 'chart.js';
-import { Coordinate, LayoutService } from 'src/app/services/layout.service';
+import { Coordinate, LayoutService, LayoutName } from 'src/app/services/layout.service';
 
 @Component({
   selector: 'app-bubble',
@@ -89,6 +89,7 @@ export class BubbleComponent implements OnInit, OnDestroy {
   public groups: ExtractionGroup[] = [];
   @Input()
   public layout = LayoutService.randomLayout(10000);
+  public layoutName: LayoutName = 'meaning';
   public type: FacetType = 'aspect';
 
   constructor(
@@ -111,6 +112,22 @@ export class BubbleComponent implements OnInit, OnDestroy {
     // deactivate animations after first load.
     const opts: any = this.chartOptions;
     opts.animation = { duration: 0 };
+    this.layoutService.layoutChanges
+    .subscribe(
+      layout => {
+        if (layout.length >= this.groups.length) {
+          this.layout = layout;
+          this.update();
+        }
+      },
+      error => {
+        console.warn('could not get a proper layout, getting a random one instead')
+        this.layout = this.layoutService.getRandomLayout(this.groups.map(g => g.name));
+        this.update();
+      }
+    );
+    const names = this.groups.map(g => g.name);
+    this.layoutService.getLayout(names, this.layoutName);
   }
   ngOnDestroy(): void {
     this.urlSub.unsubscribe();

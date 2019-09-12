@@ -11,7 +11,7 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-embeddings = { word: embedding for word, embedding in zip(*load_csv_embeddings('embeddings/test.txt', ' ')) }
+embeddings = { word: embedding for word, embedding in zip(*load_csv_embeddings('embeddings/glove.840B.300d.txt', ' ')) }
 embeddings_layout = load_layout('layout/test.layout.csv')
 
 def generate_similarity_layout(words, embeddings, target_range=DEFAULT_RANGE):
@@ -58,11 +58,10 @@ def generate_layout():
         req = request.get_json()
     else:
         req = request.form
-    print('payload:')
-    print(req)
+
     words = req.get('words')
     target_range = req.get('range', DEFAULT_RANGE)
+    print('generating coordinates...', end='')
     coords = generate_similarity_layout(words, embeddings, target_range)
-    print('generated coordinates:')
-    print(coords)
+    print('done!')
     return { 'points': json_friendly(coords) }
