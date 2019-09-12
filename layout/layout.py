@@ -79,13 +79,22 @@ def load_layout(path, separator='\t', encoding='utf-8'):
     print('done!')
     return layout
 
+def fit_range(X, target_min, target_max):
+    """Assumes X is a np.array of shape (n,)"""
+    data_max = np.max(X)
+    data_min = np.min(X)
+    data_range = data_max - data_min
+    target_range = target_max - target_min
+    convert = lambda x: ((x - data_min) / data_range * target_range) + target_min
+    return np.array([[convert(x) for x in xs] for xs in X])
+
+
 test_embeddings = 'embeddings/test.txt'
 test_layout = 'layout/test.layout.csv'
 glove_embeddings = 'embeddings/glove.840B.300d.txt'
 glove_layout = 'layout/glove.840B.300d.txt'
 
-if (__name__=='__main__'):    
+if (__name__=='__main__'):   
+    # pre-compute layout 
     layout = layout_from_embeddings_file(glove_embeddings)
-    save_layout(layout, glove_embeddings)   
-    #layout = layout_from_embeddings_file(test_embeddings)
-    #save_layout(layout, test_layout)
+    save_layout(layout, glove_embeddings)
