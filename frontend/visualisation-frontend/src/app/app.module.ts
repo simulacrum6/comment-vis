@@ -30,7 +30,7 @@ import { BubbleComponent } from './components/visualisations/bubble/bubble.compo
 import { ExploreComponent } from './pages/visualisation/explore/explore.component';
 import { SizeScalingComponent } from './components/controls/size-scaling/size-scaling.component';
 import { LayoutComponent } from './components/controls/layout/layout.component';
-
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -61,6 +61,7 @@ import { LayoutComponent } from './components/controls/layout/layout.component';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     FormsModule,
     FlexLayoutModule,
     ReactiveFormsModule,

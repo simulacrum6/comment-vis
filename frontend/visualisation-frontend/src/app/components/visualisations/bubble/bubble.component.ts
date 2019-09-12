@@ -11,6 +11,7 @@ import { StateService } from 'src/app/services/state.service';
 import { Extraction, ExtractionGroup, FacetType, Model, sentimentDifferential } from '../../../models/canonical';
 import { controversy, getMixedWeightedSentimentColor } from '../../../models/sentiment';
 import { Chart } from 'chart.js';
+import { Coordinate, LayoutService } from 'src/app/services/layout.service';
 
 @Component({
   selector: 'app-bubble',
@@ -87,10 +88,16 @@ export class BubbleComponent implements OnInit, OnDestroy {
   @Input()
   public groups: ExtractionGroup[] = [];
   @Input()
-  public layout = Bubble.randomLayout(10000);
+  public layout = LayoutService.randomLayout(10000);
   public type: FacetType = 'aspect';
 
-  constructor(private stateService: StateService, private router: Router, private route: ActivatedRoute, private snackBar: MatSnackBar) {
+  constructor(
+    private stateService: StateService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
+    private layoutService: LayoutService
+    ) {
     // set up url for return from detail page.
     this.urlSub = combineLatest(this.route.url, this.route.params).subscribe(
       ([url, params]) => {
@@ -287,16 +294,6 @@ class Bubble {
   }
 
   /**
-   * Returns n random points between 0 and 100.
-   */
-  public static randomLayout(n: number): { x: number, y: number }[] {
-    const layout = [];
-    while(layout.length < n) {
-      layout.push({ x: Math.random() * 100, y: Math.random() * 100 });
-    }
-    return layout;
-  }
-  /**
    * Generates Bubble with random coordinate from ExtractionGroup.
    * @param group the group to convert to a bubble.
    * @param valueMapper maps group to a value, representing the size of the Bubble.
@@ -308,7 +305,7 @@ class Bubble {
     const ratio = sentimentDifferential(group.extractions);
     return new Bubble(x, y, size, name, ratio);
   }
-  public static fromLayout(groups: ExtractionGroup[], layout: { x: number, y: number }[], valueMapper: (g: ExtractionGroup) => number) {
+  public static fromLayout(groups: ExtractionGroup[], layout: Coordinate[], valueMapper: (g: ExtractionGroup) => number) {
     if (groups.length > layout.length) {
       throw new Error(`too few points provided! got ${layout.length}, need ${groups.length}`);
     }
