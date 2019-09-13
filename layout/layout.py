@@ -88,13 +88,44 @@ def fit_range(X, target_min, target_max):
     convert = lambda x: ((x - data_min) / data_range * target_range) + target_min
     return np.array([[convert(x) for x in xs] for xs in X])
 
+__test_embeddings__ = 'embeddings/test.txt'
+__test_layout__ = 'layout/test.layout.csv'
+__glove_embeddings__ = 'embeddings/glove.840B.300d.txt'
+__glove_layout__ = 'layout/glove.840B.300d.txt'
+__layout_doc__ = """
+layout
+Converts embedding files to layout files.
 
-test_embeddings = 'embeddings/test.txt'
-test_layout = 'layout/test.layout.csv'
-glove_embeddings = 'embeddings/glove.840B.300d.txt'
-glove_layout = 'layout/glove.840B.300d.txt'
+usage: 
+    python layout [input_file] [output_file]
+parameters:
+    input_file:     Path to embeddings file to use for the layout. 
+                    Must be compatible with layout.load_csv_embeddings.
+    output_file:    File to store layout in.
+"""
 
 if (__name__=='__main__'):   
-    # pre-compute layout 
-    layout = layout_from_embeddings_file(glove_embeddings)
-    save_layout(layout, glove_embeddings)
+    print('Running "layout.py" for usage information, pass "--h" as parameter.')
+    import sys
+    import datetime
+    default_input = __glove_embeddings__
+    default_output = 'layout/custom_${}.layout.txt'.format(int(datetime.datetime.now().timestamp()))
+    args = sys.argv[1:]
+    try:
+        args[0]
+        if args[0] == '--help' or args[0] == '-h':
+            sys.exit(__layout_doc__)
+        else:
+            input_path = args[0]
+    except IndexError:
+        input_path = default_input
+        print('No input embeddings privided. Using default at "{}"'.format(default_input))
+    try:
+        output_path = args[1]
+    except IndexError:
+        output_path = default_output
+        print('No output file provided. Using default at "{}"'.format(default_input))
+    print('Trying to build layout from embeddings at "{}"'.format(input_path))
+    print('Storing results at "{}"'.format(output_path))
+    layout = layout_from_embeddings_file(input_path)
+    save_layout(layout, output_path)
