@@ -1,6 +1,6 @@
 <table mat-table [dataSource]="tableData">
   <ng-container cdkColumnDef="group">
-    <th mat-header-cell *matHeaderCellDef> {{ facetType }} </th>
+    <th mat-header-cell *matHeaderCellDef> {{ _facetTypeVisibleName }} </th>
     <td mat-cell *matCellDef="let row">
       <a *ngIf="links; else plain"
         [routerLink]="['/detail']"

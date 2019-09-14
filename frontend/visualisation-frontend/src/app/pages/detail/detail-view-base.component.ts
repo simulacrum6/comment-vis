@@ -14,6 +14,7 @@ export class DetailViewBaseComponent implements OnInit {
     protected group$: Observable<ExtractionGroup>;
     protected subGroups$: Observable<ViewExtractionGroup[]>;
     protected subGroupType$: Observable<FacetType>;
+    protected faceTypeVisibleName$: Observable<string>;
 
     protected get model(): Model{
         return this.stateService.model.state;
@@ -41,7 +42,10 @@ export class DetailViewBaseComponent implements OnInit {
         );
         this.subGroups$ = combineLatest(this.group$, this.subGroupType$).pipe(
             map(([group, type]) => this.model.getSubGroups(group, type))
-        )
+        );
+        this.faceTypeVisibleName$ = this.facetType$.pipe(
+          map(type => FacetTypes.getVisibleName(type).toLowerCase())
+        );
     }
 
 }

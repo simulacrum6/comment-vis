@@ -27,6 +27,10 @@ export class FacetTypes {
   public static other(type: FacetType) {
     return type === FacetTypes.Attribute ? FacetTypes.Aspect : FacetTypes.Attribute;
   }
+
+  public static getVisibleName(type: FacetType) {
+    return type === 'aspect' ? 'Topic' : 'Trait';
+  }
 }
 
 

@@ -67,13 +67,13 @@ export class StatisticsComponent implements OnInit, OnDestroy {
       xAxes: [{
         scaleLabel: {
           display: true,
-          labelString: 'Number of Comments mentioning an Aspect'
+          labelString: 'Number of Comments mentioning a Topic'
         }
       }],
       yAxes: [{
         scaleLabel: {
           display: true,
-          labelString: 'Number of Aspects'
+          labelString: 'Number of Topics'
         },
         ticks: {
           beginAtZero: true
@@ -186,7 +186,7 @@ export class StatisticsComponent implements OnInit, OnDestroy {
     const counts = this.valueCounts.aspect.map(aspect => aspect.count);
     const hist = histogram(counts);
     this.aspectDistributionData = [
-      { label: 'Aspects in Category', data: hist.map(entry => entry.count) },
+      { label: 'Topics in Category', data: hist.map(entry => entry.count) },
     ];
     this.aspectDistributionLabels = hist.map(entry => entry.value);
 

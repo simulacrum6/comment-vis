@@ -54,11 +54,12 @@ export class CompareComponent implements OnInit, OnDestroy {
 
   private _pageConfig: PaginatorConfig;
   private _facetType: FacetType;
+  private _facetTypeVisibleName: string;
 
   private get breadCrumbPaths() {
     return [
       { name: 'Statistics', path: ['/stats'], queryParams: {} },
-      { name: this.facetType + 's', path: ['/vis/pie'], queryParams: {} }
+      { name: FacetTypes.getVisibleName(this.facetType) + 's', path: ['/vis/pie'], queryParams: {} }
     ];
   }
   private get pageSizes() {
@@ -99,6 +100,7 @@ export class CompareComponent implements OnInit, OnDestroy {
   @Input()
   public set facetType(type: FacetType) {
     this._facetType = type;
+    this._facetTypeVisibleName = FacetTypes.getVisibleName(this._facetType);
     this.stateService.facetType.state = type;
   }
   public get subGroupType(): FacetType {

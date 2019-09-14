@@ -4,26 +4,18 @@
       <mat-card-title>{{ facet$ | async }} - Details</mat-card-title>
       <mat-card-subtitle><app-breadcrumb [paths]="(breadCrumbPaths | async)"></app-breadcrumb></mat-card-subtitle>
     </mat-card-title-group>
-    <div>
-      <!-- TODO: activate, once implemented -->
-      <a mat-button
-        (click)="history.back()"
-        matTooltip="go to previous page">
-        <mat-icon>arrow_back</mat-icon>
-      </a>
-      <a mat-button
-        [routerLink]="returnLink"
-        [queryParams]="returnParams"
-        matTooltip="close detail view"
-        [disabled]="false">
-        <mat-icon>close</mat-icon>
-      </a>
-    </div>
+    <a mat-button
+      [routerLink]="returnLink"
+      [queryParams]="returnParams"
+      matTooltip="close detail view"
+      [disabled]="false">
+      <mat-icon>close</mat-icon>
+    </a>
   </div>
   <mat-card-content>
     <div>
       The overall mood of the Dataset is <strong>{{ overallMood | async }}</strong> with <strong>{{ overallMoodPercent | async }}</strong>.<br>
-      The mood of this {{ facetType$ | async }} {{ facet$ | async }} is <strong>{{ facetMood | async }}</strong> with <strong>{{ facetMoodPercent | async }}</strong>.<br>
+      The mood of this {{ faceTypeVisibleName$ | async }} {{ facet$ | async }} is <strong>{{ facetMood | async }}</strong> with <strong>{{ facetMoodPercent | async }}</strong>.<br>
       This is <strong> {{ facetMoodEvaluation | async }}</strong>.
 
     </div>
@@ -41,15 +33,13 @@
     <div #infoWrapper>
       <mat-expansion-panel #commentPanel>
         <mat-expansion-panel-header>
-          <mat-panel-title>Comments</mat-panel-title>
-          <mat-panel-description>all comments related to {{ facetType$ | async }} {{ facet$ | async }}</mat-panel-description>
+          <mat-panel-title>Comments related to {{ faceTypeVisibleName$ | async }} {{ facet$ | async }}</mat-panel-title>
         </mat-expansion-panel-header>
         <app-comment-table [extractions]="extractions$ | async"></app-comment-table>
       </mat-expansion-panel>
       <mat-expansion-panel #groupPanel>
           <mat-expansion-panel-header>
-            <mat-panel-title>Merged groups</mat-panel-title>
-            <mat-panel-description>all members of this {{ facetType$ | async }}'s group</mat-panel-description>
+            <mat-panel-title>Synonyms</mat-panel-title>
           </mat-expansion-panel-header>
           <app-merged-members-table
             [group]="group$ | async">

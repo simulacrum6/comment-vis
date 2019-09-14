@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Extraction, sentimentDifferential } from 'src/app/models/canonical';
+import {Extraction, FacetTypes, sentimentDifferential} from 'src/app/models/canonical';
 import { StateService } from 'src/app/services/state.service';
 import { DetailViewBaseComponent } from '../detail-view-base.component';
 import { mapToCompareSentimentStatement, mapToSentimentStatement, SentimentCount } from '../../../models/sentiment';
@@ -87,7 +87,7 @@ export class PieDetailComponent extends DetailViewBaseComponent implements OnIni
     this.breadCrumbPaths = combineLatest(this.facet$, this.facetType$).pipe(
       map(([facet, facetType]) => [
         { name: 'Statistics', path: ['/stats'], queryParams: {}},
-        { name: facetType + 's', path: ['/vis/pie'], queryParams: {}},
+        { name: FacetTypes.getVisibleName(facetType) + 's', path: ['/vis/pie'], queryParams: {}},
         { name: facet, path: ['/detail'], queryParams: { facet, facetType }}
       ])
     );

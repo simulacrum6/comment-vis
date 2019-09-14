@@ -6,7 +6,7 @@
       <h3>Dataset</h3>
       This dataset consists of <strong>{{ uniqueValues.comment.size }}</strong> comments.<br>
       The mood is <strong>{{ mood }}</strong> with <strong>{{ moodPercent }}</strong>.<br>
-      We extracted <strong>{{ uniqueValues.attribute.size }}</strong> attributes for <strong>{{ uniqueValues.aspect.size }}</strong> topics.
+      We extracted <strong>{{ uniqueValues.attribute.size }}</strong> traits for <strong>{{ uniqueValues.aspect.size }}</strong> topics.
 
       <div>
         <h3>Sentiment Distribution</h3>
@@ -21,8 +21,8 @@
       </div>
 
       <div>
-        <h3>Distribution of Aspect Mentions</h3>
-        <p>This histogram shows how often aspects of a certain mention count occured.</p>
+        <h3>Distribution of Topic mentions</h3>
+        <p>This histogram shows how often topics of a certain mention count occured.</p>
         <canvas baseChart height="50vh"
                 [datasets]="aspectDistributionData"
                 [labels]="aspectDistributionLabels"
@@ -32,7 +32,7 @@
       </div>
 
       <div>
-        <h3>Aspect Ranking</h3>
+        <h3>Topic Ranking</h3>
         <canvas baseChart height="50vh"
                 [datasets]="aspectRankingData"
                 [labels]="aspectRankingLabels"
@@ -41,11 +41,11 @@
                 (chartClick)="handleRankingClick($event, 'aspect')"
         >
         </canvas>
-        <span *ngIf="tooManyAspects" class="light" matTooltip="There are too many elements to display, so only the most frequent ones are shown.">Displaying {{ maxDistributionDisplayItems }} of {{ valueCounts.aspect.length }} aspects</span>
+        <span *ngIf="tooManyAspects" class="light" matTooltip="There are too many elements to display, so only the most frequent ones are shown.">Displaying {{ maxRankingDisplayItems }} of {{ valueCounts.aspect.length }} topics</span>
       </div>
 
       <div>
-          <h3>Attribute Ranking</h3>
+          <h3>Traits Ranking</h3>
           <canvas baseChart height="50vh"
                   [datasets]="attributeRankingData"
                   [labels]="attributeRankingLabels"
@@ -53,7 +53,7 @@
                   [chartType]="facetDistributionType"
                   (chartClick)="handleRankingClick($event, 'attribute')">
           </canvas>
-          <span *ngIf="tooManyAttributes" class="light" matTooltip="There are too many elements to display, so only the most frequent ones are shown.">Displaying 100 of {{ valueCounts.attribute.length }} attributes</span>
+          <span *ngIf="tooManyAttributes" class="light" matTooltip="There are too many elements to display, so only the most frequent ones are shown.">Displaying {{ maxRankingDisplayItems }} of {{ valueCounts.attribute.length }} traits</span>
         </div>
 
       <div *ngIf="warnings.length > 0" class="warnings">

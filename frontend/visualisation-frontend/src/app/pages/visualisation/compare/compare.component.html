@@ -1,22 +1,22 @@
 <!-- TODO: separate pie-grid view from compare component -->
 <mat-card class="content">
-  <mat-card-title>{{ facetType }} - Overview</mat-card-title>
+  <mat-card-title>{{ _facetTypeVisibleName }} - Overview</mat-card-title>
   <mat-card-subtitle><app-breadcrumb [paths]="breadCrumbPaths"></app-breadcrumb></mat-card-subtitle>
   <mat-card-content>
     <p>
-      Hover over {{ facetType }} to see, how many positive or negative opinions exist. <br>
-      Click on a {{ facetType }} to see more details. <br>
-      Use the toggle to switch between aspects and attributes.
+      Hover over {{ _facetTypeVisibleName }} to see, how many positive or negative opinions exist. <br>
+      Click on a {{ _facetTypeVisibleName }} to see more details. <br>
+      Use the toggle to switch between topics and traits.
     </p>
     <!-- Toolbar -->
     <div #toggle fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px">
       <div>
-          <label>Attribute</label>
+          <label>Trait</label>
           <mat-slide-toggle
             color="primary"
             [checked]="isAspect"
             (change)="toggleTypes()">
-            Aspect
+            Topic
           </mat-slide-toggle>
       </div>
       <!-- Search, Sort and Filter -->

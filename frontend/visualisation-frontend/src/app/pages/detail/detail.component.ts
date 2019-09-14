@@ -24,7 +24,8 @@ export class DetailComponent implements OnInit {
 
   public errorMessage = 'Query Parameters "facet" and "facetType" must be provided in the url to this page.';
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute) {
+  }
 
   ngOnInit() {
     this.facet$ = this.route.queryParamMap.pipe(

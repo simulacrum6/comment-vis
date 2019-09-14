@@ -2,8 +2,9 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { SortOption, SortOptions } from 'src/app/components/controls/filters/sort-filter/sort';
-import { Extraction, ExtractionGroup, Extractions, FacetProperty, FacetType, ExtractionProperty } from 'src/app/models/canonical';
+import {Extraction, ExtractionGroup, Extractions, FacetProperty, FacetType, ExtractionProperty, FacetTypes} from 'src/app/models/canonical';
 import { SentimentCount } from 'src/app/models/sentiment';
+import {StateService} from '../../../services/state.service';
 
 export class SentimentCountRow {
   public id: string;
@@ -42,9 +43,12 @@ export class SentimentTableComponent implements OnInit, OnChanges {
   protected neutralSort: SortOption = SortOptions.options.neutralSentiments;
   protected totalSort: SortOption = SortOptions.options.popularity;
 
-  constructor() { }
+  _facetTypeVisibleName: string;
+
+  constructor(protected stateService: StateService) { }
 
   ngOnInit() {
+    this._facetTypeVisibleName = FacetTypes.getVisibleName(this.stateService.facetType.state);
     this.update();
     this.generateTableData();
   }
