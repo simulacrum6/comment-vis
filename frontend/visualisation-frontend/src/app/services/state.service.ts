@@ -8,6 +8,7 @@ import { SortStateManager } from './state-manager/sort-state-manager';
 import { StateManager } from './state-manager/state-manager';
 import { FilterOption, FilterGenerator } from './filter';
 import { FilterOptionStateManager } from './state-manager/filter-option-state-manager';
+import {VisualisationStateManager} from './state-manager/visualisation-state-manager';
 
 const stats: SimpleRoute = { url: ['/stats/'], queryParams: {} };
 
@@ -27,6 +28,7 @@ export class StateService {
   public lastPage: StateManager<SimpleRoute> = new StateManager('last_non_detail_page', stats);
   public visPaginator: PaginatorStateManager = new PaginatorStateManager('visualisation_paginator');
   public filter: FilterServiceStateManager = new FilterServiceStateManager();
+  public visualisation: VisualisationStateManager = new VisualisationStateManager();
 
   constructor() {
     this.managers = [

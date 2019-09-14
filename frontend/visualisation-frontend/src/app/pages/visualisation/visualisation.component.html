@@ -1,13 +1,36 @@
-<!-- Removed until more visualisations are present
 <nav mat-tab-nav-bar>
-    <a mat-tab-link
-        *ngFor="let link of visualisationLinks"
-        [routerLink]="link.path"
-        routerLinkActive #rla="routerLinkActive"
-        [active]="rla.isActive">
-        {{ link.label }}
-    </a>
+  <a mat-tab-link
+     *ngFor="let link of visualisationLinks"
+     [routerLink]="link.path"
+     routerLinkActive #rla="routerLinkActive"
+     [active]="rla.isActive">
+    {{ link.label }}
+  </a>
 </nav>
--->
-<router-outlet>
-</router-outlet>
+
+
+<mat-card>
+  <!--<mat-card-title> rla.isActive {{ facetType }} - Overview</mat-card-title> -->
+  <!--<app-breadcrumb [paths]="breadCrumbPaths"></app-breadcrumb> -->
+  <mat-card-content class="content">
+
+    <router-outlet>
+      <!-- Search, Sort and Filter -->
+      <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
+        <div>
+          <app-search-filter #searchReference [filterService]="filterService">
+          </app-search-filter>
+        </div>
+        <div>
+          <app-sort-filter
+            [data]="facetGroups"
+            [(sortState)]="stateService.sort.state"
+            (sort)="onSort($event)">
+          </app-sort-filter>
+        </div>
+      </div>
+
+    </router-outlet>
+  </mat-card-content>
+</mat-card>
+

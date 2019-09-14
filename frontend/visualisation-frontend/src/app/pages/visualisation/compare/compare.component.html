@@ -1,68 +1,44 @@
 <!-- TODO: separate pie-grid view from compare component -->
-<mat-card class="content">
-  <mat-card-title>{{ facetType }} - Overview</mat-card-title>
-  <mat-card-subtitle><app-breadcrumb [paths]="breadCrumbPaths"></app-breadcrumb></mat-card-subtitle>
-  <mat-card-content>
-    <p>
-      Hover over {{ facetType }} to see, how many positive or negative opinions exist. <br>
-      Click on a {{ facetType }} to see more details. <br>
-      Use the toggle to switch between aspects and attributes.
-    </p>
-    <!-- Toolbar -->
-    <div #toggle fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px">
-      <div>
-          <label>Attribute</label>
-          <mat-slide-toggle
-            color="primary"
-            [checked]="isAspect"
-            (change)="toggleTypes()">
-            Aspect
-          </mat-slide-toggle>
-      </div>
-      <!-- Search, Sort and Filter -->
-      <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
-        <div>
-          <app-search-filter #searchReference [filterService]="filterService">
-          </app-search-filter>
-        </div>
-        <div>
-          <app-sort-filter
-            [data]="facetGroups"
-            [(sortState)]="stateService.sort.state"
-            (sort)="onSort($event)">
-          </app-sort-filter>
-        </div>
-      </div>
-    </div>
-    <!-- Main Visualisation Area -->
-    <div cdkDropListGroup
-      class='pie-grid'
-      fxLayout="row wrap"
-      fxLayoutAlign="space-evenly">
-      <div *ngFor="let group of displayedFacetGroups"
-        cdkDrag
-        cdkDropList
-        cdkDropListSortingDisabled
-        [cdkDropListData]="group"
-        (cdkDropListDropped)="onDrop($event)">
-        <ng-template cdkDragPlaceholder>
-          <div></div>
-        </ng-template>
-        <app-pie-cell
-          [facetType]="facetType"
-          [name]="group.name"
-          [extractions]="group.extractions"
-          [size]="group.sizeRatio"
-          (click)="navigateToDetailPage(group.name, facetType)">
-        </app-pie-cell>
-      </div>
-    </div>
-    <mat-paginator
-      [length]="groupCount"
-      [pageIndex]="currentPageIndex"
-      [pageSize]="currentPageSize"
-      [pageSizeOptions]="pageSizes"
-      (page)=updatePaginator($event)>
-    </mat-paginator>
-  </mat-card-content>
-</mat-card>
+<p>
+  Hover over {{ facetType }} to see, how many positive or negative opinions exist. <br>
+  Click on a {{ facetType }} to see more details. <br>
+  Use the toggle to switch between aspects and attributes.
+</p>
+<!-- Toolbar -->
+<label>Attribute</label>
+<mat-slide-toggle
+  color="primary"
+  [checked]="isAspect"
+  (change)="toggleTypes()">
+  Aspect
+</mat-slide-toggle>
+<!-- Main Visualisation Area -->
+<div cdkDropListGroup
+     class='pie-grid'
+     fxLayout="row wrap"
+     fxLayoutAlign="space-evenly">
+  <div *ngFor="let group of displayedFacetGroups"
+       cdkDrag
+       cdkDropList
+       cdkDropListSortingDisabled
+       [cdkDropListData]="group"
+       (cdkDropListDropped)="onDrop($event)">
+    <ng-template cdkDragPlaceholder>
+      <div></div>
+    </ng-template>
+    <app-pie-cell
+      [facetType]="facetType"
+      [name]="group.name"
+      [extractions]="group.extractions"
+      [size]="group.sizeRatio"
+      (click)="navigateToDetailPage(group.name, facetType)">
+    </app-pie-cell>
+  </div>
+</div>
+<mat-paginator
+  [length]="groupCount"
+  [pageIndex]="currentPageIndex"
+  [pageSize]="currentPageSize"
+  [pageSizeOptions]="pageSizes"
+  (page)=updatePaginator($event)>
+</mat-paginator>

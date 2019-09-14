@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {Component, Host, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { PageEvent, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, combineLatest } from 'rxjs';
@@ -10,8 +10,7 @@ import { SearchFilterComponent } from '../../../components/controls/filters/sear
 import { PaginatorConfig } from 'src/app/models/utils';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { FilterService } from 'src/app/services/filter.service';
-import { FilterGenerator } from 'src/app/services/filter';
-
+import {VisualisationComponent} from '../visualisation.component';
 
 class PieExtractionGroup implements ExtractionGroup {
   public id: string;
@@ -112,10 +111,8 @@ export class CompareComponent implements OnInit, OnDestroy {
    */
   @Input()
   public scaleSize = true;
-  @ViewChild('searchReference')
-  public searchReference: SearchFilterComponent;
 
-  constructor(private stateService: StateService, private router: Router, private route: ActivatedRoute, private snackBar: MatSnackBar, private filterService: FilterService) {
+  constructor(private stateService: StateService, private router: Router, private route: ActivatedRoute, private snackBar: MatSnackBar, private filterService: FilterService, @Host private parent: VisualisationComponent) {
   }
 
   ngOnInit() {
@@ -196,7 +193,7 @@ export class CompareComponent implements OnInit, OnDestroy {
   public toggleTypes() {
     this.stateService.search.reset();
     this.facetType = FacetTypes.other(this.facetType);
-    this.searchReference.clearSearch();
+    this.parent.clearSearch();
     this.initialize();
   }
 
@@ -208,10 +205,6 @@ export class CompareComponent implements OnInit, OnDestroy {
   public onFilter(filtered: ExtractionGroup[]) {
     this.searchedFacetGroups = filtered;
     this.updatePaginator({ pageIndex: 0, pageSize: this.currentPageSize, length: this.searchedFacetGroups.length });
-  }
-
-  public onSortStateChange(state: SortState) {
-    this.stateService.sort.state = state;
   }
 
   public onDrop($event: CdkDragDrop<ExtractionGroup>) {
