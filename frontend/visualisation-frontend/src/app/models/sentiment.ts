@@ -115,30 +115,30 @@ export function mapToSentimentStatement(value: number) {
 
 /**
  *  compares the given values and maps them to a statement
- *  @param overallPercent the overall percentage of positive comments
- *  @param percent the percentage of positive comments for the comparison with the overall value
+ *  @param overallSentimentDifferential the overall sentiment differential
+ *  @param sentimentDifferential the sentiment differential for the comparison with the overall value
  */
-export function mapToCompareSentimentStatement(overallPercent: number, percent: number): string {
-  const difference = overallPercent - percent;
-  if (difference < -50) {
+export function mapToCompareSentimentStatement(overallSentimentDifferential: number, sentimentDifferential: number): string {
+  const difference = overallSentimentDifferential - sentimentDifferential;
+  if (difference < -0.65) {
     return 'extremely above average';
   }
-  if (difference < -20) {
+  if (difference < -0.3) {
     return 'above average';
   }
-  if (difference < -10) {
+  if (difference < -0.1) {
     return 'slightly above average';
   }
-  if (difference < 10) {
+  if (difference < 0.1) {
     return 'around average';
   }
-  if (difference < 20) {
+  if (difference < 0.2) {
     return 'slightly below average';
   }
-  if (difference < 30) {
+  if (difference < 0.3) {
     return 'below average';
   }
-  if (difference < 50) {
+  if (difference < 0.65) {
     return 'below average';
   }
   return 'extremely below average';

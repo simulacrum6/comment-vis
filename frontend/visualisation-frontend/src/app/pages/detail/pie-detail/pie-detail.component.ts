@@ -79,12 +79,12 @@ export class PieDetailComponent extends DetailViewBaseComponent implements OnIni
     this.facetMoodPercent = this.extractions$.pipe(
       map(getMoodPercentText)
     );
-    this.facetMoodEvaluation = combineLatest(this.overallMoodPercent, this.facetMoodPercent).pipe(
-      map( ([overallPercent, facetPercent]) =>
+    this.facetMoodEvaluation = combineLatest(this.overallSentimentDifferential, this.facetDifferential).pipe(
+      map( ([overallSentimentDifferential, facetSentimentDifferential]) =>
         mapToCompareSentimentStatement(
-          Number(overallPercent.substring(0, overallPercent.indexOf('%'))),
-          Number(facetPercent.substring(0, facetPercent.indexOf('%')))
-        ))
+          overallSentimentDifferential,
+          facetSentimentDifferential)
+        )
     );
     this.breadCrumbPaths = combineLatest(this.facet$, this.facetType$).pipe(
       map(([facet, facetType]) => [
