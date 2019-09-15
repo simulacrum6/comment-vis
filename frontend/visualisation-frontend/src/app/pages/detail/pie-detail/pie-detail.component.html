@@ -23,7 +23,7 @@
       class="top_wrapper"
       fxLayout="row wrap"
       fxLayoutAlign="space-evenly">
-      <app-pie [extractions]="extractions$ | async" [by]="subGroupType$ | async"></app-pie>
+      <app-pie [extractions]="extractions$ | async" [by]="subGroupType$ | async" (clicked)="handlePieClicked($event)"></app-pie>
       <app-sentiment-table
         [extractions]="extractions$ | async"
         [facetType]="subGroupType$ | async">

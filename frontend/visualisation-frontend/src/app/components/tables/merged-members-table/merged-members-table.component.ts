@@ -22,8 +22,8 @@ export class MergedMembersTableComponent extends SentimentTableComponent impleme
     return this.model.getMergedGroups(this.group);
   }
 
-  constructor(private stateService: StateService, private snackBar: MatSnackBar) {
-    super();
+  constructor(stateService: StateService, private snackBar: MatSnackBar) {
+    super(stateService);
   }
 
   ngOnInit() {

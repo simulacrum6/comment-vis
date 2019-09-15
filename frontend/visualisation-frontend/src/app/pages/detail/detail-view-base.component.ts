@@ -21,7 +21,7 @@ export class DetailViewBaseComponent implements OnInit {
     }
 
     @Input() facet$: Observable<string>;
-    @Input() facetType$: Observable<FacetType>;
+    @Input() facetType$: BehaviorSubject<FacetType>;
 
     constructor(protected stateService: StateService) {
         this.stateService.loadSafe();

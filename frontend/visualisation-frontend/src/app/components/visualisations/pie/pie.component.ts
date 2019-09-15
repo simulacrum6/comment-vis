@@ -1,10 +1,11 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import { ChartOptions, ChartType } from 'chart.js';
 import { Label } from 'ng2-charts';
 import { Extraction, ExtractionProperty, Extractions, StringMap } from 'src/app/models/canonical.js';
 import { Sentiments } from 'src/app/models/sentiment.js';
 import { flatten } from 'src/app/models/utils';
 import { DefaultColorStrings } from 'src/environments/constants';
+import {FacetType} from '../../../models/canonical';
 
 @Component({
   selector: 'app-pie',
@@ -18,6 +19,8 @@ export class PieComponent implements OnInit, OnChanges {
   @Input() by: ExtractionProperty = 'sentiment';
   @Input() enableTooltips = true;
   @Input() animate = true;
+
+  @Output() public clicked: EventEmitter<string> = new EventEmitter();
 
   private sentimentGroups: StringMap<Extraction[]>;
   private chartLabels: Label[];
@@ -57,11 +60,19 @@ export class PieComponent implements OnInit, OnChanges {
       aspectRatio: 1,
       legend: { position: 'bottom' },
       tooltips: { enabled: this.enableTooltips }
-    }
+    };
   }
 
-  public chartClicked({ event, active }: { event: MouseEvent, active: {}[] }): void {
-    console.log(event, active);
+  public chartClicked(event: any, facetType: FacetType): void {
+    if (event.active.length > 0) {
+      const chart = event.active[0]._chart;
+      const activePoints = chart.getElementAtEvent(event.event);
+      if (activePoints.length > 0) {
+        const clickedElementIndex = activePoints[0]._index;
+        const label = chart.data.labels[clickedElementIndex];
+        this.clicked.emit(label);
+      }
+    }
   }
 
   private getChartData() {

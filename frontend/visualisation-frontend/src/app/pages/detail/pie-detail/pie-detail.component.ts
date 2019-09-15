@@ -5,6 +5,8 @@ import {Extraction, FacetTypes, sentimentDifferential} from 'src/app/models/cano
 import { StateService } from 'src/app/services/state.service';
 import { DetailViewBaseComponent } from '../detail-view-base.component';
 import { mapToCompareSentimentStatement, mapToSentimentStatement, SentimentCount } from '../../../models/sentiment';
+import {FacetType} from '../../../models/canonical';
+import {Router} from '@angular/router';
 
 function getMoodPercentText(extractions: Extraction[]) {
   const sentimentCount = SentimentCount.fromExtractions(extractions);
@@ -45,7 +47,7 @@ export class PieDetailComponent extends DetailViewBaseComponent implements OnIni
     return this.stateService.lastPage.state.queryParams;
   }
 
-  constructor(protected stateService: StateService) {
+  constructor(protected stateService: StateService, private router: Router) {
     super(stateService);
     stateService.lastPage.loadSafe();
   }
@@ -92,4 +94,13 @@ export class PieDetailComponent extends DetailViewBaseComponent implements OnIni
       ])
     );
   }
+
+  private handlePieClicked(label: string) {
+    this.facetType$.subscribe(type => this.navigateToDetailPage(label, FacetTypes.other(type)));
+  }
+
+  private navigateToDetailPage(facet: string, facetType: FacetType) {
+    this.router.navigate(['/detail'], { queryParams: { facet, facetType } });
+  }
+
 }
