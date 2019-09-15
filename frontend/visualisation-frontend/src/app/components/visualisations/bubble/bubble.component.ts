@@ -3,7 +3,6 @@ import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChartDataSets, ChartPoint } from 'chart.js';
 import 'chartjs-plugin-dragdata';
-import 'chartjs-plugin-zoom';
 import { default as Color } from 'color';
 import { BaseChartDirective } from 'ng2-charts';
 import { combineLatest, Subscription } from 'rxjs';
@@ -64,12 +63,6 @@ export class BubbleComponent implements OnInit, OnDestroy {
       // Padding so values on the edge are not easily cut off
       // TODO: change to max radius of chart points?
       padding: { left: 20, right: 20, top: 20, bottom: 20 }
-    },
-    plugins: {
-      zoom: {
-        pan: { enabled: false, mode: 'xy' },
-        zoom: { enabled: false, drag: false, mode: 'xy', speed: 0.1, }
-      }
     }
   };
 
