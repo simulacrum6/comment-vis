@@ -1,13 +1,12 @@
-<!-- Removed until more visualisations are present
-<nav mat-tab-nav-bar>
-    <a mat-tab-link
-        *ngFor="let link of visualisationLinks"
-        [routerLink]="link.path"
-        routerLinkActive #rla="routerLinkActive"
-        [active]="rla.isActive">
-        {{ link.label }}
-    </a>
+<nav mat-tab-nav-bar mat-align-tabs="center" animationDuration="0ms">
+  <a mat-tab-link
+     *ngFor="let link of visualisationLinks"
+     [routerLink]="link.path"
+     routerLinkActive #rla="routerLinkActive"
+     [active]="rla.isActive">
+    {{ link.label }}
+  </a>
 </nav>
--->
+
 <router-outlet>
 </router-outlet>

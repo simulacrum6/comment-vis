@@ -9,6 +9,7 @@ import { CompareComponent } from './pages/visualisation/compare/compare.componen
 import { VisualisationComponent } from './pages/visualisation/visualisation.component';
 import { BubbleComponent } from './components/visualisations/bubble/bubble.component';
 import { ExploreComponent } from './pages/visualisation/explore/explore.component';
+import {CommentsComponent} from './pages/visualisation/comments/comments.component';
 
 const routes: Routes = [
   { path: '', component: UploadComponent },
@@ -22,6 +23,7 @@ const routes: Routes = [
       { path: 'compare', component: CompareComponent },
       { path: 'tree', component: TreeMapComponent },
       { path: 'bar', component: BarComponent },
+      { path: 'comments', component: CommentsComponent },
       { path: '**', redirectTo: 'compare' },
     ]
   },

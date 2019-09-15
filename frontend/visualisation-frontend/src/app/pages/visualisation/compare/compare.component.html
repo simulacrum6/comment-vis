@@ -1,7 +1,8 @@
-<!-- TODO: separate pie-grid view from compare component -->
-<mat-card class="content">
+<mat-card>
   <mat-card-title>{{ _facetTypeVisibleName }} - Overview</mat-card-title>
-  <mat-card-subtitle><app-breadcrumb [paths]="breadCrumbPaths"></app-breadcrumb></mat-card-subtitle>
+  <mat-card-subtitle>
+    <app-breadcrumb [paths]="breadCrumbPaths"></app-breadcrumb>
+  </mat-card-subtitle>
   <mat-card-content>
     <p>
       Hover over {{ _facetTypeVisibleName }} to see, how many positive or negative opinions exist. <br>
@@ -11,13 +12,13 @@
     <!-- Toolbar -->
     <div #toggle fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px">
       <div>
-          <label>Trait</label>
-          <mat-slide-toggle
-            color="primary"
-            [checked]="isAspect"
-            (change)="toggleTypes()">
-            Topic
-          </mat-slide-toggle>
+        <label>Trait</label>
+        <mat-slide-toggle
+          color="primary"
+          [checked]="isAspect"
+          (change)="toggleTypes()">
+          Topic
+        </mat-slide-toggle>
       </div>
       <!-- Search, Sort and Filter -->
       <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
@@ -36,15 +37,15 @@
     </div>
     <!-- Main Visualisation Area -->
     <div cdkDropListGroup
-      class='pie-grid'
-      fxLayout="row wrap"
-      fxLayoutAlign="space-evenly">
+         class='pie-grid'
+         fxLayout="row wrap"
+         fxLayoutAlign="space-evenly">
       <div *ngFor="let group of displayedFacetGroups"
-        cdkDrag
-        cdkDropList
-        cdkDropListSortingDisabled
-        [cdkDropListData]="group"
-        (cdkDropListDropped)="onDrop($event)">
+           cdkDrag
+           cdkDropList
+           cdkDropListSortingDisabled
+           [cdkDropListData]="group"
+           (cdkDropListDropped)="onDrop($event)">
         <ng-template cdkDragPlaceholder>
           <div></div>
         </ng-template>

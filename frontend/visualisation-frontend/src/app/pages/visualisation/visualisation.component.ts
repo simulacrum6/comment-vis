@@ -11,9 +11,9 @@ import { StateService } from 'src/app/services/state.service';
 export class VisualisationComponent implements OnInit {
 
   public readonly visualisationLinks = [
-    { path: 'pie', label: 'Pie' },
-    { path: 'tree', label: 'Tree' },
-    { path: 'bar', label: 'Bar' }
+    { path: 'explore', label: 'Explore'},
+    { path: 'pie', label: 'Overview'},
+    { path: 'comments', label: 'Comments'}
   ];
 
   constructor(private stateService: StateService, private snackBar: MatSnackBar, private router: Router) {

@@ -31,6 +31,7 @@ import { ExploreComponent } from './pages/visualisation/explore/explore.componen
 import { SizeScalingComponent } from './components/controls/size-scaling/size-scaling.component';
 import { LayoutComponent } from './components/controls/layout/layout.component';
 import { HttpClientModule } from '@angular/common/http';
+import { CommentsComponent } from './pages/visualisation/comments/comments.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { HttpClientModule } from '@angular/common/http';
     BubbleComponent,
     ExploreComponent,
     SizeScalingComponent,
-    LayoutComponent
+    LayoutComponent,
+    CommentsComponent
   ],
   imports: [
     BrowserModule,
