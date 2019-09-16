@@ -5,6 +5,10 @@
     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
       <app-size-scaling></app-size-scaling>
       <app-layout></app-layout>
+      <app-active-filters
+        [activeFilters]="filterService.activeFilters"
+        (removed)="onFilterRemoval($event)">
+      </app-active-filters>
     </div>
     <app-bubble></app-bubble>
   </mat-card-content>

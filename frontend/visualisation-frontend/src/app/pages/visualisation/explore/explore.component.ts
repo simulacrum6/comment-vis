@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { FilterService } from 'src/app/services/filter.service';
+import { FilterOption, FilterType } from 'src/app/services/filter';
 
 @Component({
   selector: 'app-explore',
@@ -7,9 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ExploreComponent implements OnInit {
 
-  constructor() { }
+  constructor(private filterService: FilterService) { }
 
   ngOnInit() {
+  }
+
+  public onFilterRemoval(removeEvent: { option: FilterOption, type: FilterType }) {
+    this.filterService.remove(removeEvent.option, removeEvent.type);
   }
 
 }

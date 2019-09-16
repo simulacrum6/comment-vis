@@ -32,6 +32,7 @@ import { SizeScalingComponent } from './components/controls/size-scaling/size-sc
 import { LayoutComponent } from './components/controls/layout/layout.component';
 import { HttpClientModule } from '@angular/common/http';
 import { CommentsComponent } from './pages/visualisation/comments/comments.component';
+import { ActiveFiltersComponent } from './components/controls/active-filters/active-filters.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { CommentsComponent } from './pages/visualisation/comments/comments.compo
     ExploreComponent,
     SizeScalingComponent,
     LayoutComponent,
-    CommentsComponent
+    CommentsComponent,
+    ActiveFiltersComponent
   ],
   imports: [
     BrowserModule,
