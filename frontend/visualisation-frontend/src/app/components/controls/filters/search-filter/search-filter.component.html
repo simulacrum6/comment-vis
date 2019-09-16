@@ -1,7 +1,8 @@
   <mat-form-field #input>
     <input matInput
+      [readonly]="disabled"
       type="text"
-      placeholder="Search/Filter"
+      placeholder="Search..."
       [formControl]="inputForm"
       [matAutocomplete]="auto">
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="getAutocompleteUIOutput">

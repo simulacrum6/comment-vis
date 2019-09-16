@@ -2,7 +2,21 @@
   <mat-card-title>Explore the Dataset</mat-card-title>
 
   <mat-card-content>
-    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
+    <!-- Search, Filter, Sort -->
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+      <!-- Temporary fake search -->
+      <mat-form-field>
+        <input matInput type="text" placeholder="Search..." disabled>
+      </mat-form-field>
+      <app-filter></app-filter>
+      <!-- Removed until polished
+      <app-active-filters
+        [activeFilters]="filterService.activeFilters"
+        (removed)="onFilterRemoval($event)">
+      </app-active-filters> -->
+    </div>
+    <!-- Bubble controls -->
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
       <app-size-scaling></app-size-scaling>
       <app-layout></app-layout>
     </div>

@@ -1,5 +1,6 @@
 <mat-form-field class="medium">
   <mat-select
+    [disabled]="disabled"
     placeholder="Sort by..."
     [(ngModel)]="sortOption"
     (selectionChange)="onSortStateChange($event)">
@@ -14,7 +15,7 @@
 <mat-form-field class="small">
   <mat-select
     placeholder="Order"
-    [disabled]="noSort"
+    [disabled]="noSort || disabled"
     [(ngModel)]="sortOrderOption"
     (selectionChange)="onSortStateChange($event)">
     <mat-option *ngFor="let option of _sortOrderOptions" [value]="option">

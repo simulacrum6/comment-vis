@@ -31,7 +31,10 @@ import { ExploreComponent } from './pages/visualisation/explore/explore.componen
 import { SizeScalingComponent } from './components/controls/size-scaling/size-scaling.component';
 import { LayoutComponent } from './components/controls/layout/layout.component';
 import { HttpClientModule } from '@angular/common/http';
-import { CommentsComponent } from './pages/visualisation/comments/comments.component';
+import { CommentsComponent } from './components/visualisations/comments/comments.component';
+import { ActiveFiltersComponent } from './components/controls/active-filters/active-filters.component';
+import { InspectComponent } from './pages/visualisation/inspect/inspect.component';
+import { FilterComponent } from './components/controls/filters/filter/filter.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +61,10 @@ import { CommentsComponent } from './pages/visualisation/comments/comments.compo
     ExploreComponent,
     SizeScalingComponent,
     LayoutComponent,
-    CommentsComponent
+    CommentsComponent,
+    ActiveFiltersComponent,
+    InspectComponent,
+    FilterComponent
   ],
   imports: [
     BrowserModule,

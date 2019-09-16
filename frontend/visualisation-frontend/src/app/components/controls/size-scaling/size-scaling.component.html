@@ -1,3 +1,12 @@
-<p>
-  size-scaling works!
-</p>
+<mat-form-field class="medium-small">
+  <mat-select #selector
+    [disabled]="true"
+    [value]="scalings[0]"
+    placeholder="Scale points by...">
+    <mat-option *ngFor="let option of scalings"
+      [matTooltip]="option.hint"
+      [value]="option">
+      {{ option.viewValue }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

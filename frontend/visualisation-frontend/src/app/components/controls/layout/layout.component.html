@@ -1,3 +1,12 @@
-<p>
-  layout works!
-</p>
+<mat-form-field class="medium-small">
+  <mat-select #selector
+    [disabled]="true"
+    [value]="layouts[1]"
+    placeholder="Select a layout...">
+    <mat-option *ngFor="let layout of layouts"
+      [matTooltip]="layout.hint"
+      [value]="layout">
+      {{ layout.viewValue }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
