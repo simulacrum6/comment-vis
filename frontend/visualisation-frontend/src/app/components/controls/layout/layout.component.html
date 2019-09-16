@@ -2,7 +2,7 @@
   <mat-select #selector
     [disabled]="true"
     [value]="layouts[1]"
-    placeholder="Select a Layout">
+    placeholder="Select a layout...">
     <mat-option *ngFor="let layout of layouts"
       [matTooltip]="layout.hint"
       [value]="layout">

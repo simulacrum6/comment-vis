@@ -2,7 +2,7 @@
   <mat-select #selector
     [disabled]="true"
     [value]="scalings[0]"
-    placeholder="Select a Size Scaling">
+    placeholder="Scale points by...">
     <mat-option *ngFor="let option of scalings"
       [matTooltip]="option.hint"
       [value]="option">
