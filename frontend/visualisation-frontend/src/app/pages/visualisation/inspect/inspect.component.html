@@ -5,6 +5,6 @@
     <div>
       <app-search-filter [filterService]="filterService"></app-search-filter>
     </div>
-    <app-comments></app-comments>
+    <app-comments [comments]="(comments | async)"></app-comments>
   </mat-card-content>
 </mat-card>
