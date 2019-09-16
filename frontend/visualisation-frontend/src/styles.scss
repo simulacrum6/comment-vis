@@ -11,3 +11,13 @@ min-width: 320px;
 h3, strong {
 font-weight: 500;
 }
+
+mat-form-field.medium {
+    width: 140px;
+}
+mat-form-field.medium-small {
+    width: 100px;
+}
+mat-form-field.small {
+    width: 65px;
+}

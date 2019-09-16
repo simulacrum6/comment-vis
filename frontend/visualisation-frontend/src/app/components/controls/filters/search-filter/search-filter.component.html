@@ -1,5 +1,6 @@
   <mat-form-field #input>
     <input matInput
+      [readonly]="disabled"
       type="text"
       placeholder="Search/Filter"
       [formControl]="inputForm"

@@ -5,6 +5,10 @@
     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
       <app-size-scaling></app-size-scaling>
       <app-layout></app-layout>
+      <!-- Temporary fake search -->
+      <mat-form-field>
+        <input matInput type="text" placeholder="Search/Filter" disabled>
+      </mat-form-field>
       <app-active-filters
         [activeFilters]="filterService.activeFilters"
         (removed)="onFilterRemoval($event)">

@@ -14,11 +14,18 @@ import { StateService } from 'src/app/services/state.service';
 })
 export class SearchFilterComponent implements OnInit, OnDestroy {
 
+  @Output()
+  public searchTermChange: EventEmitter<string> = new EventEmitter();
   /**
    * The filterService connected to the component.
    */
   @Input()
   public filterService: FilterService;
+  @Input()
+  public set searchTerm(term: string) {
+    this.searchFilter.value = term;
+    this.searchTermChange.emit(term);
+  }
   /**
    * The current search term, displayed by the component.
    */
@@ -26,12 +33,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     return this.searchFilter.value;
   }
   @Input()
-  public set searchTerm(term: string) {
-    this.searchFilter.value = term;
-    this.searchTermChange.emit(term);
-  }
-  @Output()
-  public searchTermChange: EventEmitter<string> = new EventEmitter();
+  public disabled = false;
 
   private inputForm = new FormControl('');
   private subscription: Subscription = new Subscription();
@@ -53,7 +55,6 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     );
     const searchTermSubscription = searchTermChange.subscribe(term => this.onSearchTermChange(term));
     this.subscription = searchTermSubscription;
-
   }
 
   ngOnDestroy() {
