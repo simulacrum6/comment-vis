@@ -12,8 +12,8 @@ export class VisualisationComponent implements OnInit {
 
   public readonly visualisationLinks = [
     { path: 'explore', label: 'Explore'},
-    { path: 'pie', label: 'Overview'},
-    { path: 'comments', label: 'Comments'}
+    { path: 'pie', label: 'Compare'},
+    { path: 'inspect', label: 'Inspect'}
   ];
 
   constructor(private stateService: StateService, private snackBar: MatSnackBar, private router: Router) {
