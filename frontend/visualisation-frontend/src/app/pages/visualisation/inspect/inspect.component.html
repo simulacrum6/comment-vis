@@ -2,8 +2,9 @@
   <mat-card-title>Inspect the data</mat-card-title>
 
   <mat-card-content>
-    <div>
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
       <app-search-filter [filterService]="filterService"></app-search-filter>
+      <app-sort-filter [data]="[]" [disabled]="true"></app-sort-filter>
     </div>
     <app-comments [comments]="(comments | async)"></app-comments>
   </mat-card-content>

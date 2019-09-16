@@ -10,30 +10,23 @@
       Use the toggle to switch between topics and traits.
     </p>
     <!-- Toolbar -->
-    <div #toggle fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px">
-      <div>
-        <label>Trait</label>
-        <mat-slide-toggle
-          color="primary"
-          [checked]="isAspect"
-          (change)="toggleTypes()">
-          Topic
-        </mat-slide-toggle>
-      </div>
-      <!-- Search, Sort and Filter -->
-      <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
-        <div>
-          <app-search-filter #searchReference [filterService]="filterService">
-          </app-search-filter>
-        </div>
-        <div>
-          <app-sort-filter
-            [data]="facetGroups"
-            [(sortState)]="stateService.sort.state"
-            (sort)="onSort($event)">
-          </app-sort-filter>
-        </div>
-      </div>
+    <div #toggle fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+      <label>Trait</label>
+      <mat-slide-toggle
+        color="primary"
+        [checked]="isAspect"
+        (change)="toggleTypes()">
+        Topic
+      </mat-slide-toggle>
+    </div>
+    <!-- Search, Sort and Filter -->
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+      <app-search-filter #searchReference [filterService]="filterService"></app-search-filter>
+      <app-sort-filter
+        [data]="facetGroups"
+        [(sortState)]="stateService.sort.state"
+        (sort)="onSort($event)">
+      </app-sort-filter>
     </div>
     <!-- Main Visualisation Area -->
     <div cdkDropListGroup

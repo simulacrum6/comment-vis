@@ -31,7 +31,7 @@ export class SortFilterComponent implements OnInit {
     SortOrderOptions.ascending,
   ];
 
-  private _sortState: SortState;
+  private _sortState: SortState = { sort: SortOptions.options.noSort, order: SortOrderOptions.descending };
 
   private get noSort(): boolean {
     return this.sortFunction === SortFunctions.noSort;
@@ -75,7 +75,10 @@ export class SortFilterComponent implements OnInit {
    * The data to be sorted.
    */
   @Input()
-  data: ExtractionGroup[];
+  data: ExtractionGroup[] = [];
+
+  @Input()
+  disabled = false;
 
   /**
    * Emits processed data, whenever data has been sorted.
