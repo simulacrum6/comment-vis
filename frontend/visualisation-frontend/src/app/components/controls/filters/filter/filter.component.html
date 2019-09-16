@@ -1,0 +1,10 @@
+<mat-form-field>
+  <mat-select #selector
+    [disabled]="true"
+    placeholder="Add a filter...">
+    <mat-option *ngFor="let option of filters"
+      [value]="option">
+      {{ option.viewValue }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

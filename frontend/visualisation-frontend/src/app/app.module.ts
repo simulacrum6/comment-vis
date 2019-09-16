@@ -34,6 +34,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CommentsComponent } from './components/visualisations/comments/comments.component';
 import { ActiveFiltersComponent } from './components/controls/active-filters/active-filters.component';
 import { InspectComponent } from './pages/visualisation/inspect/inspect.component';
+import { FilterComponent } from './components/controls/filters/filter/filter.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { InspectComponent } from './pages/visualisation/inspect/inspect.componen
     LayoutComponent,
     CommentsComponent,
     ActiveFiltersComponent,
-    InspectComponent
+    InspectComponent,
+    FilterComponent
   ],
   imports: [
     BrowserModule,
