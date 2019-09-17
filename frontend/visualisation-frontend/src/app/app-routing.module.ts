@@ -17,7 +17,7 @@ const routes: Routes = [
   { path: 'stats', component: StatisticsComponent },
   { path: 'vis', component: VisualisationComponent,
     children: [
-      { path: '', redirectTo: 'compare', pathMatch: 'full' },
+      { path: '', redirectTo: 'explore', pathMatch: 'full' },
       { path: 'explore', component: ExploreComponent },
       { path: 'pie', redirectTo: 'compare', pathMatch: 'full' },
       { path: 'embeddings', redirectTo: 'explore', pathMatch: 'full' },
