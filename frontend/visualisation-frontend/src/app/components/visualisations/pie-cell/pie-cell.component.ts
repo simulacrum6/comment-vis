@@ -24,13 +24,23 @@ export class PieCellComponent implements OnInit {
 
   @ViewChild('chartWrapper') chartWrapper: ElementRef;
 
+  private hover = false;
+  private pinned = false;
+
   constructor() { }
 
   ngOnInit() {
     this.setSize();
   }
 
-  /** Sets the size of the Pie Cell. */
+  private togglePinned(event: MouseEvent) {
+    event.stopPropagation();
+    this.pinned = !this.pinned;
+  }
+
+  /**
+   * Sets the size of the Pie Cell. Used to scale pies.
+   */
   private setSize() {
     if (!isNaN(this.size)) {
       this.chartWrapper.nativeElement.style.width = PieCellComponent.interpolator(this.size).toFixed(0) + 'px';

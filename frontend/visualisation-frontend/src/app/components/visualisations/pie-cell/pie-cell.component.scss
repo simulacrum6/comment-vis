@@ -21,3 +21,17 @@
     padding: 5px;
     padding-top: 10px;
 }
+
+.mini-button {
+    z-index: 9001;
+    display: hidden;
+    padding: 0px;
+    margin: 0px;
+    min-width: 24px;
+    min-height: 24px;
+}
+
+.label {
+    text-align: center;
+    vertical-align: center;
+}
