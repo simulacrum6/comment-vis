@@ -6,6 +6,7 @@ import { ExtractionGroup } from 'src/app/models/canonical';
 import { FilterGenerator, FilterOption } from 'src/app/services/filter';
 import { FilterService } from 'src/app/services/filter.service';
 import { StateService } from 'src/app/services/state.service';
+import { MatAutocompleteSelectedEvent } from '@angular/material';
 
 @Component({
   selector: 'app-search-filter',
@@ -61,8 +62,14 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  clearSearch() {
+  public clearSearch() {
     this.inputForm.reset();
+  }
+
+  public pinOption(event: MatAutocompleteSelectedEvent) {
+    const group: ExtractionGroup = event.option.value;
+    const filter = FilterGenerator.idEquals(group.id, group.id);
+    this.filterService.add(filter, 'keep');
   }
 
   private onSearchTermChange(term: string) {

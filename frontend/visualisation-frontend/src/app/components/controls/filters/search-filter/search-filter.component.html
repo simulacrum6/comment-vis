@@ -5,8 +5,12 @@
       placeholder="Search..."
       [formControl]="inputForm"
       [matAutocomplete]="auto">
-    <mat-autocomplete #auto="matAutocomplete" [displayWith]="getAutocompleteUIOutput">
-      <mat-option *ngFor="let option of (filterService.filteredDataChange | async)" [value]="option">
+    <mat-autocomplete #auto="matAutocomplete"
+      [displayWith]="getAutocompleteUIOutput"
+      (optionSelected)="pinOption($event)">
+      <mat-option
+        *ngFor="let option of (filterService.filteredDataChange | async)"
+        [value]="option">
         {{option.name}}
       </mat-option>
     </mat-autocomplete>
