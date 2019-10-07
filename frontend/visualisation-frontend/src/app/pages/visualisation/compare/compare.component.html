@@ -44,10 +44,7 @@
           <div></div>
         </ng-template>
         <app-pie-cell
-          [facetType]="facetType"
-          [name]="group.name"
-          [extractions]="group.extractions"
-          [size]="group.sizeRatio"
+          [group]="group"
           (click)="navigateToDetailPage(group.name, facetType)">
         </app-pie-cell>
       </div>

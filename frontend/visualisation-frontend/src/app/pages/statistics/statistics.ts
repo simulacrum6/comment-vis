@@ -115,6 +115,7 @@ export class StatisticsComponent implements OnInit, OnDestroy {
 
   constructor(private stateService: StateService, private router: Router, private route: ActivatedRoute, private filterService: FilterService) {
     this.stateService.loadSafe();
+    this.stateService.model.state.updateExtractions();
     this.extractions = stateService.model.state.extractions;
     this.values = {
       attribute: Extractions.values(this.extractions, 'attribute'),
@@ -215,6 +216,15 @@ export class StatisticsComponent implements OnInit, OnDestroy {
 
   private navigateToDetailPage(facet: string, facetType: FacetType) {
     this.router.navigate(['/detail'], { queryParams: { facet, facetType } });
+  }
+
+  public exportModel() {
+    const serialized = this.stateService.model.model.exportAsJSONString();
+    const download = document.createElement('a');
+    download.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(serialized)),
+      download.setAttribute('download', `${this.stateService.model.modelId}.export.ce.json`);
+    download.click();
+
   }
 
   ngOnInit() {

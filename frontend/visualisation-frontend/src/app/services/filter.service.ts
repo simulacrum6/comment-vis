@@ -154,6 +154,13 @@ export class FilterService {
     this.onChange();
   }
   /**
+   * Indicates, whether the given filter option of given type is registered under the service.
+   */
+  public has(option: FilterOption, type: FilterType = 'shun') {
+    const index = this.findIndex(option, type);
+    return index !== -1;
+  }
+  /**
    * Clears all filters.
    */
   public clearFilters() {

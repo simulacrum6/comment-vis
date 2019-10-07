@@ -1,6 +1,19 @@
-<div class="cell-wrapper">
-  <div class="label">{{ name }}</div>
+<div class="cell-wrapper"
+  (mouseenter)="hover = true;"
+  (mouseleave)="hover = false;">
+  <div>
+    <div fxLayout="row" fxLayoutAlign="center">
+      <p class="label">{{ group.name }}</p>
+      <button mat-button
+        *ngIf="hover || pinned"
+        class="mini-button"
+        (click)="togglePinned($event)">
+        <mat-icon *ngIf="!pinned; else remove">add</mat-icon>
+        <ng-template #remove><mat-icon>clear</mat-icon></ng-template>
+      </button>
+    </div>
+  </div>
   <div #chartWrapper class="chart-wrapper">
-    <app-pie [extractions]="extractions" [animate]="false"></app-pie>
+    <app-pie [extractions]="group.extractions" [animate]="false"></app-pie>
   </div>
 </div>

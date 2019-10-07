@@ -23,7 +23,7 @@ export class BubbleComponent implements OnInit, OnDestroy {
 
   @ViewChild('chart')
   private chartDirective: BaseChartDirective;
-  private urlSub: Subscription = new Subscription();
+  private sub: Subscription = new Subscription();
   private model: Model = null;
   private bubbles: Bubble[] = [];
   private chartData: ChartDataSets[] = [];
@@ -91,21 +91,14 @@ export class BubbleComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private layoutService: LayoutService
-    ) {
-    // set up url for return from detail page.
-    this.urlSub = combineLatest(this.route.url, this.route.params).subscribe(
-      ([url, params]) => {
-        const path = ['/vis/' + url.join('/')];
-        this.stateService.lastPage.state = { url: path, queryParams: params };
-    });
-  }
+    ) { }
 
   ngOnInit() {
     this.update();
     // deactivate animations after first load.
     const opts: any = this.chartOptions;
     opts.animation = { duration: 0 };
-    this.layoutService.layoutChanges
+    this.sub = this.layoutService.layoutChanges
     .subscribe(
       layout => {
         if (layout.length >= this.groups.length) {
@@ -123,7 +116,7 @@ export class BubbleComponent implements OnInit, OnDestroy {
     this.layoutService.getLayout(names, this.layoutName);
   }
   ngOnDestroy(): void {
-    this.urlSub.unsubscribe();
+    this.sub.unsubscribe();
   }
 
   public update() {

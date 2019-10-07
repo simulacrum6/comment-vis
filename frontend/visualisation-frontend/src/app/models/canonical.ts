@@ -295,9 +295,16 @@ export function sentimentDifferential(extractions: Extraction[], normalized: boo
   return normalized ? differential / extractions.length : differential;
 }
 
+/**
+ * Returns the number groups of given types under the given ExtractionGroup.
+ */
+export function diversity(group: ExtractionGroup) {
+  const type = group.type === FacetTypes.Aspect ? FacetTypes.Attribute : FacetTypes.Aspect;
+  return groupAsEntries(group.extractions, type).length;
+}
 
 export class Model {
-  public readonly extractions: Extraction[];
+  public extractions: Extraction[];
   public get id(): string {
     return this.modelId;
   }
@@ -574,6 +581,22 @@ export class Model {
     const list = this.groupLists[group.type];
     this.groupLists[group.type] = list.concat(other);
   }
+
+  public updateExtractions() {
+    const aspects = this.groupLists.aspect;
+    const attributes = this.groupLists.attribute;
+
+    // assign groups to extractions
+    aspects.forEach(assignGroup);
+    attributes.forEach(assignGroup);
+
+    this.extractions = flatten(attributes.map(g => g.extractions));
+  }
+
+  public exportAsJSONString() {
+    this.updateExtractions();
+    return JSON.stringify(this.extractions);
+  }
 }
 
 export function parseJson(json: any[]): RawExtraction[] {
@@ -587,4 +610,10 @@ function toRawExtraction(json: any): RawExtraction {
     attribute: json.attribute,
     sentiment: mapToSentiment(json.sentiment)
   };
+}
+
+export function assignGroup(group: ExtractionGroup): void {
+  if (FacetTypes.isFacetType(group.type)) {
+    group.extractions.forEach(ex => (ex[group.type] as Facet).group = group.name);
+  }
 }
