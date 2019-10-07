@@ -295,6 +295,13 @@ export function sentimentDifferential(extractions: Extraction[], normalized: boo
   return normalized ? differential / extractions.length : differential;
 }
 
+/**
+ * Returns the number groups of given types under the given ExtractionGroup.
+ */
+export function diversity(group: ExtractionGroup) {
+  const type = group.type === FacetTypes.Aspect ? FacetTypes.Attribute : FacetTypes.Aspect;
+  return groupAsEntries(group.extractions, type).length;
+}
 
 export class Model {
   public extractions: Extraction[];
