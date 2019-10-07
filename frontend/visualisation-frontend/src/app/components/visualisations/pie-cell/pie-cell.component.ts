@@ -1,6 +1,7 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Extraction } from 'src/app/models/canonical';
 import { Interpolator, makeInterpolator } from 'src/app/models/utils';
+import { PieExtractionGroup } from 'src/app/pages/visualisation/compare/compare.component';
 
 @Component({
   selector: 'app-pie-cell',
@@ -17,12 +18,11 @@ export class PieCellComponent implements OnInit {
   /** Interpolator to set the size of Pie Cells */
   private static interpolator: Interpolator = makeInterpolator(PieCellComponent.MinSize, PieCellComponent.MaxSize);
 
-  @Input() facetType: 'aspect' | 'attribute';
-  @Input() name: string;
-  @Input() extractions: Extraction[];
-  @Input() size = NaN;
+  @Input()
+  public group: PieExtractionGroup;
 
-  @ViewChild('chartWrapper') chartWrapper: ElementRef;
+  @ViewChild('chartWrapper')
+  public chartWrapper: ElementRef;
 
   private hover = false;
   private pinned = false;
@@ -30,7 +30,7 @@ export class PieCellComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.setSize();
+    this.updateSize();
   }
 
   private togglePinned(event: MouseEvent) {
@@ -41,9 +41,10 @@ export class PieCellComponent implements OnInit {
   /**
    * Sets the size of the Pie Cell. Used to scale pies.
    */
-  private setSize() {
-    if (!isNaN(this.size)) {
-      this.chartWrapper.nativeElement.style.width = PieCellComponent.interpolator(this.size).toFixed(0) + 'px';
+  private updateSize() {
+    const size = this.group.sizeRatio;
+    if (!isNaN(size)) {
+      this.chartWrapper.nativeElement.style.width = PieCellComponent.interpolator(size).toFixed(0) + 'px';
       this.chartWrapper.nativeElement.style.height = this.chartWrapper.nativeElement.style.height;
     }
   }

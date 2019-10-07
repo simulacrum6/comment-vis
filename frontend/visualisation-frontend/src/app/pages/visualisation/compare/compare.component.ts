@@ -13,7 +13,7 @@ import { FilterService } from 'src/app/services/filter.service';
 import { FilterGenerator } from 'src/app/services/filter';
 
 
-class PieExtractionGroup implements ExtractionGroup {
+export class PieExtractionGroup implements ExtractionGroup {
   public id: string;
   public name: string;
   public type: ExtractionProperty;

@@ -49,7 +49,7 @@ export class FilterGenerator {
   public static idEquals(groupId: string, id: string = FilterGenerator.id()): FilterOption {
     const name = DefaultFilterName.IdEquals;
     const filter = (group: ExtractionGroup) => group.id === groupId;
-    return new FilterOption(id, name, id, filter);
+    return new FilterOption(id, name, groupId, filter);
   }
   public static generate(filter: string, value: any, id: string = FilterGenerator.id()): FilterOption {
     if (!FilterGenerator.registry.has(filter)) {
