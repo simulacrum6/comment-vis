@@ -297,7 +297,7 @@ export function sentimentDifferential(extractions: Extraction[], normalized: boo
 
 
 export class Model {
-  public readonly extractions: Extraction[];
+  public extractions: Extraction[];
   public get id(): string {
     return this.modelId;
   }
@@ -575,13 +575,7 @@ export class Model {
     this.groupLists[group.type] = list.concat(other);
   }
 
-  public updateExtractions(group: ExtractionGroup) {
-    for (const extraction of group.extractions) {
-
-    }
-  }
-
-  public exportAsJSONString() {
+  public updateExtractions() {
     const aspects = this.groupLists.aspect;
     const attributes = this.groupLists.attribute;
 
@@ -589,9 +583,12 @@ export class Model {
     aspects.forEach(assignGroup);
     attributes.forEach(assignGroup);
 
-    const extractions = flatten(attributes.map(g => g.extractions));
+    this.extractions = flatten(attributes.map(g => g.extractions));
+  }
 
-    return JSON.stringify(extractions);
+  public exportAsJSONString() {
+    this.updateExtractions();
+    return JSON.stringify(this.extractions);
   }
 }
 
