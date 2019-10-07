@@ -574,6 +574,25 @@ export class Model {
     const list = this.groupLists[group.type];
     this.groupLists[group.type] = list.concat(other);
   }
+
+  public updateExtractions(group: ExtractionGroup) {
+    for (const extraction of group.extractions) {
+
+    }
+  }
+
+  public exportAsJSONString() {
+    const aspects = this.groupLists.aspect;
+    const attributes = this.groupLists.attribute;
+
+    // assign groups to extractions
+    aspects.forEach(assignGroup);
+    attributes.forEach(assignGroup);
+
+    const extractions = flatten(attributes.map(g => g.extractions));
+
+    return JSON.stringify(extractions);
+  }
 }
 
 export function parseJson(json: any[]): RawExtraction[] {
@@ -587,4 +606,10 @@ function toRawExtraction(json: any): RawExtraction {
     attribute: json.attribute,
     sentiment: mapToSentiment(json.sentiment)
   };
+}
+
+export function assignGroup(group: ExtractionGroup): void {
+  if (FacetTypes.isFacetType(group.type)) {
+    group.extractions.forEach(ex => (ex[group.type] as Facet).group = group.name);
+  }
 }
