@@ -1,16 +1,15 @@
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { PageEvent, MatSnackBar } from '@angular/material';
+import { MatSnackBar, PageEvent } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription, combineLatest } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
 import { SortState } from 'src/app/components/controls/filters/sort-filter/sort';
-import { Extraction, ExtractionGroup, FacetType, FacetTypes, ExtractionProperty, Model } from 'src/app/models/canonical';
+import { Extraction, ExtractionGroup, ExtractionProperty, FacetType, FacetTypes, Model } from 'src/app/models/canonical';
 import { SentimentCount } from 'src/app/models/sentiment';
+import { PaginatorConfig } from 'src/app/models/utils';
+import { FilterService } from 'src/app/services/filter.service';
 import { StateService } from 'src/app/services/state.service';
 import { SearchFilterComponent } from '../../../components/controls/filters/search-filter/search-filter.component';
-import { PaginatorConfig } from 'src/app/models/utils';
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { FilterService } from 'src/app/services/filter.service';
-import { FilterGenerator } from 'src/app/services/filter';
 
 
 export class PieExtractionGroup implements ExtractionGroup {

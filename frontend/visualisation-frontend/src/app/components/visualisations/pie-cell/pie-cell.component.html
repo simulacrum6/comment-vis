@@ -5,7 +5,7 @@
     <div fxLayout="row" fxLayoutAlign="center">
       <p class="label">{{ group.name }}</p>
       <button mat-button
-        *ngIf="hover"
+        *ngIf="hover || pinned"
         class="mini-button"
         (click)="togglePinned($event)">
         <mat-icon *ngIf="!pinned; else remove">add</mat-icon>

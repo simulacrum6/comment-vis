@@ -2,6 +2,8 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Extraction } from 'src/app/models/canonical';
 import { Interpolator, makeInterpolator } from 'src/app/models/utils';
 import { PieExtractionGroup } from 'src/app/pages/visualisation/compare/compare.component';
+import { FilterGenerator, FilterOption } from 'src/app/services/filter';
+import { FilterService } from 'src/app/services/filter.service';
 
 @Component({
   selector: 'app-pie-cell',
@@ -26,16 +28,27 @@ export class PieCellComponent implements OnInit {
 
   private hover = false;
   private pinned = false;
+  private filter: FilterOption;
 
-  constructor() { }
+  /**
+   * TODO: Pull Filterservice into Compare Component.
+   */
+  constructor(private filterService: FilterService) {}
 
   ngOnInit() {
     this.updateSize();
+    this.filter = FilterGenerator.idEquals(this.group.id, this.group.id);
+    this.pinned = this.filterService.has(this.filter, 'keep');
   }
 
   private togglePinned(event: MouseEvent) {
     event.stopPropagation();
     this.pinned = !this.pinned;
+    if (this.pinned === true) {
+      this.filterService.add(this.filter, 'keep');
+    } else {
+      this.filterService.remove(this.filter, 'keep');
+    }
   }
 
   /**
