@@ -1,0 +1,38 @@
+[
+  {
+    "comment": "This is a good comment to analyze",
+    "aspect": {
+      "text": "comment",
+      "group": "comment"
+    },
+    "attribute": {
+      "text": "good",
+      "group": "good"
+    },
+    "sentiment": "POSITIVE"
+  },
+  {
+    "comment": "This service is quite useful but has a long way to go",
+    "aspect": {
+      "text": "service",
+      "group": "service"
+    },
+    "attribute": {
+      "text": "useful",
+      "group": "useful"
+    },
+    "sentiment": "POSITIVE"
+  },
+  {
+    "comment": "This service is quite useful but some desired features are missing",
+    "aspect": {
+      "text": "features",
+      "group": "feature"
+    },
+    "attribute": {
+      "text": "missing",
+      "group": "missing"
+    },
+    "sentiment": "NEGATIVE"
+  }
+]
