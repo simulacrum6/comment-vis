@@ -10,6 +10,11 @@ export class UploadFormatComponent implements OnInit {
 
   private example: string;
 
+  private breadCrumbPaths = [
+    { name: 'Upload', path: ['/']},
+    { name: 'Upload Format', path: ['/format']}
+  ];
+
   constructor() { }
 
   ngOnInit() {

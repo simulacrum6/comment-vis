@@ -1,16 +1,22 @@
-<h2>Format explanation</h2>
-<div>
-  <strong>comment</strong>: Raw comment that was extracted<br>
-  <strong>aspect</strong>: Topic that was talked about, consisting of the raw text from which the topic was extracted and the group is is assigned to<br>
-  <strong>attribute</strong>: Trait indicating the evaluation of this topic in this comment, again consisting of the text and the group<br>
-  <strong>sentiment</strong>: ... WIP<br>
+<mat-card class="content">
+  <mat-card-title>Upload Format Explanation</mat-card-title>
+  <mat-card-subtitle><app-breadcrumb [paths]="breadCrumbPaths"></app-breadcrumb></mat-card-subtitle>
 
-</div>
+  <mat-card-content>
+    <div class="example_container">
+      <h3>Example:</h3>
+      <div class="example">
+        <pre>{{example | json}}</pre>
+      </div>
+    </div>
 
-<div>
-  Example: <br>
-  <div class="example">
-    <pre>{{example | json}}</pre>
-  </div>
+    <div>
+      <h3>Explanations:</h3>
+      <strong>comment</strong>: raw comment that was extracted<br>
+      <strong>aspect</strong>: topic that was talked about in the comment, consisting of the raw text detail from which this topic was extracted and the group it was assigned to<br>
+      <strong>attribute</strong>: trait indicating the evaluation of this topic in this comment, again consisting of the text and the group<br>
+      <strong>sentiment</strong>: evaluation of this opinion. Can be: positive, neutral, negative, unknown. Default: unknown<br>
+    </div>
 
-</div>
+  </mat-card-content>
+</mat-card>

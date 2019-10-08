@@ -9,10 +9,10 @@
       "text": "good",
       "group": "good"
     },
-    "sentiment": "POSITIVE"
+    "sentiment": "positive"
   },
   {
-    "comment": "This service is quite useful but has a long way to go",
+    "comment": "This service is quite useful but some desired features are missing",
     "aspect": {
       "text": "service",
       "group": "service"
@@ -33,6 +33,6 @@
       "text": "missing",
       "group": "missing"
     },
-    "sentiment": "NEGATIVE"
+    "sentiment": "negative"
   }
 ]
