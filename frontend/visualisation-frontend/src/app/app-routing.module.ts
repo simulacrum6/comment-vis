@@ -12,6 +12,7 @@ import { ExploreComponent } from './pages/visualisation/explore/explore.componen
 import { CommentsComponent } from './components/visualisations/comments/comments.component';
 import { InspectComponent } from './pages/visualisation/inspect/inspect.component';
 import {UploadFormatComponent} from './pages/upload-format/upload-format.component';
+import { RadarComponent } from './components/visualisations/radar/radar.component';
 
 const routes: Routes = [
   { path: '', component: UploadComponent },
@@ -28,6 +29,7 @@ const routes: Routes = [
       { path: 'bar', component: BarComponent },
       { path: 'inspect', component: InspectComponent },
       { path: 'comments', redirectTo: 'inspect' },
+      { path: 'radar', component: RadarComponent },
       { path: '**', redirectTo: 'compare' },
     ]
   },

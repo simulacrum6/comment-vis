@@ -36,6 +36,7 @@ import { ActiveFiltersComponent } from './components/controls/active-filters/act
 import { InspectComponent } from './pages/visualisation/inspect/inspect.component';
 import { FilterComponent } from './components/controls/filters/filter/filter.component';
 import { UploadFormatComponent } from './pages/upload-format/upload-format.component';
+import { RadarComponent } from './components/visualisations/radar/radar.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { UploadFormatComponent } from './pages/upload-format/upload-format.compo
     ActiveFiltersComponent,
     InspectComponent,
     FilterComponent,
-    UploadFormatComponent
+    UploadFormatComponent,
+    RadarComponent
   ],
   imports: [
     BrowserModule,
