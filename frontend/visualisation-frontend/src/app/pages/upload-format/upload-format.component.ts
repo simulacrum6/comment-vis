@@ -8,7 +8,7 @@ import { default as exampleJson } from 'src/app/models/example.ce.json';
 })
 export class UploadFormatComponent implements OnInit {
 
-  private example: string;
+  private example: any[];
 
   private breadCrumbPaths = [
     { name: 'Upload', path: ['/']},
