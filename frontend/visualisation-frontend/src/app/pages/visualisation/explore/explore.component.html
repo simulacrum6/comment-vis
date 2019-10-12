@@ -11,12 +11,11 @@
         <input matInput type="text" placeholder="Search..." disabled>
       </mat-form-field>
       <app-filter [groups]="availableFilters" (filterChange)="onFilterChange($event)" (clear)="onFilterClear()"></app-filter>
-      <!-- Removed until polished
-      <app-active-filters
-        [activeFilters]="filterService.activeFilters"
-        (removed)="onFilterRemoval($event)">
-      </app-active-filters> -->
     </div>
+    <app-active-filters
+      [activeFilters]="filterService.activeFilters"
+      (removed)="filterService.remove($event.option, $event.type)">
+    </app-active-filters>
     <!-- Bubble controls -->
     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
       <app-size-scaling></app-size-scaling>

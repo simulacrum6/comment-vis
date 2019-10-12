@@ -29,6 +29,9 @@
         (sort)="onSort($event)">
       </app-sort-filter>
     </div>
+    <div>
+      <app-active-filters [activeFilters]="filterService.activeFilters" (removed)="filterService.remove($event.option, $event.type)"></app-active-filters>
+    </div>
     <!-- Main Visualisation Area -->
     <div cdkDropListGroup>
       <!-- Comparison Area-->

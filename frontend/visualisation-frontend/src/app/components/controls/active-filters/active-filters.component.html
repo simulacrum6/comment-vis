@@ -1,23 +1,12 @@
-<div fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="20px">
-  <div *ngIf="activeFilters.keeps.length !== 0">
-    <h3>Keep Filters</h3>
-    <mat-chip-list>
-      <mat-chip *ngFor="let opt of activeFilters.keeps"
-        [removable]="true"
-        (removed)="remove(opt, 'keep')">
-        {{ opt.name }}
-      </mat-chip>
-    </mat-chip-list>
-  </div>
-  <div *ngIf="activeFilters.shuns.length !== 0">
-    <div class="label">Active Filters</div>
-    <mat-chip-list>
-      <mat-chip *ngFor="let opt of activeFilters.shuns"
-        [removable]="true"
-        (removed)="remove(opt, 'shun')">
-        {{ opt.name }}='{{ opt.value }}'
-        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-      </mat-chip>
-    </mat-chip-list>
-  </div>
+<div fxLayout="column row" fxLayoutAlign="center start" class="wrapper">
+  <div class="label">Active Filters</div>
+  <span *ngIf="activeFilters.shuns.length === 0"> No filters active... </span>
+  <mat-chip-list>
+    <mat-chip *ngFor="let opt of activeFilters.shuns"
+      [removable]="true"
+      (removed)="remove(opt, 'shun')">
+      {{ opt.name }}='{{ opt.value }}'
+      <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+    </mat-chip>
+  </mat-chip-list>
 </div>
