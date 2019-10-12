@@ -10,7 +10,7 @@
       <mat-form-field>
         <input matInput type="text" placeholder="Search..." disabled>
       </mat-form-field>
-      <app-filter></app-filter>
+      <app-filter [groups]="availableFilters" (filterChange)="onFilterChange($event)" (clear)="onFilterClear()"></app-filter>
       <!-- Removed until polished
       <app-active-filters
         [activeFilters]="filterService.activeFilters"

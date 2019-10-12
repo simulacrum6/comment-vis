@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { ExtractionGroup, Extractions } from 'src/app/models/canonical';
 import { flatten } from 'src/app/models/utils';
 import { FilterService } from 'src/app/services/filter.service';
+import { FilterOption, FilterOptions } from 'src/app/services/filter';
 
 @Component({
   selector: 'app-inspect',
@@ -14,6 +15,11 @@ export class InspectComponent implements OnInit {
 
   private comments: Observable<ExtractionGroup[]>;
 
+  private availableFilters = [
+    { name: 'Topics', filters: FilterOptions.groups.topics},
+    { name: 'Sentiment', filters: FilterOptions.groups.sentiment}
+  ];
+
   constructor(private filterService: FilterService) { }
 
   ngOnInit() {
@@ -23,4 +29,11 @@ export class InspectComponent implements OnInit {
     );
   }
 
+  public onFilterChange($event: FilterOption) {
+    this.filterService.add($event);
+  }
+
+  public onFilterClear() {
+    this.filterService.clearFilters();
+  }
 }

@@ -4,7 +4,7 @@
   <mat-card-content>
     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
       <app-search-filter [filterService]="filterService"></app-search-filter>
-      <app-filter></app-filter>
+      <app-filter [groups]="availableFilters" (filterChange)="onFilterChange($event)" (clear)="onFilterClear()"></app-filter>
       <app-sort-filter [data]="[]" [disabled]="true"></app-sort-filter>
     </div>
     <app-comments [comments]="(comments | async)"></app-comments>

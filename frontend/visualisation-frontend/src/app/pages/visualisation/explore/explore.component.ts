@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FilterService } from 'src/app/services/filter.service';
-import { FilterOption, FilterType } from 'src/app/services/filter';
+import { FilterOption, FilterType, FilterOptions } from 'src/app/services/filter';
 import { Subscription, combineLatest } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { StateService } from 'src/app/services/state.service';
@@ -15,6 +15,11 @@ export class ExploreComponent implements OnInit, OnDestroy {
   private breadCrumbPaths = [
     { name: 'Statistics', path: ['/stats']},
     { name: 'Explore', path: ['/vis/explore/']}
+  ];
+
+  private availableFilters = [
+    { name: 'Topics', filters: FilterOptions.groups.topics},
+    { name: 'Sentiment', filters: FilterOptions.groups.sentiment}
   ];
 
   private subs: Subscription = new Subscription();
@@ -38,4 +43,11 @@ export class ExploreComponent implements OnInit, OnDestroy {
     this.filterService.remove(removeEvent.option, removeEvent.type);
   }
 
+  public onFilterChange($event: FilterOption) {
+    this.filterService.add($event);
+  }
+
+  public onFilterClear() {
+    this.filterService.clearFilters();
+  }
 }

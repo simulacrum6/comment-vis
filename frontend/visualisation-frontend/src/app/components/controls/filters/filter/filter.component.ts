@@ -23,6 +23,9 @@ export class FilterComponent implements OnInit, OnDestroy {
   @Output()
   public filterChange: EventEmitter<FilterOption> = new EventEmitter<FilterOption>();
 
+  @Output()
+  public clear: EventEmitter<void> = new EventEmitter();
+
   private subscription: Subscription;
 
   constructor() { }

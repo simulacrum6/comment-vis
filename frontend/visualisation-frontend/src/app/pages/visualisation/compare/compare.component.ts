@@ -10,6 +10,7 @@ import { PaginatorConfig } from 'src/app/models/utils';
 import { FilterService } from 'src/app/services/filter.service';
 import { StateService } from 'src/app/services/state.service';
 import { SearchFilterComponent } from '../../../components/controls/filters/search-filter/search-filter.component';
+import { FilterOptions, FilterOption } from 'src/app/services/filter';
 
 
 export class PieExtractionGroup implements ExtractionGroup {
@@ -50,6 +51,10 @@ export class CompareComponent implements OnInit, OnDestroy {
   private displayedFacetGroups: PieExtractionGroup[];
   private subscription = new Subscription();
   private totalExtractionCount: number;
+  private availableFilters = [
+    { name: 'Topics', filters: FilterOptions.groups.topics},
+    { name: 'Sentiment', filters: FilterOptions.groups.sentiment}
+  ];
 
   private _pageConfig: PaginatorConfig;
   private _facetType: FacetType;
@@ -116,8 +121,13 @@ export class CompareComponent implements OnInit, OnDestroy {
   @ViewChild('searchReference')
   public searchReference: SearchFilterComponent;
 
-  constructor(private stateService: StateService, private router: Router, private route: ActivatedRoute, private snackBar: MatSnackBar, private filterService: FilterService) {
-  }
+  constructor(
+    private stateService: StateService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
+    private filterService: FilterService)
+  { }
 
   ngOnInit() {
     // retrieve info from stateService
@@ -235,5 +245,13 @@ export class CompareComponent implements OnInit, OnDestroy {
         this.model.split(receiver, mergee);
         this.initialize();
       });
+  }
+
+  public onFilterChange($event: FilterOption) {
+    this.filterService.add($event);
+  }
+
+  public onFilterClear() {
+    this.filterService.clearFilters();
   }
 }
