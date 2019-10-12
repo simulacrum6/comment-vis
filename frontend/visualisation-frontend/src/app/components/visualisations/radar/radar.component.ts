@@ -40,18 +40,30 @@ class RadarPoint {
 export class RadarComponent implements OnInit {
 
   @Input()
-  public datasets = [];
+  public set groups(groups: ExtractionGroup[]) {
+    this._groups = groups;
+    this.update();
+  }
+  public get groups(): ExtractionGroup[] {
+    return this._groups;
+  }
 
+  private _groups = [];
+  private datasets = [];
   private options: RadialChartOptions = { responsive: true };
   private radarLabels = [ 'popularity', 'sentiment', 'controversy', 'diversity' ];
 
   constructor(private stateService: StateService) {
     const model = stateService.model.state;
-    const groups = model.getGroupsFor('aspect').slice(0, 4);
-    this.datasets = groups.map(RadarPoint.fromGroup).map(RadarPoint.asDataSet);
+    // TODO: delete after testing
+    this.groups = model.getGroupsFor('aspect').slice(0, 4);
+    this.update();
   }
 
   ngOnInit() {
   }
 
+  public update() {
+    this.datasets = this.groups.map(RadarPoint.fromGroup).map(RadarPoint.asDataSet);
+  }
 }

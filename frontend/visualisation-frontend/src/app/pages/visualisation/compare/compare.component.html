@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card class="content">
   <mat-card-title>{{ _facetTypeVisibleName }} - Overview</mat-card-title>
   <mat-card-subtitle>
     <app-breadcrumb [paths]="breadCrumbPaths"></app-breadcrumb>
@@ -30,25 +30,53 @@
       </app-sort-filter>
     </div>
     <!-- Main Visualisation Area -->
-    <div cdkDropListGroup
-         class='pie-grid'
-         fxLayout="row wrap"
-         fxLayoutAlign="space-evenly">
-      <div *ngFor="let group of displayedFacetGroups"
-           cdkDrag
-           cdkDropList
-           cdkDropListSortingDisabled
-           [cdkDropListData]="group"
-           (cdkDropListDropped)="onDrop($event)">
-        <ng-template cdkDragPlaceholder>
-          <div></div>
-        </ng-template>
-        <app-pie-cell
-          [group]="group"
-          (click)="navigateToDetailPage(group.name, facetType)">
-        </app-pie-cell>
+    <div cdkDropListGroup>
+      <!-- Comparison Area-->
+      <div>
+        <app-radar *ngIf="comparisonGroups.length > 0" [groups]="comparisonGroups"></app-radar>
+        <div class="compare-area"
+          [ngClass]="{ 'dashed-border': dragging, 'empty': comparisonGroups.length === 0 }"
+          fxLayout="column"
+          fxLayoutAlign="center center"
+          cdkDropList
+          cdkDropListSortingDisabled
+          [cdkDropListData]="comparisonGroups"
+          (cdkDropListDropped)="onComparisonListDrop($event)">
+          <span *ngIf="comparisonGroups.length === 0">Drop items here to compare...</span>
+          <mat-chip-list>
+            <mat-chip *ngFor="let group of comparisonGroups"
+              [removable]="true"
+              (removed)="remove(group)">
+              {{ group.name }}
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+          </mat-chip-list>
+        </div>
+      </div>
+      <!-- Pie Grid -->
+      <div class="pie-grid"
+        fxLayout="row wrap"
+        fxLayoutAlign="space-evenly">
+        <div *ngFor="let group of displayedFacetGroups"
+          cdkDrag
+          [cdkDragData]="group"
+          cdkDropList
+          cdkDropListSortingDisabled
+          [cdkDropListData]="group"
+          (cdkDropListDropped)="onDrop($event)"
+          (cdkDragStarted)="dragging = true"
+          (cdkDragReleased)="dragging = false">
+          <ng-template cdkDragPlaceholder>
+            <div></div>
+          </ng-template>
+          <app-pie-cell
+            [group]="group"
+            (click)="navigateToDetailPage(group.name, facetType)">
+          </app-pie-cell>
+        </div>
       </div>
     </div>
+
     <mat-paginator
       [length]="groupCount"
       [pageIndex]="currentPageIndex"

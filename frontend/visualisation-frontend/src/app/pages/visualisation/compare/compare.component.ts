@@ -45,10 +45,12 @@ export class PieExtractionGroup implements ExtractionGroup {
 })
 export class CompareComponent implements OnInit, OnDestroy {
 
+  private dragging = false;
   private facetGroups: ExtractionGroup[];
   private sortedFacetGroups: ExtractionGroup[];
   private searchedFacetGroups: ExtractionGroup[];
   private displayedFacetGroups: PieExtractionGroup[];
+  private comparisonGroups: ExtractionGroup[] = [];
   private subscription = new Subscription();
   private totalExtractionCount: number;
   private availableFilters = [
@@ -127,7 +129,8 @@ export class CompareComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private filterService: FilterService)
-  { }
+  {
+  }
 
   ngOnInit() {
     // retrieve info from stateService
@@ -247,11 +250,31 @@ export class CompareComponent implements OnInit, OnDestroy {
       });
   }
 
+  public onComparisonListDrop($event: CdkDragDrop<ExtractionGroup[]>) {
+    const groups = $event.container.data.slice();
+    const dragged = $event.item.data as ExtractionGroup;
+    if (!groups.includes(dragged)) {
+      groups.push(dragged);
+      this.comparisonGroups = groups;
+    }
+  }
+
   public onFilterChange($event: FilterOption) {
     this.filterService.add($event);
   }
 
   public onFilterClear() {
     this.filterService.clearFilters();
+  }
+
+  public remove(group: ExtractionGroup) {
+    const groups = this.comparisonGroups.slice();
+    const i = groups.indexOf(group);
+    groups.splice(i, 1);
+    this.comparisonGroups = groups;
+  }
+
+  public log($event) {
+    console.log($event);
   }
 }

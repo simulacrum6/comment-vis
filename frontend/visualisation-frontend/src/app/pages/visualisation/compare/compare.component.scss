@@ -1,3 +1,20 @@
 .pie-grid {
     padding: 10px;
 }
+
+.compare-area {
+    padding: 20px;
+    box-sizing: border-box;
+    border: 2px solid white;
+    font-size: larger;
+}
+
+.empty {
+    border: 2px dashed rgba(0,0,0,0.14);
+}
+.dashed-border {
+    border: 2px dashed rgba(0,0,0,0.14);
+    &:hover {
+        border-color: rgba(0,0,0,0.54);
+    }
+}
