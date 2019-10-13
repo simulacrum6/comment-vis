@@ -21,6 +21,6 @@
       <app-size-scaling></app-size-scaling>
       <app-layout></app-layout>
     </div>
-    <app-bubble></app-bubble>
+    <app-bubble [groups]="groups | async" [layout]="layout | async"></app-bubble>
   </mat-card-content>
 </mat-card>

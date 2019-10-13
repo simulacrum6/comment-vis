@@ -1,9 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FilterService } from 'src/app/services/filter.service';
 import { FilterOption, FilterType, FilterOptions } from 'src/app/services/filter';
-import { Subscription, combineLatest } from 'rxjs';
+import { Subscription, combineLatest, Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { StateService } from 'src/app/services/state.service';
+import { ExtractionGroup } from 'src/app/models/canonical';
+import { Coordinate, LayoutService, LayoutName } from 'src/app/services/layout.service';
+import { map, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-explore',
@@ -24,15 +27,38 @@ export class ExploreComponent implements OnInit, OnDestroy {
 
   private subs: Subscription = new Subscription();
 
-  constructor(private filterService: FilterService, private route: ActivatedRoute, private stateService: StateService) { }
+  public groups: Observable<ExtractionGroup[]>;
+  public layoutName: LayoutName = 'random';
+  private layout: Observable<Coordinate[]>;
+
+  constructor(
+    private filterService: FilterService,
+    private route: ActivatedRoute,
+    private stateService: StateService,
+    private layoutService: LayoutService) {
+    if (this.filterService.data === undefined) {
+      this.filterService.data = this.stateService.model.state.getGroupsFor(this.stateService.facetType.state);
+    }
+  }
 
   ngOnInit() {
+    this.groups = this.filterService.filteredDataChange;
+    this.layout = this.layoutService.layoutChanges;
+
     // set up url for return from detail page.
     this.subs = combineLatest(this.route.url, this.route.params).subscribe(
       ([url, params]) => {
         const path = ['/vis/' + url.join('/')];
         this.stateService.lastPage.state = { url: path, queryParams: params };
     });
+
+    const layoutSub = this.groups.pipe(
+      map(groups => groups.map(g => g.name))
+    ).subscribe(
+      names => this.layoutService.getLayout(names, this.layoutName)
+    );
+
+    this.subs.add(layoutSub);
   }
 
   ngOnDestroy() {
