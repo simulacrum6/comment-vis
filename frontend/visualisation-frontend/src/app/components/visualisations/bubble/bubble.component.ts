@@ -82,7 +82,9 @@ export class BubbleComponent implements OnInit, OnDestroy, OnChanges {
   public groups: ExtractionGroup[] = [];
   @Input()
   public layout = LayoutService.randomLayout(10000);
-  public layoutName: LayoutName = 'meaning';
+  @Input()
+  public scalingFunction: (g: ExtractionGroup) => number;
+
   public type: FacetType = 'aspect';
 
   constructor(
@@ -122,7 +124,7 @@ export class BubbleComponent implements OnInit, OnDestroy, OnChanges {
     const controversial = (g: ExtractionGroup) => controversy(g.sentimentCount) / 1000;
 
     // generate data
-    this.bubbles = Bubble.fromLayout(this.groups, this.layout, occurencePercentage);
+    this.bubbles = Bubble.fromLayout(this.groups, this.layout, this.scalingFunction);
     this.fillChartData(this.bubbles);
   }
   public handleBubbleClick({ event, active }: { event: MouseEvent, active: any[] }) {

@@ -1,6 +1,6 @@
 <mat-form-field class="medium-small">
   <mat-select #selector
-    [disabled]="true"
+    [disabled]="scalings.length === 0"
     [value]="scalings[0]"
     placeholder="Scale points by...">
     <mat-option *ngFor="let option of scalings"

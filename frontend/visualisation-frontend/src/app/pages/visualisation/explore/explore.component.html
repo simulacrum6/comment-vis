@@ -18,9 +18,16 @@
     </app-active-filters>
     <!-- Bubble controls -->
     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
-      <app-size-scaling></app-size-scaling>
+      <app-size-scaling
+        [scaleDownFactor]="stateService.model.state.extractions.length"
+        (scalingChange)="onScalingChange($event)">
+      </app-size-scaling>
       <app-layout></app-layout>
     </div>
-    <app-bubble [groups]="groups | async" [layout]="layout | async"></app-bubble>
+    <app-bubble
+      [groups]="groups | async"
+      [layout]="layout | async"
+      [scalingFunction]="scalingFunction">
+    </app-bubble>
   </mat-card-content>
 </mat-card>

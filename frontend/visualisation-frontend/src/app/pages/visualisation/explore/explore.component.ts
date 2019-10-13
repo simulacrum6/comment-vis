@@ -7,6 +7,7 @@ import { StateService } from 'src/app/services/state.service';
 import { ExtractionGroup } from 'src/app/models/canonical';
 import { Coordinate, LayoutService, LayoutName } from 'src/app/services/layout.service';
 import { map, switchMap } from 'rxjs/operators';
+import { occurencePercentage } from 'src/app/components/controls/size-scaling/size-scaling.component';
 
 @Component({
   selector: 'app-explore',
@@ -30,6 +31,7 @@ export class ExploreComponent implements OnInit, OnDestroy {
   public groups: Observable<ExtractionGroup[]>;
   public layoutName: LayoutName = 'random';
   private layout: Observable<Coordinate[]>;
+  private scalingFunction: (g: ExtractionGroup) => number;
 
   constructor(
     private filterService: FilterService,
@@ -39,6 +41,7 @@ export class ExploreComponent implements OnInit, OnDestroy {
     if (this.filterService.data === undefined) {
       this.filterService.data = this.stateService.model.state.getGroupsFor(this.stateService.facetType.state);
     }
+    this.scalingFunction = occurencePercentage(this.stateService.model.state.extractions.length);
   }
 
   ngOnInit() {
@@ -75,5 +78,9 @@ export class ExploreComponent implements OnInit, OnDestroy {
 
   public onFilterClear() {
     this.filterService.clearFilters();
+  }
+
+  public onScalingChange(event: { value: (g: ExtractionGroup) => number }) {
+    this.scalingFunction = event.value;
   }
 }
