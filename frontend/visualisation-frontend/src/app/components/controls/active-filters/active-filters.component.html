@@ -1,5 +1,5 @@
-<div fxLayout="column row" fxLayoutAlign="center start" class="wrapper">
-  <div class="label">Active Filters</div>
+<div fxLayout="column row" fxLayoutAlign="center start" fxLayoutGap="5px" class="wrapper">
+  <label class="material-like-label">Active Filters</label>
   <span *ngIf="activeFilters.shuns.length === 0"> No filters active... </span>
   <mat-chip-list>
     <mat-chip *ngFor="let opt of activeFilters.shuns"

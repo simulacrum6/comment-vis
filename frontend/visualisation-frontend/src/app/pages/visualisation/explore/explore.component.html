@@ -11,6 +11,16 @@
         <input matInput type="text" placeholder="Search..." disabled>
       </mat-form-field>
       <app-filter [groups]="availableFilters" (filterChange)="onFilterChange($event)" (clear)="onFilterClear()"></app-filter>
+      <div fxLayout="column" fxLayoutAlign="start">
+        <label class="material-like-label">Minimum Mentions</label>
+        <mat-slider #minimumMentionsSlider
+          tickInterval="1"
+          thumbLabel
+          [value]="minimumMentions"
+          [max]="maximumMentions"
+          (change)="onMinimumMentionsChange($event)">
+        </mat-slider>
+      </div>
     </div>
     <app-active-filters
       [activeFilters]="filterService.activeFilters"

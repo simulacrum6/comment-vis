@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FilterService } from 'src/app/services/filter.service';
-import { FilterOption, FilterType, FilterOptions } from 'src/app/services/filter';
+import { FilterOption, FilterType, FilterOptions, FilterGenerator } from 'src/app/services/filter';
 import { Subscription, combineLatest, Observable, BehaviorSubject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { StateService } from 'src/app/services/state.service';
@@ -8,6 +8,7 @@ import { ExtractionGroup } from 'src/app/models/canonical';
 import { Coordinate, LayoutService, LayoutName } from 'src/app/services/layout.service';
 import { map, switchMap } from 'rxjs/operators';
 import { occurencePercentage } from 'src/app/components/controls/size-scaling/size-scaling.component';
+import { MatSlideToggleChange, MatSliderChange } from '@angular/material';
 
 @Component({
   selector: 'app-explore',
@@ -33,6 +34,8 @@ export class ExploreComponent implements OnInit, OnDestroy {
   public layoutName: BehaviorSubject<LayoutName> = new BehaviorSubject('random' as LayoutName);
   private layout: Observable<Coordinate[]>;
   private scalingFunction: (g: ExtractionGroup) => number;
+  private maximumMentions: number;
+  private minimumMentions: number;
 
   constructor(
     private filterService: FilterService,
@@ -46,9 +49,6 @@ export class ExploreComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const filterSub = this.filterService.filteredDataChange.subscribe(this.groups);
-    this.layout = this.layoutService.layoutChanges;
-
     // set up url for return from detail page.
     this.subs = combineLatest(this.route.url, this.route.params).subscribe(
       ([url, params]) => {
@@ -56,18 +56,28 @@ export class ExploreComponent implements OnInit, OnDestroy {
         this.stateService.lastPage.state = { url: path, queryParams: params };
     });
 
-    this.groups.pipe(
-      map(groups => groups.map(g => g.name))
+    // observables for layouting
+    const filterSub = this.filterService.filteredDataChange.subscribe(this.groups);
+    const nameSub = this.groups.pipe(
+      map(gs => gs.map(g => g.name))
     ).subscribe(this.names);
-
+    this.layout = this.layoutService.layoutChanges;
     const layoutSub = combineLatest(this.names, this.layoutName).subscribe(
-      ([names, layout]) => {
-        this.layoutService.getLayout(names, layout);
-      }
+      ([names, layout]) => this.layoutService.getLayout(names, layout)
     );
 
     this.subs.add(layoutSub);
     this.subs.add(filterSub);
+    this.subs.add(nameSub);
+
+    // calculate maximum mentions
+    const type = this.stateService.facetType.state;
+    const groups = this.stateService.model.state.getGroupsFor(type);
+    this.maximumMentions = groups
+      .map(g => g.extractions.length)
+      .reduce((a, b) => Math.max(a, b), 0);
+    const filter = this.filterService.getFilterById('minimum_mentions_slider');
+    this.minimumMentions = filter !== null ? filter.value : 0;
   }
 
   ngOnDestroy() {
@@ -92,5 +102,14 @@ export class ExploreComponent implements OnInit, OnDestroy {
 
   public onLayoutChange(event: { value: LayoutName }) {
     this.layoutName.next(event.value);
+  }
+
+  public onMinimumMentionsChange(change: MatSliderChange) {
+    const filter = FilterGenerator.moreThanXMentions(change.value, 'minimum_mentions_slider');
+    if (change.value > 0) {
+      this.filterService.set(filter);
+    } else {
+      this.filterService.remove(filter);
+    }
   }
 }

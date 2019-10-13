@@ -180,6 +180,11 @@ export class FilterService {
     }
     return filtered;
   }
+  public getFilterById(id: string, type: FilterType = 'shun'): FilterOption {
+    const options = this.getFilterOptions(type);
+    const index = options.findIndex(option => option.id === id);
+    return index !== -1 ? options[index] : null;
+  }
 
 
   /**
