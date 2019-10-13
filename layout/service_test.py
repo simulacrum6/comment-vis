@@ -9,3 +9,8 @@ data = {
 
 req = requests.post(url, json=data)
 print(req.json())
+
+url = 'http://127.0.0.1:5000/layout/clustered'
+
+req = requests.post(url, json=data)
+print(req.json())

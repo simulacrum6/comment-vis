@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FilterService } from 'src/app/services/filter.service';
 import { FilterOption, FilterType, FilterOptions } from 'src/app/services/filter';
-import { Subscription, combineLatest, Observable } from 'rxjs';
+import { Subscription, combineLatest, Observable, BehaviorSubject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { StateService } from 'src/app/services/state.service';
 import { ExtractionGroup } from 'src/app/models/canonical';
@@ -28,8 +28,9 @@ export class ExploreComponent implements OnInit, OnDestroy {
 
   private subs: Subscription = new Subscription();
 
-  public groups: Observable<ExtractionGroup[]>;
-  public layoutName: LayoutName = 'random';
+  public groups: BehaviorSubject<ExtractionGroup[]> = new BehaviorSubject([]);
+  public names: BehaviorSubject<string[]> = new BehaviorSubject([]);
+  public layoutName: BehaviorSubject<LayoutName> = new BehaviorSubject('random' as LayoutName);
   private layout: Observable<Coordinate[]>;
   private scalingFunction: (g: ExtractionGroup) => number;
 
@@ -45,7 +46,7 @@ export class ExploreComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.groups = this.filterService.filteredDataChange;
+    const filterSub = this.filterService.filteredDataChange.subscribe(this.groups);
     this.layout = this.layoutService.layoutChanges;
 
     // set up url for return from detail page.
@@ -55,13 +56,18 @@ export class ExploreComponent implements OnInit, OnDestroy {
         this.stateService.lastPage.state = { url: path, queryParams: params };
     });
 
-    const layoutSub = this.groups.pipe(
+    this.groups.pipe(
       map(groups => groups.map(g => g.name))
-    ).subscribe(
-      names => this.layoutService.getLayout(names, this.layoutName)
+    ).subscribe(this.names);
+
+    const layoutSub = combineLatest(this.names, this.layoutName).subscribe(
+      ([names, layout]) => {
+        this.layoutService.getLayout(names, layout);
+      }
     );
 
     this.subs.add(layoutSub);
+    this.subs.add(filterSub);
   }
 
   ngOnDestroy() {
@@ -82,5 +88,9 @@ export class ExploreComponent implements OnInit, OnDestroy {
 
   public onScalingChange(event: { value: (g: ExtractionGroup) => number }) {
     this.scalingFunction = event.value;
+  }
+
+  public onLayoutChange(event: { value: LayoutName }) {
+    this.layoutName.next(event.value);
   }
 }

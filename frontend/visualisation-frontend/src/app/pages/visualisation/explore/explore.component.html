@@ -22,7 +22,8 @@
         [scaleDownFactor]="stateService.model.state.extractions.length"
         (scalingChange)="onScalingChange($event)">
       </app-size-scaling>
-      <app-layout></app-layout>
+      <app-layout (layoutChange)="onLayoutChange($event)">
+      </app-layout>
     </div>
     <app-bubble
       [groups]="groups | async"
