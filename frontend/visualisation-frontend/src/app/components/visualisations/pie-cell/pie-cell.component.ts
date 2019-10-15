@@ -17,7 +17,7 @@ export class PieCellComponent implements OnInit {
   /** Maximum chart size in pixels. */
   private static readonly MinSize = 48;
 
-  private static readonly ScalingFactor = 10 * PieCellComponent.MinSize;
+  private static readonly ScalingFactor = 12 * PieCellComponent.MinSize;
 
   /** Interpolator to set the size of Pie Cells */
   private static interpolator: Interpolator = PieCellComponent.scale;
