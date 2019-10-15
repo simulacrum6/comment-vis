@@ -15,10 +15,12 @@ export class PieCellComponent implements OnInit {
   private static readonly MaxSize = 640;
 
   /** Maximum chart size in pixels. */
-  private static readonly MinSize = 64;
+  private static readonly MinSize = 48;
+
+  private static readonly ScalingFactor = 10 * PieCellComponent.MinSize;
 
   /** Interpolator to set the size of Pie Cells */
-  private static interpolator: Interpolator = makeInterpolator(PieCellComponent.MinSize, PieCellComponent.MaxSize);
+  private static interpolator: Interpolator = PieCellComponent.scale;
 
   @Input()
   public group: PieExtractionGroup;
@@ -34,6 +36,14 @@ export class PieCellComponent implements OnInit {
    * TODO: Pull Filterservice into Compare Component.
    */
   constructor(private filterService: FilterService) {}
+
+  /**
+   * Scaling function for pie size.
+   */
+  private static scale(value: number): number {
+    // TODO: add to utils.makeInterpolator
+    return Math.sqrt(value) * PieCellComponent.ScalingFactor + PieCellComponent.MinSize;
+  }
 
   ngOnInit() {
     this.updateSize();
