@@ -35,6 +35,8 @@ import { CommentsComponent } from './components/visualisations/comments/comments
 import { ActiveFiltersComponent } from './components/controls/active-filters/active-filters.component';
 import { InspectComponent } from './pages/visualisation/inspect/inspect.component';
 import { FilterComponent } from './components/controls/filters/filter/filter.component';
+import { UploadFormatComponent } from './pages/upload-format/upload-format.component';
+import { RadarComponent } from './components/visualisations/radar/radar.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +66,9 @@ import { FilterComponent } from './components/controls/filters/filter/filter.com
     CommentsComponent,
     ActiveFiltersComponent,
     InspectComponent,
-    FilterComponent
+    FilterComponent,
+    UploadFormatComponent,
+    RadarComponent
   ],
   imports: [
     BrowserModule,

@@ -34,3 +34,21 @@ input.upload_input {
 .light {
   color: rgba(0, 0, 0, 0.54)
 }
+
+.upload_description {
+  float: left;
+}
+
+.format {
+  float: left;
+}
+
+.form-group {
+  margin-top: 15px;
+}
+
+.format_icon {
+  //font-size: 0.5px;
+  transform: scale(0.8);
+  margin-top: 8px;
+}

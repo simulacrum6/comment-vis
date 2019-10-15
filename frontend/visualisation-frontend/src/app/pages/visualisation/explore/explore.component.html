@@ -10,18 +10,35 @@
       <mat-form-field>
         <input matInput type="text" placeholder="Search..." disabled>
       </mat-form-field>
-      <app-filter></app-filter>
-      <!-- Removed until polished
-      <app-active-filters
-        [activeFilters]="filterService.activeFilters"
-        (removed)="onFilterRemoval($event)">
-      </app-active-filters> -->
+      <app-filter [groups]="availableFilters" (filterChange)="onFilterChange($event)" (clear)="onFilterClear()"></app-filter>
+      <div fxLayout="column" fxLayoutAlign="start">
+        <label class="material-like-label">Minimum Mentions</label>
+        <mat-slider #minimumMentionsSlider
+          tickInterval="1"
+          thumbLabel
+          [value]="minimumMentions"
+          [max]="maximumMentions"
+          (change)="onMinimumMentionsChange($event)">
+        </mat-slider>
+      </div>
     </div>
+    <app-active-filters
+      [activeFilters]="filterService.activeFilters"
+      (removed)="filterService.remove($event.option, $event.type)">
+    </app-active-filters>
     <!-- Bubble controls -->
     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
-      <app-size-scaling></app-size-scaling>
-      <app-layout></app-layout>
+      <app-size-scaling
+        [scaleDownFactor]="stateService.model.state.extractions.length"
+        (scalingChange)="onScalingChange($event)">
+      </app-size-scaling>
+      <app-layout (layoutChange)="onLayoutChange($event)">
+      </app-layout>
     </div>
-    <app-bubble></app-bubble>
+    <app-bubble
+      [groups]="groups | async"
+      [layout]="layout | async"
+      [scalingFunction]="scalingFunction">
+    </app-bubble>
   </mat-card-content>
 </mat-card>

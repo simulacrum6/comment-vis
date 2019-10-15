@@ -1,12 +1,26 @@
-<mat-card>
+<mat-card class="content">
   <mat-card-title>Inspect the data</mat-card-title>
 
   <mat-card-content>
     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
       <app-search-filter [filterService]="filterService"></app-search-filter>
-      <app-filter></app-filter>
+      <app-filter [groups]="availableFilters" (filterChange)="onFilterChange($event)" (clear)="onFilterClear()"></app-filter>
+      <div fxLayout="column" fxLayoutAlign="start">
+        <label class="material-like-label">Minimum Mentions</label>
+        <mat-slider #minimumMentionsSlider
+          tickInterval="1"
+          thumbLabel
+          [value]="minimumMentions"
+          [max]="maximumMentions"
+          (change)="onMinimumMentionsChange($event)">
+        </mat-slider>
+      </div>
       <app-sort-filter [data]="[]" [disabled]="true"></app-sort-filter>
     </div>
+    <app-active-filters
+      [activeFilters]="filterService.activeFilters"
+      (removed)="filterService.remove($event.option, $event.type)">
+    </app-active-filters>
     <app-comments [comments]="(comments | async)"></app-comments>
   </mat-card-content>
 </mat-card>

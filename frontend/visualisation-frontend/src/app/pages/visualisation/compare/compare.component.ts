@@ -1,6 +1,6 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatSnackBar, PageEvent } from '@angular/material';
+import { MatSnackBar, PageEvent, MatSliderChange } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Subscription } from 'rxjs';
 import { SortState } from 'src/app/components/controls/filters/sort-filter/sort';
@@ -10,6 +10,7 @@ import { PaginatorConfig } from 'src/app/models/utils';
 import { FilterService } from 'src/app/services/filter.service';
 import { StateService } from 'src/app/services/state.service';
 import { SearchFilterComponent } from '../../../components/controls/filters/search-filter/search-filter.component';
+import { FilterOptions, FilterOption, FilterGenerator } from 'src/app/services/filter';
 
 
 export class PieExtractionGroup implements ExtractionGroup {
@@ -44,12 +45,20 @@ export class PieExtractionGroup implements ExtractionGroup {
 })
 export class CompareComponent implements OnInit, OnDestroy {
 
+  private dragging = false;
   private facetGroups: ExtractionGroup[];
   private sortedFacetGroups: ExtractionGroup[];
   private searchedFacetGroups: ExtractionGroup[];
   private displayedFacetGroups: PieExtractionGroup[];
+  private comparisonGroups: ExtractionGroup[] = [];
   private subscription = new Subscription();
   private totalExtractionCount: number;
+  private maximumMentions: number;
+  private minimumMentions: number;
+  private availableFilters = [
+    { name: 'Topics', filters: FilterOptions.groups.topics},
+    { name: 'Sentiment', filters: FilterOptions.groups.sentiment}
+  ];
 
   private _pageConfig: PaginatorConfig;
   private _facetType: FacetType;
@@ -116,8 +125,13 @@ export class CompareComponent implements OnInit, OnDestroy {
   @ViewChild('searchReference')
   public searchReference: SearchFilterComponent;
 
-  constructor(private stateService: StateService, private router: Router, private route: ActivatedRoute, private snackBar: MatSnackBar, private filterService: FilterService) {
-  }
+  constructor(
+    private stateService: StateService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
+    private filterService: FilterService)
+  { }
 
   ngOnInit() {
     // retrieve info from stateService
@@ -152,6 +166,14 @@ export class CompareComponent implements OnInit, OnDestroy {
   public initialize() {
     const extractions = this.model.extractions;
     const groups = this.stateService.model.state.getGroupsFor(this.facetType);
+
+    // calculate maximum mentions
+    const type = this.stateService.facetType.state;
+    this.maximumMentions = groups
+      .map(g => g.extractions.length)
+      .reduce((a, b) => Math.max(a, b), 0);
+    const filter = this.filterService.getFilterById('minimum_mentions_slider');
+    this.minimumMentions = filter !== null ? filter.value : 0;
 
     this.totalExtractionCount = extractions.length;
     this.filterService.data = groups;
@@ -235,5 +257,42 @@ export class CompareComponent implements OnInit, OnDestroy {
         this.model.split(receiver, mergee);
         this.initialize();
       });
+  }
+
+  public onComparisonListDrop($event: CdkDragDrop<ExtractionGroup[]>) {
+    const groups = $event.container.data.slice();
+    const dragged = $event.item.data as ExtractionGroup;
+    if (!groups.includes(dragged)) {
+      groups.push(dragged);
+      this.comparisonGroups = groups;
+    }
+  }
+
+  public onFilterChange($event: FilterOption) {
+    this.filterService.add($event);
+  }
+
+  public onFilterClear() {
+    this.filterService.clearFilters();
+  }
+
+  public remove(group: ExtractionGroup) {
+    const groups = this.comparisonGroups.slice();
+    const i = groups.indexOf(group);
+    groups.splice(i, 1);
+    this.comparisonGroups = groups;
+  }
+
+  public log($event) {
+    console.log($event);
+  }
+
+  public onMinimumMentionsChange(change: MatSliderChange) {
+    const filter = FilterGenerator.moreThanXMentions(change.value, 'minimum_mentions_slider');
+    if (change.value > 0) {
+      this.filterService.set(filter);
+    } else {
+      this.filterService.remove(filter);
+    }
   }
 }

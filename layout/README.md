@@ -42,6 +42,10 @@ To run the service in a development environment, follow these steps:
 ***NOTE:*** On Windows you need to run `./<anaconda.dir>/condabin/activate layout_service` to activate the environment.\
 ***NOTE:*** On Windows you need to run `set FLASK_APP=service.py` to set the variable.\
 
+To test, whether the service is working, you can run  
+`python service_test.py` or  
+`curl -XPOST -H 'Content-Type: application/json' '127.0.0.1:5000/layout/embeddings' -d '{ words: [ 'the', 'test'] }'` 
+
 ## Production Deployment
 
 In case you want to use the layouting functionality in a production environment, you should probably use a [different server](https://flask.palletsprojects.com/en/1.1.x/deploying/#deployment). 

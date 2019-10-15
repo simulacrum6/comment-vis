@@ -1,12 +1,19 @@
 <mat-form-field class="medium-small">
   <mat-select #selector
-    [disabled]="true"
-    [value]="layouts[1]"
+    [disabled]="!layouts.semantic"
+    [value]="layouts.random"
     placeholder="Select a layout...">
-    <mat-option *ngFor="let layout of layouts"
-      [matTooltip]="layout.hint"
-      [value]="layout">
-      {{ layout.viewValue }}
+    <mat-option
+      [matTooltip]="layouts.random.hint"
+      [value]="layouts.random">
+      {{ layouts.random.viewValue }}
     </mat-option>
+    <mat-optgroup label="Semantic">
+      <mat-option *ngFor="let layout of layouts.semantic"
+        [matTooltip]="layout.hint"
+        [value]="layout">
+        {{ layout.viewValue }}
+      </mat-option>
+    </mat-optgroup>
   </mat-select>
 </mat-form-field>

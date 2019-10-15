@@ -4,6 +4,8 @@ import { Model } from 'src/app/models/canonical';
 import { DemoModel, DemoModels } from 'src/app/models/demo';
 import { FilterService } from 'src/app/services/filter.service';
 import { StateService } from 'src/app/services/state.service';
+import {MatIconRegistry} from '@angular/material';
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-upload',
@@ -27,8 +29,13 @@ export class UploadComponent implements OnInit {
   private uploadJson: any = '';
 
 
-  constructor(private router: Router, private ar: ActivatedRoute, private stateService: StateService, private filterService: FilterService) {
+  constructor(private router: Router, private ar: ActivatedRoute, private stateService: StateService, private filterService: FilterService, private matIconRegistry: MatIconRegistry, private domSanitizer: DomSanitizer) {
     this.stateService.loadSafe();
+
+    this.matIconRegistry.addSvgIcon(
+      `questionmark`,
+      this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/questionmark.svg")
+    );
   }
 
   ngOnInit() { }
@@ -98,4 +105,7 @@ export class UploadComponent implements OnInit {
     this.router.navigate(['stats']);
   }
 
+  handleUploadFormatHelpClick() {
+    this.router.navigate(['format']);
+  }
 }

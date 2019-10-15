@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChartDataSets, ChartPoint } from 'chart.js';
@@ -17,7 +17,7 @@ import { Coordinate, LayoutService, LayoutName } from 'src/app/services/layout.s
   templateUrl: './bubble.component.html',
   styleUrls: ['./bubble.component.scss']
 })
-export class BubbleComponent implements OnInit, OnDestroy {
+export class BubbleComponent implements OnInit, OnDestroy, OnChanges {
   public static readonly ScaleMin = 0;
   public static readonly ScaleMax = 100;
 
@@ -82,7 +82,9 @@ export class BubbleComponent implements OnInit, OnDestroy {
   public groups: ExtractionGroup[] = [];
   @Input()
   public layout = LayoutService.randomLayout(10000);
-  public layoutName: LayoutName = 'meaning';
+  @Input()
+  public scalingFunction: (g: ExtractionGroup) => number;
+
   public type: FacetType = 'aspect';
 
   constructor(
@@ -98,23 +100,12 @@ export class BubbleComponent implements OnInit, OnDestroy {
     // deactivate animations after first load.
     const opts: any = this.chartOptions;
     opts.animation = { duration: 0 };
-    this.sub = this.layoutService.layoutChanges
-    .subscribe(
-      layout => {
-        if (layout.length >= this.groups.length) {
-          this.layout = layout;
-          this.update();
-        }
-      },
-      error => {
-        console.warn('could not get a proper layout, getting a random one instead')
-        this.layout = this.layoutService.getRandomLayout(this.groups.map(g => g.name));
-        this.update();
-      }
-    );
-    const names = this.groups.map(g => g.name);
-    this.layoutService.getLayout(names, this.layoutName);
   }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.update();
+  }
+
   ngOnDestroy(): void {
     this.sub.unsubscribe();
   }
@@ -123,7 +114,6 @@ export class BubbleComponent implements OnInit, OnDestroy {
     this.stateService.loadSafe();
     this.model = this.stateService.model.state;
     this.type = this.stateService.facetType.state;
-    this.groups = this.model.getGroupsFor(this.type);
     const occurences = this.model.extractions.length;
 
     // sizing functions.
@@ -134,7 +124,7 @@ export class BubbleComponent implements OnInit, OnDestroy {
     const controversial = (g: ExtractionGroup) => controversy(g.sentimentCount) / 1000;
 
     // generate data
-    this.bubbles = Bubble.fromLayout(this.groups, this.layout, occurencePercentage);
+    this.bubbles = Bubble.fromLayout(this.groups, this.layout, this.scalingFunction);
     this.fillChartData(this.bubbles);
   }
   public handleBubbleClick({ event, active }: { event: MouseEvent, active: any[] }) {

@@ -1,5 +1,7 @@
 import numpy as np
 from sklearn.manifold import TSNE
+from sklearn.cluster import AgglomerativeClustering
+from random import random
 
 def load_csv_embeddings(file_path, separator=',', encoding='utf-8'):
     """
@@ -31,18 +33,43 @@ def load_csv_embeddings(file_path, separator=',', encoding='utf-8'):
     print('done!')
     return (words, embeddings)
 
-def coordinates(xs, dimensions=2):
-    """Maps the given vectors to a vector in the given dimension, based on their similarity."""
+def t_sne_coordinates(xs, dimensions=2):
+    """Maps the given vectors to a vector in the given dimension, based on their similarity, using t-SNE."""
     X = np.array([x for x in xs])
     return TSNE(n_components=dimensions).fit_transform(X)
-    
+
+def scatter(labels, centroids, scatter_factor = 0.05):
+    """
+    Generates a list of coordinates, randomly scattered around the given centroids.
+    scatter_factor determines, how far coordinates are scattered around the centroids.
+    Labels must be a list of indices of centroids. 
+    Each entry in label is scattered around its corresponding cenroid.
+    Centroids is assumed to be two-dimensional.
+    """
+    coordinates = []
+    for i in labels:
+        x,y = centroids[i]
+        coordinate = [x + random() * scatter_factor, y + random() * scatter_factor]
+        coordinates.append(coordinate)
+    return coordinates
+
+def hierarchical_coordinates(xs, threshold):
+    """Maps the given vectors to a vector in the given dimension, based on their similarity, using hierarchical clustering."""
+    X = np.array([x for x in xs])
+    clustering = AgglomerativeClustering(n_clusters=None, distance_threshold=threshold)
+    cluster_labels = clustering.fit_predict(X)
+    print(clustering.n_clusters_)
+    # set cluster centroids
+    centroids = [[random(), random()] for _ in range(clustering.n_clusters_)]
+    return scatter(cluster_labels, centroids)
+
 def layout(words, coordinates):
     """Creates a dict of map to coordinates"""
     return { word: coordinate for word, coordinate in zip(words, coordinates)}
 
 def layout_from_embeddings_file(path, seperator=' ', encoding='utf-8', coordinate_dimensions=2):
     words, embeddings = load_csv_embeddings(path, seperator, encoding)
-    return layout(words, coordinates(embeddings, coordinate_dimensions))
+    return layout(words, t_sne_coordinates(embeddings, coordinate_dimensions))
 
 def save_layout(layout, path, seperator='\t', encoding='utf-8'):
     with open(path, 'w+', encoding=encoding) as f:

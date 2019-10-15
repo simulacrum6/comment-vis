@@ -1,10 +1,19 @@
-<mat-form-field>
-  <mat-select #selector
-    [disabled]="true"
-    placeholder="Add a filter...">
-    <mat-option *ngFor="let option of filters"
-      [value]="option">
-      {{ option.viewValue }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+<div>
+  <mat-form-field>
+    <mat-select #selector
+      [disabled]="filters.length === 0 && groups.length === 0"
+      placeholder="Add a filter...">
+      <mat-option *ngFor="let option of filters"
+        [value]="option">
+        {{ option.name }}
+      </mat-option>
+      <mat-optgroup *ngFor="let group of groups" [label]="group.name">
+        <mat-option *ngFor="let option of group.filters"
+          [value]="option">
+          {{ option.name }}
+        </mat-option>
+      </mat-optgroup>
+    </mat-select>
+  </mat-form-field>
+  <button mat-button (click)="clear.emit()" matTooltip="Clear all filters."><mat-icon>clear</mat-icon></button>
+</div>

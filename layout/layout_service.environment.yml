@@ -11,6 +11,7 @@ dependencies:
   - click=7.0=py37_0
   - cryptography=2.7=py37h7a1dbc1_0
   - flask=1.1.1=py_0
+  - flask-cors=3.0.8=py_0
   - icc_rt=2019.0.0=h0cc432a_1
   - idna=2.8=py37_0
   - intel-openmp=2019.4=245
