@@ -160,7 +160,7 @@ export class StatisticsComponent implements OnInit, OnDestroy {
     if (this.sentimentCounts.unknown > 0) {
       this.warnings.push(
         `Your uploaded dataset contains ${this.sentimentCounts.unknown} comments with unknown sentiment - ` +
-        `These comments will not be shown in most visualisations.`
+        `These comments will not be considered in most visualisations.`
       );
     }
 

@@ -31,7 +31,7 @@ export class SentimentTableComponent implements OnInit, OnChanges {
    */
   @Input() links = true;
   @Input() extractions: Extraction[];
-  @Input() facetType: FacetType;
+  @Input('facetType') facetType: FacetType;
   @Input() facetProperty: FacetProperty = 'group';
   @ViewChild('paginator') paginator: MatPaginator;
 
@@ -48,7 +48,7 @@ export class SentimentTableComponent implements OnInit, OnChanges {
   constructor(protected stateService: StateService) { }
 
   ngOnInit() {
-    this._facetTypeVisibleName = FacetTypes.getVisibleName(this.stateService.facetType.state);
+    this._facetTypeVisibleName = FacetTypes.getVisibleName(this.facetType);
     this.update();
     this.generateTableData();
   }
