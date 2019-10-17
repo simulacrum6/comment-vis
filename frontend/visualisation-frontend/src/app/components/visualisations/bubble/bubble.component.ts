@@ -63,6 +63,11 @@ export class BubbleComponent implements OnInit, OnDestroy, OnChanges {
       // Padding so values on the edge are not easily cut off
       // TODO: change to max radius of chart points?
       padding: { left: 20, right: 20, top: 20, bottom: 20 }
+    },
+    hover: {
+      onHover: (event, chartElement) => {
+        event.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+      }
     }
   };
 

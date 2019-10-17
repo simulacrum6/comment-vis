@@ -7,7 +7,6 @@ import { Subscription } from 'rxjs';
 import { Extraction, Extractions, FacetType, sentimentDifferential } from 'src/app/models/canonical';
 import { mapToSentiment, mapToSentimentStatement, SentimentCount, Sentiments } from 'src/app/models/sentiment';
 import { valueCounts } from 'src/app/models/utils';
-import { FilterGenerator } from 'src/app/services/filter';
 import { FilterService } from 'src/app/services/filter.service';
 import { StateService } from 'src/app/services/state.service';
 import { DefaultColorStrings } from 'src/environments/constants';
@@ -95,6 +94,11 @@ export class StatisticsComponent implements OnInit, OnDestroy {
           beginAtZero: true
         }
       }],
+    },
+    hover: {
+      onHover: (event, chartElement) => {
+        event.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+      }
     }
   };
   private maxRankingDisplayItems = 10;

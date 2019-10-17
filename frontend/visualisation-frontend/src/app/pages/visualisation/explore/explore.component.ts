@@ -6,9 +6,9 @@ import { ActivatedRoute } from '@angular/router';
 import { StateService } from 'src/app/services/state.service';
 import { ExtractionGroup } from 'src/app/models/canonical';
 import { Coordinate, LayoutService, LayoutName } from 'src/app/services/layout.service';
-import { map, switchMap } from 'rxjs/operators';
+import { map} from 'rxjs/operators';
 import { occurencePercentage } from 'src/app/components/controls/size-scaling/size-scaling.component';
-import { MatSlideToggleChange, MatSliderChange } from '@angular/material';
+import { MatSliderChange } from '@angular/material';
 
 @Component({
   selector: 'app-explore',
