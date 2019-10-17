@@ -66,6 +66,7 @@ export class CompareComponent implements OnInit, OnDestroy {
 
   private get breadCrumbPaths() {
     return [
+      { name: 'Upload', path: ['/']},
       { name: 'Statistics', path: ['/stats'], queryParams: {} },
       { name: FacetTypes.getVisibleName(this.facetType) + 's', path: ['/vis/pie'], queryParams: {} }
     ];

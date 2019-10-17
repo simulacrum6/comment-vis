@@ -17,6 +17,12 @@ export class InspectComponent implements OnInit {
 
   private comments: Observable<ExtractionGroup[]>;
 
+  private breadCrumbPaths = [
+    { name: 'Upload', path: ['/']},
+    { name: 'Statistics', path: ['/stats']},
+    { name: 'Inspect', path: ['/vis/inspect/']}
+  ];
+
   private availableFilters = [
     { name: 'Topics', filters: FilterOptions.groups.topics},
     { name: 'Sentiment', filters: FilterOptions.groups.sentiment}

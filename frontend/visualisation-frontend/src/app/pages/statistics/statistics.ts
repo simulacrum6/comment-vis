@@ -21,6 +21,7 @@ export class StatisticsComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();
 
   private breadCrumbPaths = [
+    { name: 'Upload', path: ['/']},
     { name: 'Statistics', path: ['/stats']}
   ];
 

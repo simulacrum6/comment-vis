@@ -18,6 +18,7 @@ import { MatSliderChange } from '@angular/material';
 export class ExploreComponent implements OnInit, OnDestroy {
 
   private breadCrumbPaths = [
+    { name: 'Upload', path: ['/']},
     { name: 'Statistics', path: ['/stats']},
     { name: 'Explore', path: ['/vis/explore/']}
   ];
