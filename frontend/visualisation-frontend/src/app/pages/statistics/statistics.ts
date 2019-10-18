@@ -48,8 +48,9 @@ export class StatisticsComponent implements OnInit, OnDestroy {
       yAxes: [{
         ticks: {
           beginAtZero: true
-        }
-      }],
+        },
+        minBarLength: 5
+      }]
     }
   };
   private sentimentDistributionColors;
@@ -67,13 +68,13 @@ export class StatisticsComponent implements OnInit, OnDestroy {
       xAxes: [{
         scaleLabel: {
           display: true,
-          labelString: 'Number of Comments mentioning a Topic'
+          labelString: 'Number of Topics'
         }
       }],
       yAxes: [{
         scaleLabel: {
           display: true,
-          labelString: 'Number of Topics'
+          labelString: 'Number of Comments'
         },
         ticks: {
           beginAtZero: true
@@ -194,7 +195,15 @@ export class StatisticsComponent implements OnInit, OnDestroy {
     this.aspectDistributionData = [
       { label: 'Topics in Category', data: hist.map(entry => entry.count) },
     ];
-    this.aspectDistributionLabels = hist.map(entry => entry.value);
+    this.aspectDistributionLabels = [];
+
+    for (let i = 0; i < hist.length; i++) {
+      if (hist.length <= i + 1) {
+        this.aspectDistributionLabels.push(hist[i].value + '+');
+      } else {
+        this.aspectDistributionLabels.push(hist[i].value + '-' + hist[i + 1].value);
+      }
+    }
 
     /** Attribute Ranking **/
     const attributeData: any = {};
