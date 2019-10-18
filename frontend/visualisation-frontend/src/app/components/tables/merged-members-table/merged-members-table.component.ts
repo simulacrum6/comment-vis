@@ -23,7 +23,7 @@ export class MergedMembersTableComponent extends SentimentTableComponent impleme
   }
 
   constructor(stateService: StateService, private snackBar: MatSnackBar) {
-    super(stateService);
+    super(stateService, snackBar);
   }
 
   ngOnInit() {

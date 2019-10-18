@@ -1,10 +1,12 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { MatPaginator, MatTableDataSource } from '@angular/material';
+import {MatPaginator, MatSnackBar, MatTableDataSource} from '@angular/material';
 import { Router } from '@angular/router';
 import { SortOption, SortOptions } from 'src/app/components/controls/filters/sort-filter/sort';
 import {Extraction, ExtractionGroup, Extractions, FacetProperty, FacetType, ExtractionProperty, FacetTypes} from 'src/app/models/canonical';
 import { SentimentCount } from 'src/app/models/sentiment';
 import {StateService} from '../../../services/state.service';
+import {CdkDragDrop} from '@angular/cdk/drag-drop';
+import {Model} from '../../../models/canonical';
 
 export class SentimentCountRow {
   public id: string;
@@ -45,15 +47,23 @@ export class SentimentTableComponent implements OnInit, OnChanges {
 
   _facetTypeVisibleName: string;
 
-  constructor(protected stateService: StateService) { }
+  private get model(): Model {
+    return this.stateService.model.state;
+  }
+
+  constructor(protected stateService: StateService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this._facetTypeVisibleName = FacetTypes.getVisibleName(this.facetType);
+    this.initialize();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
     this.update();
     this.generateTableData();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  initialize() {
     this.update();
     this.generateTableData();
   }
@@ -73,5 +83,39 @@ export class SentimentTableComponent implements OnInit, OnChanges {
   onSort(groups: ExtractionGroup[]) {
     this.displayGroups = groups;
     this.generateTableData();
+  }
+
+  onDragAndDrop(event: CdkDragDrop<SentimentCountRow>) {
+    if (!event.isPointerOverContainer) {
+      return;
+    }
+    if (event.previousContainer === event.container) {
+      return;
+    }
+
+    // TODO: This does not work because the ids are not set in first place
+    const mergee = this.displayGroups.find(element => element.id === event.previousContainer.data.id);
+    const receiver = this.displayGroups.find(element => element.id === event.container.data.id);
+
+    if (!mergee || !receiver) {
+      return;
+    }
+
+    if (receiver.id === mergee.id) {
+      return;
+    }
+
+    this.model.merge(receiver, mergee);
+
+    this.initialize();
+
+    const snackRef = this.snackBar.open(`Merged '${mergee.name}' into '${receiver.name}'`, 'undo', { duration: 5000 });
+    snackRef.onAction()
+      .subscribe(() => {
+        this.model.split(receiver, mergee);
+        this.initialize();
+      });
+
+
   }
 }
