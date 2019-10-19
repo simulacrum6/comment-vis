@@ -97,7 +97,7 @@ export class StatisticsComponent implements OnInit, OnDestroy {
       }],
     },
     hover: {
-      onHover: (event, chartElement) => {
+      onHover: (event: any, chartElement) => {
         event.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
       }
     }
