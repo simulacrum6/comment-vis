@@ -25,6 +25,37 @@
     </div>
 
     <div>
+      <h3>Sentiment Extrema</h3>
+
+      <div #toggle fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+        <label>Trait</label>
+        <mat-slide-toggle
+          color="primary"
+          [checked]="isExtremaAspect"
+          (change)="toggleExtremaFacetType()">
+          Topic
+        </mat-slide-toggle>
+      </div>
+      <div>
+        <label>Negative</label>
+        <mat-slide-toggle
+          color="primary"
+          [checked]="isExtremaPositive"
+          (change)="toggleExtremaSentiment()">
+          Positive
+        </mat-slide-toggle>
+      </div>
+      <p>This bar char shows the {{isExtremaAspect? 'topic' : 'trait'}}s with the most {{isExtremaPositive? 'positive' : 'negative'}} mentions.</p>
+      <canvas baseChart height="50vh"
+              [datasets]="sentimentExtremaData"
+              [labels]="sentimentExtremaLabels"
+              [options]="sentimentExtremaOptions"
+              [chartType]="sentimentExtremaType"
+      >
+      </canvas>
+    </div>
+
+    <div>
       <h3>Distribution of Topic mentions</h3>
       <p>This histogram shows how often topics of a certain mention count occured.</p>
       <canvas baseChart height="50vh"

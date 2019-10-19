@@ -10,6 +10,7 @@ import { valueCounts } from 'src/app/models/utils';
 import { FilterService } from 'src/app/services/filter.service';
 import { StateService } from 'src/app/services/state.service';
 import { DefaultColorStrings } from 'src/environments/constants';
+import {FacetTypes} from '../../models/canonical';
 
 @Component({
   selector: 'app-dataset-overview',
@@ -19,6 +20,18 @@ import { DefaultColorStrings } from 'src/environments/constants';
 export class StatisticsComponent implements OnInit, OnDestroy {
 
   private subscription = new Subscription();
+
+  private extremaFacetType: FacetType = FacetTypes.Aspect;
+
+  public get isExtremaAspect(): boolean {
+    return this.extremaFacetType === FacetTypes.Aspect;
+  }
+
+  private extremaSentiment: Sentiment = Sentiment.Positive;
+
+  public get isExtremaPositive(): boolean {
+    return this.extremaSentiment === Sentiment.Positive;
+  }
 
   private breadCrumbPaths = [
     { name: 'Upload', path: ['/']},
@@ -44,6 +57,26 @@ export class StatisticsComponent implements OnInit, OnDestroy {
     tooltips: { enabled: true}
   };
   private sentimentDistributionColors = [];
+
+  private sentimentExtremaData: ChartDataSets[] = [];
+  private sentimentExtremaType: ChartType = 'bar';
+  private sentimentExtremaOptions: ChartOptions = {
+    legend: {
+      display: false
+    },
+    tooltips: {
+      mode: 'index',
+      intersect: false
+    },
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }],
+    }
+  };
+  private sentimentExtremaLabels: Label[] = [];
 
   private facetDistributionType: ChartType = 'bar';
   private facetDistributionOptions: ChartOptions = {
@@ -169,24 +202,27 @@ export class StatisticsComponent implements OnInit, OnDestroy {
       this.sentimentDistributionData.push(this.sentimentCounts.neutral);
       this.sentimentDistributionLabels.push('neutral');
       availableSentiments.push(Sentiment.Neutral);
-
     }
+
     if (this.sentimentCounts.negative > 0) {
       this.sentimentDistributionData.push(this.sentimentCounts.negative);
       this.sentimentDistributionLabels.push('negative');
       availableSentiments.push(Sentiment.Negative);
-
     }
+
     if (this.sentimentCounts.unknown > 0) {
       this.sentimentDistributionData.push(this.sentimentCounts.unknown);
       this.sentimentDistributionLabels.push('unknown');
       availableSentiments.push(Sentiment.Unknown);
     }
+
     this.sentimentDistributionColors = [{
       backgroundColor: availableSentiments.map(sentiment => DefaultColorStrings.backgroundColor[sentiment]),
       borderColor: availableSentiments.map(sentiment => DefaultColorStrings.borderColor[sentiment]),
       hoverBackgroundColor: availableSentiments.map(sentiment => DefaultColorStrings.hoverBackgroundColor[sentiment])
     }];
+
+    this.initializeExtremaBarChart();
 
     /** Aspect Ranking **/
     const aspectRankingData: any = {};
@@ -243,6 +279,33 @@ export class StatisticsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/detail'], { queryParams: { facet, facetType } });
   }
 
+  private initializeExtremaBarChart() {
+    this.sentimentExtremaData = [];
+    this.sentimentExtremaLabels = [];
+
+    const extremaData: any = {};
+    extremaData.data = [];
+    const aspectMap = Object.entries(Extractions.groupBy(this.extractions, this.extremaFacetType));
+    aspectMap.sort((a, b) => {
+      if (this.extremaSentiment === Sentiment.Negative) {
+        return SentimentCount.fromExtractions(b[1]).negative - SentimentCount.fromExtractions(a[1]).negative;
+      }
+      return SentimentCount.fromExtractions(b[1]).positive - SentimentCount.fromExtractions(a[1]).positive;
+    });
+
+    aspectMap.slice(0, 10)
+      .forEach(entry => {
+        if (this.extremaSentiment === Sentiment.Negative) {
+          extremaData.data.push(SentimentCount.fromExtractions(entry[1]).negative);
+        } else {
+          extremaData.data.push(SentimentCount.fromExtractions(entry[1]).positive);
+        }
+        this.sentimentExtremaLabels.push(entry[0]);
+      });
+
+    this.sentimentExtremaData.push(extremaData);
+  }
+
   public exportModel() {
     const serialized = this.stateService.model.model.exportAsJSONString();
     const download = document.createElement('a');
@@ -272,5 +335,15 @@ export class StatisticsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+  }
+
+  public toggleExtremaFacetType() {
+    this.extremaFacetType = FacetTypes.other(this.extremaFacetType);
+    this.initializeExtremaBarChart();
+  }
+
+  public toggleExtremaSentiment() {
+    this.extremaSentiment = this.extremaSentiment === Sentiment.Positive ? Sentiment.Negative : Sentiment.Positive;
+    this.initializeExtremaBarChart();
   }
 }
