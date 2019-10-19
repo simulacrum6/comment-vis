@@ -5,13 +5,11 @@ import { histogram } from 'datalib';
 import { Label } from 'ng2-charts';
 import { Subscription } from 'rxjs';
 import { Extraction, Extractions, FacetType, sentimentDifferential } from 'src/app/models/canonical';
-import { mapToSentiment, mapToSentimentStatement, SentimentCount, Sentiments } from 'src/app/models/sentiment';
+import {mapToSentiment, mapToSentimentStatement, Sentiment, SentimentCount, Sentiments} from 'src/app/models/sentiment';
 import { valueCounts } from 'src/app/models/utils';
 import { FilterService } from 'src/app/services/filter.service';
 import { StateService } from 'src/app/services/state.service';
 import { DefaultColorStrings } from 'src/environments/constants';
-import {ExtractionGroup, StringMap} from '../../models/canonical';
-import {controversy} from '../../models/sentiment';
 
 @Component({
   selector: 'app-dataset-overview',
@@ -35,48 +33,17 @@ export class StatisticsComponent implements OnInit, OnDestroy {
   private mood: string;
   private moodPercent: string;
   private warnings: string[] = [];
-  private sentimentDistributionData: ChartDataSets[] = [];
-  private sentimentDistributionType: ChartType = 'bar';
-  private sentimentDistributionLabels: Label[] = ['positive', 'negative', 'neutral', 'unknown'];
+  private sentimentDistributionData: number[] = [];
+  private sentimentDistributionType: ChartType = 'pie';
+  private sentimentDistributionLabels: Label[] = [];
   private sentimentDistributionOptions: any = {
-    legend: {
-      display: false
-    },
-    tooltips: {
-      mode: 'index',
-      intersect: false
-    },
-    scales: {
-      yAxes: [{
-        ticks: {
-          beginAtZero: true
-        },
-        minBarLength: 5
-      }]
-    }
+    animation: { animateRotate: true, animateScale: true },
+    responsive: true,
+    aspectRatio: 1,
+    legend: { display: false },
+    tooltips: { enabled: true}
   };
-  private sentimentDistributionColors;
-
-  private sentimentControversyData: ChartDataSets[] = [];
-  private sentimentControversyType: ChartType = 'bar';
-  private sentimentControversyLabels: Label[] = [];
-  private sentimentControversyOptions: any = {
-    legend: {
-      display: false
-    },
-    tooltips: {
-      mode: 'index',
-      intersect: false
-    },
-    scales: {
-      yAxes: [{
-        ticks: {
-          beginAtZero: true
-        },
-        minBarLength: 5
-      }]
-    }
-  };
+  private sentimentDistributionColors = [];
 
   private facetDistributionType: ChartType = 'bar';
   private facetDistributionOptions: ChartOptions = {
@@ -190,33 +157,36 @@ export class StatisticsComponent implements OnInit, OnDestroy {
     }
 
     /** Sentiment Distribution **/
-    const sentimentData: any = {};
-    sentimentData.data = [this.sentimentCounts.positive, this.sentimentCounts.negative,
-      this.sentimentCounts.neutral, this.sentimentCounts.unknown];
-    this.sentimentDistributionColors = [{
-      backgroundColor: Sentiments.map(sentiment => DefaultColorStrings.backgroundColor[sentiment]),
-      borderColor: Sentiments.map(sentiment => DefaultColorStrings.borderColor[sentiment]),
-      hoverBackgroundColor: Sentiments.map(sentiment => DefaultColorStrings.hoverBackgroundColor[sentiment])
-    }];
-    this.sentimentDistributionData.push(sentimentData);
+    this.sentimentDistributionData = [];
+    const availableSentiments = [];
 
-    /** Sentiment most controversial **/
-    const controversialData: any = {};
-    controversialData.data = [];
-    const controversialAspectMap = Object.entries(Extractions.groupBy(this.extractions, 'aspect'));
-
-    /*(a, b) => {
-      return controversy(SentimentCount.fromExtractions(a)) - controversy(SentimentCount.fromExtractions(b));
-    })*/
-
-    controversialAspectMap.sort((a, b) => {
-      return controversy(SentimentCount.fromExtractions(Object.entries(a[1]))) - controversy(SentimentCount.fromExtractions(Object.entries(b[1])));
-    });
-    for (const entry of controversialAspectMap) {
-      controversialData.data.push(controversy(SentimentCount.fromExtractions(Object.entries(entry[1]))));
-      this.sentimentControversyLabels.push(entry[0]);
+    if (this.sentimentCounts.positive > 0) {
+      this.sentimentDistributionData.push(this.sentimentCounts.positive);
+      this.sentimentDistributionLabels.push('positive');
+      availableSentiments.push(Sentiment.Positive);
     }
-    this.sentimentControversyData.push(sentimentData);
+    if (this.sentimentCounts.neutral > 0) {
+      this.sentimentDistributionData.push(this.sentimentCounts.neutral);
+      this.sentimentDistributionLabels.push('neutral');
+      availableSentiments.push(Sentiment.Neutral);
+
+    }
+    if (this.sentimentCounts.negative > 0) {
+      this.sentimentDistributionData.push(this.sentimentCounts.negative);
+      this.sentimentDistributionLabels.push('negative');
+      availableSentiments.push(Sentiment.Negative);
+
+    }
+    if (this.sentimentCounts.unknown > 0) {
+      this.sentimentDistributionData.push(this.sentimentCounts.unknown);
+      this.sentimentDistributionLabels.push('unknown');
+      availableSentiments.push(Sentiment.Unknown);
+    }
+    this.sentimentDistributionColors = [{
+      backgroundColor: availableSentiments.map(sentiment => DefaultColorStrings.backgroundColor[sentiment]),
+      borderColor: availableSentiments.map(sentiment => DefaultColorStrings.borderColor[sentiment]),
+      hoverBackgroundColor: availableSentiments.map(sentiment => DefaultColorStrings.hoverBackgroundColor[sentiment])
+    }];
 
     /** Aspect Ranking **/
     const aspectRankingData: any = {};

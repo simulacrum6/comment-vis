@@ -13,26 +13,17 @@
 
     <div>
       <h3>Sentiment Distribution</h3>
-      <p>This histogram shows how often certain sentiments occured.</p>
+      <p>This pie chart shows how often certain sentiments occured in comments.</p>
       <canvas baseChart height="50vh"
-              [datasets]="sentimentDistributionData"
+              [data]="sentimentDistributionData"
               [labels]="sentimentDistributionLabels"
               [options]="sentimentDistributionOptions"
+              [chartType]="sentimentDistributionType"
               [colors]="sentimentDistributionColors"
-              [chartType]="sentimentDistributionType">
+      >
       </canvas>
     </div>
 
-    <div>
-      <h3>Sentiment Controversy Ranking</h3>
-      <p>This barchart shows the most controverse topics.</p>
-      <canvas baseChart height="50vh"
-              [datasets]="sentimentControversyData"
-              [labels]="sentimentControversyLabels"
-              [options]="sentimentControversyOptions"
-              [chartType]="sentimentControversyType">
-      </canvas>
-    </div>
     <div>
       <h3>Distribution of Topic mentions</h3>
       <p>This histogram shows how often topics of a certain mention count occured.</p>
