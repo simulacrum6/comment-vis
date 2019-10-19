@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild, Output, EventEmitter } from '@angular/core';
 import {MatPaginator, MatSnackBar, MatTableDataSource} from '@angular/material';
 import { Router } from '@angular/router';
 import { SortOption, SortOptions } from 'src/app/components/controls/filters/sort-filter/sort';
@@ -36,8 +36,9 @@ export class SentimentTableComponent implements OnInit, OnChanges {
   @Input('facetType') facetType: FacetType;
   @Input() facetProperty: FacetProperty = 'group';
   @ViewChild('paginator') paginator: MatPaginator;
+  @Input() protected groups: ExtractionGroup[];
 
-  protected groups: ExtractionGroup[];
+  @Output() merge: EventEmitter<void> = new EventEmitter<void>();
   protected displayGroups: ExtractionGroup[];
   protected tableData: MatTableDataSource<SentimentCountRow>;
   protected positiveSort: SortOption = SortOptions.options.positiveSentiments;
@@ -47,11 +48,11 @@ export class SentimentTableComponent implements OnInit, OnChanges {
 
   _facetTypeVisibleName: string;
 
-  private get model(): Model {
+  protected get model(): Model {
     return this.stateService.model.state;
   }
 
-  constructor(protected stateService: StateService, private snackBar: MatSnackBar) { }
+  constructor(protected stateService: StateService, protected snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this._facetTypeVisibleName = FacetTypes.getVisibleName(this.facetType);
@@ -69,7 +70,6 @@ export class SentimentTableComponent implements OnInit, OnChanges {
   }
 
   update() {
-    this.groups = Extractions.toViewGroups(this.extractions, this.facetType, this.facetProperty);
     this.displayGroups = this.groups.slice();
   }
 
@@ -93,9 +93,15 @@ export class SentimentTableComponent implements OnInit, OnChanges {
       return;
     }
 
+    console.log(event.previousContainer)
+
+    console.log(event.container)
+
     // TODO: This does not work because the ids are not set in first place
     const mergee = this.displayGroups.find(element => element.id === event.previousContainer.data.id);
     const receiver = this.displayGroups.find(element => element.id === event.container.data.id);
+
+    console.log(`mergee: ${mergee.name}, receiver: ${receiver.name}`);
 
     if (!mergee || !receiver) {
       return;
@@ -106,6 +112,7 @@ export class SentimentTableComponent implements OnInit, OnChanges {
     }
 
     this.model.merge(receiver, mergee);
+    this.merge.emit()
 
     this.initialize();
 
@@ -113,9 +120,8 @@ export class SentimentTableComponent implements OnInit, OnChanges {
     snackRef.onAction()
       .subscribe(() => {
         this.model.split(receiver, mergee);
+        this.merge.emit();
         this.initialize();
       });
-
-
   }
 }

@@ -15,14 +15,11 @@ export class MergedMembersTableComponent extends SentimentTableComponent impleme
     return this.group.type as FacetType;
   }
 
-  protected get model(): Model {
-    return this.stateService.model.state;
-  }
   protected get groups(): ExtractionGroup[] {
     return this.model.getMergedGroups(this.group);
   }
 
-  constructor(stateService: StateService, private snackBar: MatSnackBar) {
+  constructor(stateService: StateService, snackBar: MatSnackBar) {
     super(stateService, snackBar);
   }
 
