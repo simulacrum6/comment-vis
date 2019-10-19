@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { Extraction, ExtractionGroup, Extractions, FacetType, FacetTypes, StringMap, Model, ViewExtractionGroup } from 'src/app/models/canonical';
 import { StateService } from 'src/app/services/state.service';
 
@@ -12,9 +12,10 @@ export class DetailViewBaseComponent implements OnInit {
     protected extractions$: Observable<Extraction[]>;
     protected facetExists$: Observable<boolean> = new BehaviorSubject(true);
     protected group$: Observable<ExtractionGroup>;
-    protected subGroups$: Observable<ViewExtractionGroup[]>;
+    protected subGroups$: Observable<ExtractionGroup[]>;
     protected subGroupType$: Observable<FacetType>;
     protected faceTypeVisibleName$: Observable<string>;
+    protected updateEvent$: BehaviorSubject<void>;
 
     protected get model(): Model{
         return this.stateService.model.state;
@@ -28,8 +29,10 @@ export class DetailViewBaseComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.group$ = combineLatest(this.facet$, this.facetType$).pipe(
-            map(facetDescription => this.model.getGroupByName(...facetDescription))
+        this.updateEvent$ = new BehaviorSubject(null);
+        this.group$ = combineLatest(this.facet$, this.facetType$, this.updateEvent$).pipe(
+            map(facetDescription => this.model.getGroupByName(facetDescription[0], facetDescription[1])),
+            tap(group => console.log(group))
         );
         this.extractions$ = this.group$.pipe(
             map(group => group.extractions)
@@ -41,7 +44,8 @@ export class DetailViewBaseComponent implements OnInit {
             map(FacetTypes.other)
         );
         this.subGroups$ = combineLatest(this.group$, this.subGroupType$).pipe(
-            map(([group, type]) => this.model.getSubGroups(group, type))
+            map(([group, type]) => this.model.getSubGroups(group, type)),
+            tap(groups => console.log(groups)),
         );
         this.faceTypeVisibleName$ = this.facetType$.pipe(
           map(type => FacetTypes.getVisibleName(type).toLowerCase())
