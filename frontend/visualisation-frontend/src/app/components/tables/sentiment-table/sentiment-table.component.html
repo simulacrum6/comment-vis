@@ -1,12 +1,14 @@
 <table mat-table [dataSource]="tableData">
-  <ng-container cdkColumnDef="group">
+  <ng-container cdkColumnDef="group" cdkDropListGroup>
     <th mat-header-cell *matHeaderCellDef> {{ _facetTypeVisibleName }} </th>
     <td mat-cell *matCellDef="let row">
-      <a *ngIf="links; else plain"
-        [routerLink]="['/detail']"
-        [queryParams]="{ facet: row.group, facetType: facetType }">
-        {{ row.group }}
-      </a>
+      <div cdkDropList [cdkDropListData]="row" (cdkDropListDropped)="onDragAndDrop($event)">
+        <a cdkDrag *ngIf="links; else plain"
+          [routerLink]="['/detail']"
+          [queryParams]="{ facet: row.group, facetType: facetType }">
+          {{ row.group }}
+        </a>
+      </div>
       <ng-template #plain>{{ row.group }}</ng-template>
     </td>
   </ng-container>

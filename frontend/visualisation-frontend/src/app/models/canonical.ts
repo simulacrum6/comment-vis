@@ -481,9 +481,11 @@ export class Model {
    * @param type   The type of the subgroups to get.
    * @return  A list of ExtractionGroups.
    */
-  public getSubGroups(group: ExtractionGroup, type: ExtractionProperty): ViewExtractionGroup[] {
-    return Extractions.groupAsEntries(group.extractions, type)
+  public getSubGroups(group: ExtractionGroup, type: ExtractionProperty): ExtractionGroup[] {
+    const viewGroups = Extractions.groupAsEntries(group.extractions, type)
       .map(([name, extractions]) => new ViewExtractionGroup(name, type, extractions));
+
+    return viewGroups.map(g => this.getGroupByName(g.name, g.type));
   }
 
   /**
@@ -529,6 +531,7 @@ export class Model {
       // remove other from list
       const list = this.groupLists[group.type];
       this.groupLists[group.type] = list.filter(g => g.id !== other.id);
+      this.updateExtractions();
     } else {
       console.warn('Cannot add group to itself. Call is ignored.');
     }
@@ -580,11 +583,16 @@ export class Model {
     }
     const list = this.groupLists[group.type];
     this.groupLists[group.type] = list.concat(other);
+    this.updateExtractions();
   }
 
   public updateExtractions() {
     const aspects = this.groupLists.aspect;
     const attributes = this.groupLists.attribute;
+
+    if (!(aspects && attributes)) {
+      return;
+    }
 
     // assign groups to extractions
     aspects.forEach(assignGroup);

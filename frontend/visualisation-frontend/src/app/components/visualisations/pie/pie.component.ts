@@ -61,7 +61,7 @@ export class PieComponent implements OnInit, OnChanges {
       legend: { position: 'bottom' },
       tooltips: { enabled: this.enableTooltips },
       hover: {
-      onHover: (event, chartElement) => {
+      onHover: (event: any, chartElement) => {
         event.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
       }
     }
