@@ -1,69 +1,84 @@
 <mat-card class="content">
   <mat-card-title>Statistics</mat-card-title>
-  <mat-card-subtitle><app-breadcrumb [paths]="breadCrumbPaths"></app-breadcrumb></mat-card-subtitle>
+  <mat-card-subtitle>
+    <app-breadcrumb [paths]="breadCrumbPaths"></app-breadcrumb>
+  </mat-card-subtitle>
 
   <mat-card-content>
-      <h3>Dataset</h3>
-      This dataset consists of <strong>{{ uniqueValues.comment.size }}</strong> comments.<br>
-      The mood is <strong>{{ mood }}</strong> with <strong>{{ moodPercent }}</strong>.<br>
-      We extracted <strong>{{ uniqueValues.attribute.size }}</strong> traits for <strong>{{ uniqueValues.aspect.size }}</strong> topics.
+    <h3>Dataset</h3>
+    This dataset consists of <strong>{{ uniqueValues.comment.size }}</strong> comments.<br>
+    The mood is <strong>{{ mood }}</strong> with <strong>{{ moodPercent }}</strong>.<br>
+    We extracted <strong>{{ uniqueValues.attribute.size }}</strong> traits for <strong>{{ uniqueValues.aspect.size
+    }}</strong> topics.
 
-      <div>
-        <h3>Sentiment Distribution</h3>
-        <p>This histogram shows how often certain sentiments occured.</p>
-        <canvas baseChart height="50vh"
-                [datasets]="sentimentDistributionData"
-                [labels]="sentimentDistributionLabels"
-                [options]="sentimentDistributionOptions"
-                [colors]="sentimentDistributionColors"
-                [chartType]="sentimentDistributionType">
-        </canvas>
-      </div>
+    <div>
+      <h3>Sentiment Distribution</h3>
+      <p>This histogram shows how often certain sentiments occured.</p>
+      <canvas baseChart height="50vh"
+              [datasets]="sentimentDistributionData"
+              [labels]="sentimentDistributionLabels"
+              [options]="sentimentDistributionOptions"
+              [colors]="sentimentDistributionColors"
+              [chartType]="sentimentDistributionType">
+      </canvas>
+    </div>
 
-      <div>
-        <h3>Distribution of Topic mentions</h3>
-        <p>This histogram shows how often topics of a certain mention count occured.</p>
-        <canvas baseChart height="50vh"
-                [datasets]="aspectDistributionData"
-                [labels]="aspectDistributionLabels"
-                [options]="facetDistributionOptions"
-                [chartType]="facetDistributionType">
-        </canvas>
-      </div>
+    <div>
+      <h3>Sentiment Controversy Ranking</h3>
+      <p>This barchart shows the most controverse topics.</p>
+      <canvas baseChart height="50vh"
+              [datasets]="sentimentControversyData"
+              [labels]="sentimentControversyLabels"
+              [options]="sentimentControversyOptions"
+              [chartType]="sentimentControversyType">
+      </canvas>
+    </div>
+    <div>
+      <h3>Distribution of Topic mentions</h3>
+      <p>This histogram shows how often topics of a certain mention count occured.</p>
+      <canvas baseChart height="50vh"
+              [datasets]="aspectDistributionData"
+              [labels]="aspectDistributionLabels"
+              [options]="facetDistributionOptions"
+              [chartType]="facetDistributionType">
+      </canvas>
+    </div>
 
-      <div>
-        <h3>Topic Ranking</h3>
-        <canvas baseChart height="50vh"
-                [datasets]="aspectRankingData"
-                [labels]="aspectRankingLabels"
-                [options]="facetRankingOptions"
-                [chartType]="facetDistributionType"
-                (chartClick)="handleRankingClick($event, 'aspect')"
-        >
-        </canvas>
-        <span *ngIf="tooManyAspects" class="light" matTooltip="There are too many elements to display, so only the most frequent ones are shown.">Displaying {{ maxRankingDisplayItems }} of {{ valueCounts.aspect.length }} topics</span>
-      </div>
+    <div>
+      <h3>Topic Ranking</h3>
+      <canvas baseChart height="50vh"
+              [datasets]="aspectRankingData"
+              [labels]="aspectRankingLabels"
+              [options]="facetRankingOptions"
+              [chartType]="facetDistributionType"
+              (chartClick)="handleRankingClick($event, 'aspect')"
+      >
+      </canvas>
+      <span *ngIf="tooManyAspects" class="light"
+            matTooltip="There are too many elements to display, so only the most frequent ones are shown.">Displaying {{ maxRankingDisplayItems }} of {{ valueCounts.aspect.length }} topics</span>
+    </div>
 
-      <div>
-          <h3>Traits Ranking</h3>
-          <canvas baseChart height="50vh"
-                  [datasets]="attributeRankingData"
-                  [labels]="attributeRankingLabels"
-                  [options]="facetRankingOptions"
-                  [chartType]="facetDistributionType"
-                  (chartClick)="handleRankingClick($event, 'attribute')">
-          </canvas>
-          <span *ngIf="tooManyAttributes" class="light" matTooltip="There are too many elements to display, so only the most frequent ones are shown.">Displaying {{ maxRankingDisplayItems }} of {{ valueCounts.attribute.length }} traits</span>
-        </div>
+    <div>
+      <h3>Traits Ranking</h3>
+      <canvas baseChart height="50vh"
+              [datasets]="attributeRankingData"
+              [labels]="attributeRankingLabels"
+              [options]="facetRankingOptions"
+              [chartType]="facetDistributionType"
+              (chartClick)="handleRankingClick($event, 'attribute')">
+      </canvas>
+      <span *ngIf="tooManyAttributes" class="light"
+            matTooltip="There are too many elements to display, so only the most frequent ones are shown.">Displaying {{ maxRankingDisplayItems }} of {{ valueCounts.attribute.length }} traits</span>
+    </div>
 
-      <div *ngIf="warnings.length > 0" class="warnings">
-        <h3 class="warnings_title">Warnings</h3>
-        <ul>
-          <li *ngFor="let warning of warnings">
-            {{warning}}
-          </li>
-        </ul>
-      </div>
+    <div *ngIf="warnings.length > 0" class="warnings">
+      <h3 class="warnings_title">Warnings</h3>
+      <ul>
+        <li *ngFor="let warning of warnings">
+          {{warning}}
+        </li>
+      </ul>
+    </div>
   </mat-card-content>
 
   <mat-card-actions>

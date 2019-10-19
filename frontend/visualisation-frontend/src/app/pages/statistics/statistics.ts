@@ -10,6 +10,8 @@ import { valueCounts } from 'src/app/models/utils';
 import { FilterService } from 'src/app/services/filter.service';
 import { StateService } from 'src/app/services/state.service';
 import { DefaultColorStrings } from 'src/environments/constants';
+import {ExtractionGroup, StringMap} from '../../models/canonical';
+import {controversy} from '../../models/sentiment';
 
 @Component({
   selector: 'app-dataset-overview',
@@ -36,7 +38,7 @@ export class StatisticsComponent implements OnInit, OnDestroy {
   private sentimentDistributionData: ChartDataSets[] = [];
   private sentimentDistributionType: ChartType = 'bar';
   private sentimentDistributionLabels: Label[] = ['positive', 'negative', 'neutral', 'unknown'];
-  private sentimentDistributionOptions: ChartOptions = {
+  private sentimentDistributionOptions: any = {
     legend: {
       display: false
     },
@@ -54,6 +56,27 @@ export class StatisticsComponent implements OnInit, OnDestroy {
     }
   };
   private sentimentDistributionColors;
+
+  private sentimentControversyData: ChartDataSets[] = [];
+  private sentimentControversyType: ChartType = 'bar';
+  private sentimentControversyLabels: Label[] = [];
+  private sentimentControversyOptions: any = {
+    legend: {
+      display: false
+    },
+    tooltips: {
+      mode: 'index',
+      intersect: false
+    },
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        },
+        minBarLength: 5
+      }]
+    }
+  };
 
   private facetDistributionType: ChartType = 'bar';
   private facetDistributionOptions: ChartOptions = {
@@ -176,6 +199,24 @@ export class StatisticsComponent implements OnInit, OnDestroy {
       hoverBackgroundColor: Sentiments.map(sentiment => DefaultColorStrings.hoverBackgroundColor[sentiment])
     }];
     this.sentimentDistributionData.push(sentimentData);
+
+    /** Sentiment most controversial **/
+    const controversialData: any = {};
+    controversialData.data = [];
+    const controversialAspectMap = Object.entries(Extractions.groupBy(this.extractions, 'aspect'));
+
+    /*(a, b) => {
+      return controversy(SentimentCount.fromExtractions(a)) - controversy(SentimentCount.fromExtractions(b));
+    })*/
+
+    controversialAspectMap.sort((a, b) => {
+      return controversy(SentimentCount.fromExtractions(Object.entries(a[1]))) - controversy(SentimentCount.fromExtractions(Object.entries(b[1])));
+    });
+    for (const entry of controversialAspectMap) {
+      controversialData.data.push(controversy(SentimentCount.fromExtractions(Object.entries(entry[1]))));
+      this.sentimentControversyLabels.push(entry[0]);
+    }
+    this.sentimentControversyData.push(sentimentData);
 
     /** Aspect Ranking **/
     const aspectRankingData: any = {};
