@@ -1,6 +1,6 @@
-<mat-card class="content">
+<mat-card [ngClass]="{ 'content': !print }">
   <mat-card-title>Statistics</mat-card-title>
-  <mat-card-subtitle>
+  <mat-card-subtitle *ngIf="!print">
     <app-breadcrumb [paths]="breadCrumbPaths"></app-breadcrumb>
   </mat-card-subtitle>
 
@@ -27,7 +27,10 @@
     <div>
       <h3>Sentiment Extrema</h3>
 
-      <div #toggle fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+      <div #toggle *ngIf="!print"
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        fxLayoutGap="5px">
         <label>Trait</label>
         <mat-slide-toggle
           color="primary"
@@ -36,7 +39,7 @@
           Topic
         </mat-slide-toggle>
       </div>
-      <div>
+      <div *ngIf="!print">
         <label>Negative</label>
         <mat-slide-toggle
           color="primary"
@@ -93,7 +96,7 @@
             matTooltip="There are too many elements to display, so only the most frequent ones are shown.">Displaying {{ maxRankingDisplayItems }} of {{ valueCounts.attribute.length }} traits</span>
     </div>
 
-    <div *ngIf="warnings.length > 0" class="warnings">
+    <div *ngIf="warnings.length > 0 && !print" class="warnings">
       <h3 class="warnings_title">Warnings</h3>
       <ul>
         <li *ngFor="let warning of warnings">
@@ -103,9 +106,10 @@
     </div>
   </mat-card-content>
 
-  <mat-card-actions>
+  <mat-card-actions *ngIf="!print">
     <a class="visualisations" mat-raised-button color="primary" (click)="router.navigate(['vis'])">To Visualisations</a>
     <button mat-raised-button (click)="exportModel()">Export</button>
+    <button mat-raised-button (click)="printPage()">Print</button>
   </mat-card-actions>
 
 </mat-card>
