@@ -5,12 +5,12 @@ import { histogram } from 'datalib';
 import { Label } from 'ng2-charts';
 import { Subscription } from 'rxjs';
 import { Extraction, Extractions, FacetType, sentimentDifferential } from 'src/app/models/canonical';
-import { mapToSentiment, mapToSentimentStatement, SentimentCount, Sentiments } from 'src/app/models/sentiment';
+import {mapToSentiment, mapToSentimentStatement, Sentiment, SentimentCount, Sentiments} from 'src/app/models/sentiment';
 import { valueCounts } from 'src/app/models/utils';
-import { FilterGenerator } from 'src/app/services/filter';
 import { FilterService } from 'src/app/services/filter.service';
 import { StateService } from 'src/app/services/state.service';
 import { DefaultColorStrings } from 'src/environments/constants';
+import {FacetTypes} from '../../models/canonical';
 
 @Component({
   selector: 'app-dataset-overview',
@@ -21,7 +21,20 @@ export class StatisticsComponent implements OnInit, OnDestroy {
 
   private subscription = new Subscription();
 
+  private extremaFacetType: FacetType = FacetTypes.Aspect;
+
+  public get isExtremaAspect(): boolean {
+    return this.extremaFacetType === FacetTypes.Aspect;
+  }
+
+  private extremaSentiment: Sentiment = Sentiment.Positive;
+
+  public get isExtremaPositive(): boolean {
+    return this.extremaSentiment === Sentiment.Positive;
+  }
+
   private breadCrumbPaths = [
+    { name: 'Upload', path: ['/']},
     { name: 'Statistics', path: ['/stats']}
   ];
 
@@ -33,10 +46,21 @@ export class StatisticsComponent implements OnInit, OnDestroy {
   private mood: string;
   private moodPercent: string;
   private warnings: string[] = [];
-  private sentimentDistributionData: ChartDataSets[] = [];
-  private sentimentDistributionType: ChartType = 'bar';
-  private sentimentDistributionLabels: Label[] = ['positive', 'negative', 'neutral', 'unknown'];
-  private sentimentDistributionOptions: ChartOptions = {
+  private sentimentDistributionData: number[] = [];
+  private sentimentDistributionType: ChartType = 'pie';
+  private sentimentDistributionLabels: Label[] = [];
+  private sentimentDistributionOptions: any = {
+    animation: { animateRotate: true, animateScale: true },
+    responsive: true,
+    aspectRatio: 1,
+    legend: { display: false },
+    tooltips: { enabled: true}
+  };
+  private sentimentDistributionColors = [];
+
+  private sentimentExtremaData: ChartDataSets[] = [];
+  private sentimentExtremaType: ChartType = 'bar';
+  private sentimentExtremaOptions: ChartOptions = {
     legend: {
       display: false
     },
@@ -52,7 +76,7 @@ export class StatisticsComponent implements OnInit, OnDestroy {
       }],
     }
   };
-  private sentimentDistributionColors;
+  private sentimentExtremaLabels: Label[] = [];
 
   private facetDistributionType: ChartType = 'bar';
   private facetDistributionOptions: ChartOptions = {
@@ -67,13 +91,13 @@ export class StatisticsComponent implements OnInit, OnDestroy {
       xAxes: [{
         scaleLabel: {
           display: true,
-          labelString: 'Number of Comments mentioning a Topic'
+          labelString: 'Number of Topics'
         }
       }],
       yAxes: [{
         scaleLabel: {
           display: true,
-          labelString: 'Number of Topics'
+          labelString: 'Number of Comments'
         },
         ticks: {
           beginAtZero: true
@@ -95,6 +119,11 @@ export class StatisticsComponent implements OnInit, OnDestroy {
           beginAtZero: true
         }
       }],
+    },
+    hover: {
+      onHover: (event: any, chartElement) => {
+        event.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+      }
     }
   };
   private maxRankingDisplayItems = 10;
@@ -156,20 +185,44 @@ export class StatisticsComponent implements OnInit, OnDestroy {
     if (this.sentimentCounts.unknown > 0) {
       this.warnings.push(
         `Your uploaded dataset contains ${this.sentimentCounts.unknown} comments with unknown sentiment - ` +
-        `These comments will not be shown in most visualisations.`
+        `These comments will not be considered in most visualisations.`
       );
     }
 
     /** Sentiment Distribution **/
-    const sentimentData: any = {};
-    sentimentData.data = [this.sentimentCounts.positive, this.sentimentCounts.negative,
-      this.sentimentCounts.neutral, this.sentimentCounts.unknown];
+    this.sentimentDistributionData = [];
+    const availableSentiments = [];
+
+    if (this.sentimentCounts.positive > 0) {
+      this.sentimentDistributionData.push(this.sentimentCounts.positive);
+      this.sentimentDistributionLabels.push('positive');
+      availableSentiments.push(Sentiment.Positive);
+    }
+    if (this.sentimentCounts.neutral > 0) {
+      this.sentimentDistributionData.push(this.sentimentCounts.neutral);
+      this.sentimentDistributionLabels.push('neutral');
+      availableSentiments.push(Sentiment.Neutral);
+    }
+
+    if (this.sentimentCounts.negative > 0) {
+      this.sentimentDistributionData.push(this.sentimentCounts.negative);
+      this.sentimentDistributionLabels.push('negative');
+      availableSentiments.push(Sentiment.Negative);
+    }
+
+    if (this.sentimentCounts.unknown > 0) {
+      this.sentimentDistributionData.push(this.sentimentCounts.unknown);
+      this.sentimentDistributionLabels.push('unknown');
+      availableSentiments.push(Sentiment.Unknown);
+    }
+
     this.sentimentDistributionColors = [{
-      backgroundColor: Sentiments.map(sentiment => DefaultColorStrings.backgroundColor[sentiment]),
-      borderColor: Sentiments.map(sentiment => DefaultColorStrings.borderColor[sentiment]),
-      hoverBackgroundColor: Sentiments.map(sentiment => DefaultColorStrings.hoverBackgroundColor[sentiment])
+      backgroundColor: availableSentiments.map(sentiment => DefaultColorStrings.backgroundColor[sentiment]),
+      borderColor: availableSentiments.map(sentiment => DefaultColorStrings.borderColor[sentiment]),
+      hoverBackgroundColor: availableSentiments.map(sentiment => DefaultColorStrings.hoverBackgroundColor[sentiment])
     }];
-    this.sentimentDistributionData.push(sentimentData);
+
+    this.initializeExtremaBarChart();
 
     /** Aspect Ranking **/
     const aspectRankingData: any = {};
@@ -189,7 +242,15 @@ export class StatisticsComponent implements OnInit, OnDestroy {
     this.aspectDistributionData = [
       { label: 'Topics in Category', data: hist.map(entry => entry.count) },
     ];
-    this.aspectDistributionLabels = hist.map(entry => entry.value);
+    this.aspectDistributionLabels = [];
+
+    for (let i = 0; i < hist.length; i++) {
+      if (hist.length <= i + 1) {
+        this.aspectDistributionLabels.push(hist[i].value + '+');
+      } else {
+        this.aspectDistributionLabels.push(hist[i].value + '-' + hist[i + 1].value);
+      }
+    }
 
     /** Attribute Ranking **/
     const attributeData: any = {};
@@ -216,6 +277,33 @@ export class StatisticsComponent implements OnInit, OnDestroy {
 
   private navigateToDetailPage(facet: string, facetType: FacetType) {
     this.router.navigate(['/detail'], { queryParams: { facet, facetType } });
+  }
+
+  private initializeExtremaBarChart() {
+    this.sentimentExtremaData = [];
+    this.sentimentExtremaLabels = [];
+
+    const extremaData: any = {};
+    extremaData.data = [];
+    const aspectMap = Object.entries(Extractions.groupBy(this.extractions, this.extremaFacetType));
+    aspectMap.sort((a, b) => {
+      if (this.extremaSentiment === Sentiment.Negative) {
+        return SentimentCount.fromExtractions(b[1]).negative - SentimentCount.fromExtractions(a[1]).negative;
+      }
+      return SentimentCount.fromExtractions(b[1]).positive - SentimentCount.fromExtractions(a[1]).positive;
+    });
+
+    aspectMap.slice(0, 10)
+      .forEach(entry => {
+        if (this.extremaSentiment === Sentiment.Negative) {
+          extremaData.data.push(SentimentCount.fromExtractions(entry[1]).negative);
+        } else {
+          extremaData.data.push(SentimentCount.fromExtractions(entry[1]).positive);
+        }
+        this.sentimentExtremaLabels.push(entry[0]);
+      });
+
+    this.sentimentExtremaData.push(extremaData);
   }
 
   public exportModel() {
@@ -247,5 +335,15 @@ export class StatisticsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+  }
+
+  public toggleExtremaFacetType() {
+    this.extremaFacetType = FacetTypes.other(this.extremaFacetType);
+    this.initializeExtremaBarChart();
+  }
+
+  public toggleExtremaSentiment() {
+    this.extremaSentiment = this.extremaSentiment === Sentiment.Positive ? Sentiment.Negative : Sentiment.Positive;
+    this.initializeExtremaBarChart();
   }
 }

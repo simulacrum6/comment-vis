@@ -1,10 +1,12 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild, Output, EventEmitter } from '@angular/core';
+import {MatPaginator, MatSnackBar, MatTableDataSource} from '@angular/material';
 import { Router } from '@angular/router';
 import { SortOption, SortOptions } from 'src/app/components/controls/filters/sort-filter/sort';
 import {Extraction, ExtractionGroup, Extractions, FacetProperty, FacetType, ExtractionProperty, FacetTypes} from 'src/app/models/canonical';
 import { SentimentCount } from 'src/app/models/sentiment';
 import {StateService} from '../../../services/state.service';
+import {CdkDragDrop} from '@angular/cdk/drag-drop';
+import {Model} from '../../../models/canonical';
 
 export class SentimentCountRow {
   public id: string;
@@ -31,11 +33,12 @@ export class SentimentTableComponent implements OnInit, OnChanges {
    */
   @Input() links = true;
   @Input() extractions: Extraction[];
-  @Input() facetType: FacetType;
+  @Input('facetType') facetType: FacetType;
   @Input() facetProperty: FacetProperty = 'group';
   @ViewChild('paginator') paginator: MatPaginator;
+  @Input() protected groups: ExtractionGroup[];
 
-  protected groups: ExtractionGroup[];
+  @Output() merge: EventEmitter<void> = new EventEmitter<void>();
   protected displayGroups: ExtractionGroup[];
   protected tableData: MatTableDataSource<SentimentCountRow>;
   protected positiveSort: SortOption = SortOptions.options.positiveSentiments;
@@ -45,12 +48,15 @@ export class SentimentTableComponent implements OnInit, OnChanges {
 
   _facetTypeVisibleName: string;
 
-  constructor(protected stateService: StateService) { }
+  protected get model(): Model {
+    return this.stateService.model.state;
+  }
+
+  constructor(protected stateService: StateService, protected snackBar: MatSnackBar) { }
 
   ngOnInit() {
-    this._facetTypeVisibleName = FacetTypes.getVisibleName(this.stateService.facetType.state);
-    this.update();
-    this.generateTableData();
+    this._facetTypeVisibleName = FacetTypes.getVisibleName(this.facetType);
+    this.initialize();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -58,8 +64,12 @@ export class SentimentTableComponent implements OnInit, OnChanges {
     this.generateTableData();
   }
 
+  initialize() {
+    this.update();
+    this.generateTableData();
+  }
+
   update() {
-    this.groups = Extractions.toViewGroups(this.extractions, this.facetType, this.facetProperty);
     this.displayGroups = this.groups.slice();
   }
 
@@ -73,5 +83,45 @@ export class SentimentTableComponent implements OnInit, OnChanges {
   onSort(groups: ExtractionGroup[]) {
     this.displayGroups = groups;
     this.generateTableData();
+  }
+
+  onDragAndDrop(event: CdkDragDrop<SentimentCountRow>) {
+    if (!event.isPointerOverContainer) {
+      return;
+    }
+    if (event.previousContainer === event.container) {
+      return;
+    }
+
+    console.log(event.previousContainer)
+
+    console.log(event.container)
+
+    // TODO: This does not work because the ids are not set in first place
+    const mergee = this.displayGroups.find(element => element.id === event.previousContainer.data.id);
+    const receiver = this.displayGroups.find(element => element.id === event.container.data.id);
+
+    console.log(`mergee: ${mergee.name}, receiver: ${receiver.name}`);
+
+    if (!mergee || !receiver) {
+      return;
+    }
+
+    if (receiver.id === mergee.id) {
+      return;
+    }
+
+    this.model.merge(receiver, mergee);
+    this.merge.emit()
+
+    this.initialize();
+
+    const snackRef = this.snackBar.open(`Merged '${mergee.name}' into '${receiver.name}'`, 'undo', { duration: 5000 });
+    snackRef.onAction()
+      .subscribe(() => {
+        this.model.split(receiver, mergee);
+        this.merge.emit();
+        this.initialize();
+      });
   }
 }

@@ -6,3 +6,11 @@ td {
     padding-left: 5px !important;
     padding-right: 5px !important;
 }
+
+.sentiment_positive {
+  color: rgba(0, 163, 51, 100)
+}
+
+.sentiment_negative {
+  color: rgba(255, 0, 0, 100)
+}
