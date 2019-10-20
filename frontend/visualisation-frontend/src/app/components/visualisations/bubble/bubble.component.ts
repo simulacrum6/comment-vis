@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChartDataSets, ChartPoint } from 'chart.js';
@@ -89,6 +89,8 @@ export class BubbleComponent implements OnInit, OnDestroy, OnChanges {
   public layout = LayoutService.randomLayout(10000);
   @Input()
   public scalingFunction: (g: ExtractionGroup) => number;
+  @Output()
+  public merge: EventEmitter<{ target: ExtractionGroup, mergee: ExtractionGroup, index: number }> = new EventEmitter();
 
   public type: FacetType = 'aspect';
 
@@ -198,18 +200,7 @@ export class BubbleComponent implements OnInit, OnDestroy, OnChanges {
         const i = this.dragState.closest;
         const draggedGroup = this.groups[datasetIndex];
         const closestGroup = this.groups[i];
-        const removedCoordinate = this.layout.splice(i, 1)[0]; // remove coordinate of merged group from layout
-        this.model.merge(draggedGroup, closestGroup);
-        this.snackBar.open(`Assigned '${closestGroup.name}' to '${draggedGroup.name}'`, 'undo', { duration: 5000 })
-          .onAction()
-          .subscribe(
-            () => {
-              this.model.split(draggedGroup, closestGroup);
-              this.layout.splice(this.groups.length, 0, removedCoordinate);
-              this.update();
-            }
-          );
-        this.update();
+        this.merge.emit({ target: closestGroup, mergee: draggedGroup, index: datasetIndex });
       }
       this.dragState.reset();
     };

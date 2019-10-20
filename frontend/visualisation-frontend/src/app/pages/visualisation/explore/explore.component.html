@@ -38,7 +38,8 @@
     <app-bubble
       [groups]="groups | async"
       [layout]="layout | async"
-      [scalingFunction]="scalingFunction">
+      [scalingFunction]="scalingFunction"
+      (merge)="onMerge($event)">
     </app-bubble>
   </mat-card-content>
 </mat-card>
