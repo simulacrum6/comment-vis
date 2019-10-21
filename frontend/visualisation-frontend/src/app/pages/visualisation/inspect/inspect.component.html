@@ -3,6 +3,11 @@
   <mat-card-subtitle><app-breadcrumb [paths]="breadCrumbPaths"></app-breadcrumb></mat-card-subtitle>
 
   <mat-card-content>
+    <p>
+      Here you can see an overview of all comments. Use filters to modify which comments are shown.<br>
+      Click on topics or traits to get more details about these.
+    </p>
+
     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
       <app-search-filter [filterService]="filterService"></app-search-filter>
       <app-filter [groups]="availableFilters" (filterChange)="onFilterChange($event)" (clear)="onFilterClear()"></app-filter>

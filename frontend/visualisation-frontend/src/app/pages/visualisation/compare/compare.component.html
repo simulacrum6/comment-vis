@@ -5,9 +5,11 @@
   </mat-card-subtitle>
   <mat-card-content>
     <p>
-      Hover over {{ _facetTypeVisibleName }} to see, how many positive or negative opinions exist. <br>
-      Click on a {{ _facetTypeVisibleName }} to see more details. <br>
-      Use the toggle to switch between topics and traits.
+      Here you can compare and merge {{ _facetTypeVisibleName | lowercase }}s. Use filters to modify which {{ _facetTypeVisibleName | lowercase }}s are shown. Use the toggle to switch between topics and traits.<br>
+      Drag and drop {{ _facetTypeVisibleName | lowercase }}s onto the compare area to compare the sentiment of these.<br>
+      Click on pies to get more details about the corresponding {{ _facetTypeVisibleName | lowercase }}.<br>
+      Drag and drop one of the pies onto the other to merge these.<br>
+      Hover over a pie and press the X Button to pin this pie in this view.
     </p>
     <!-- Toolbar -->
     <div #toggle fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
