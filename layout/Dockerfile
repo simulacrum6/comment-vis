@@ -6,8 +6,8 @@ COPY embeddings/* embeddings/
 COPY layout/* layout/
 COPY layout_service.environment.yml layout_service.environment.yml
 
-RUN conda create env -f layout_service.environment.yml --yes &&
-    activate layout_service &&
-    export FLASK_APP=service.py
+RUN conda env create -f layout_service.environment.yml
+RUN activate layout_service
+RUN export FLASK_APP=service.py
 
 CMD python -m flask run
