@@ -19,7 +19,6 @@ avg_distance = np.mean(euclidean_distances(vecs[mask]))
 print('avg_distance: {}'.format(avg_distance))
 
 embeddings = { word: embedding for word, embedding in zip(words, vecs) }
-embeddings_layout = load_layout('layout/test.layout.csv')
 
 def generate_similarity_layout(words, embeddings, target_range=DEFAULT_RANGE, layout='t-sne'):
     """
