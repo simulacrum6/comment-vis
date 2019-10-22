@@ -17,14 +17,13 @@ import { MatSliderChange, MatSnackBar } from '@angular/material';
 })
 export class ExploreComponent implements OnInit, OnDestroy {
 
-  private breadCrumbPaths = [
+  public breadCrumbPaths = [
     { name: 'Upload', path: ['/']},
     { name: 'Statistics', path: ['/stats']},
     { name: 'Explore', path: ['/vis/explore/']}
   ];
 
-  private availableFilters = [
-    { name: 'Topics', filters: FilterOptions.groups.topics},
+  public availableFilters = [
     { name: 'Sentiment', filters: FilterOptions.groups.sentiment}
   ];
 
@@ -35,14 +34,14 @@ export class ExploreComponent implements OnInit, OnDestroy {
   public names: BehaviorSubject<string[]> = new BehaviorSubject([]);
   public layoutName: BehaviorSubject<LayoutName> = new BehaviorSubject('random' as LayoutName);
   public layout: BehaviorSubject<Coordinate[]> = new BehaviorSubject([]);
-  private scalingFunction: (g: ExtractionGroup) => number;
-  private maximumMentions: number;
-  private minimumMentions: number;
+  public scalingFunction: (g: ExtractionGroup) => number;
+  public maximumMentions: number;
+  public minimumMentions: number;
 
   constructor(
-    private filterService: FilterService,
+    public filterService: FilterService,
     private route: ActivatedRoute,
-    private stateService: StateService,
+    public stateService: StateService,
     private layoutService: LayoutService,
     private snackBar: MatSnackBar) {
 

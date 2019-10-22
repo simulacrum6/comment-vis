@@ -10,7 +10,7 @@ import { map } from 'rxjs/operators';
 })
 export class LayoutComponent implements OnInit, OnDestroy {
 
-  private layouts = {
+  public layouts = {
     random: { viewValue: 'Random', value: 'random', hint: 'Points are placed randomly on the map.' },
     semantic: [
       { viewValue: 't-SNE', value: 'meaning', hint: 'Points that are closer to each other have a similar meaning.' },

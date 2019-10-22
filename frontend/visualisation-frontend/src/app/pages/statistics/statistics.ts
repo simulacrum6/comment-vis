@@ -5,12 +5,12 @@ import { histogram } from 'datalib';
 import { Label } from 'ng2-charts';
 import { Subscription } from 'rxjs';
 import { Extraction, Extractions, FacetType, sentimentDifferential } from 'src/app/models/canonical';
-import {mapToSentiment, mapToSentimentStatement, Sentiment, SentimentCount, Sentiments} from 'src/app/models/sentiment';
+import { mapToSentiment, mapToSentimentStatement, Sentiment, SentimentCount } from 'src/app/models/sentiment';
 import { valueCounts } from 'src/app/models/utils';
 import { FilterService } from 'src/app/services/filter.service';
 import { StateService } from 'src/app/services/state.service';
 import { DefaultColorStrings } from 'src/environments/constants';
-import {FacetTypes} from '../../models/canonical';
+import { FacetTypes } from '../../models/canonical';
 
 @Component({
   selector: 'app-dataset-overview',
@@ -19,49 +19,49 @@ import {FacetTypes} from '../../models/canonical';
 })
 export class StatisticsComponent implements OnInit, OnDestroy {
 
-  private print = false;
+  public print = false;
   private subscription = new Subscription();
 
-  private extremaFacetType: FacetType = FacetTypes.Aspect;
+  public extremaFacetType: FacetType = FacetTypes.Aspect;
 
   public get isExtremaAspect(): boolean {
     return this.extremaFacetType === FacetTypes.Aspect;
   }
 
-  private extremaSentiment: Sentiment = Sentiment.Positive;
+  public extremaSentiment: Sentiment = Sentiment.Positive;
 
   public get isExtremaPositive(): boolean {
     return this.extremaSentiment === Sentiment.Positive;
   }
 
-  private breadCrumbPaths = [
+  public breadCrumbPaths = [
     { name: 'Upload', path: ['/']},
     { name: 'Statistics', path: ['/stats']}
   ];
 
-  private extractions: Extraction[];
-  private values: { attribute: string[], aspect: string[], comment: string[], sentiment: string[]};
-  private uniqueValues: { attribute: Set<string>, aspect: Set<string>, comment: Set<string>, sentiment: Set<string> };
-  private sentimentCounts: SentimentCount;
-  private valueCounts;
-  private mood: string;
-  private moodPercent: string;
-  private warnings: string[] = [];
-  private sentimentDistributionData: number[] = [];
-  private sentimentDistributionType: ChartType = 'pie';
-  private sentimentDistributionLabels: Label[] = [];
-  private sentimentDistributionOptions: any = {
+  public extractions: Extraction[];
+  public values: { attribute: string[], aspect: string[], comment: string[], sentiment: string[]};
+  public uniqueValues: { attribute: Set<string>, aspect: Set<string>, comment: Set<string>, sentiment: Set<string> };
+  public sentimentCounts: SentimentCount;
+  public valueCounts;
+  public mood: string;
+  public moodPercent: string;
+  public warnings: string[] = [];
+  public sentimentDistributionData: number[] = [];
+  public sentimentDistributionType: ChartType = 'pie';
+  public sentimentDistributionLabels: Label[] = [];
+  public sentimentDistributionOptions: any = {
     animation: { animateRotate: true, animateScale: true },
     responsive: false,
     aspectRatio: 1,
     legend: { display: false },
     tooltips: { enabled: true}
   };
-  private sentimentDistributionColors = [];
+  public sentimentDistributionColors = [];
 
-  private sentimentExtremaData: ChartDataSets[] = [];
-  private sentimentExtremaType: ChartType = 'bar';
-  private sentimentExtremaOptions: ChartOptions = {
+  public sentimentExtremaData: ChartDataSets[] = [];
+  public sentimentExtremaType: ChartType = 'bar';
+  public sentimentExtremaOptions: ChartOptions = {
     legend: {
       display: false
     },
@@ -77,10 +77,10 @@ export class StatisticsComponent implements OnInit, OnDestroy {
       }],
     }
   };
-  private sentimentExtremaLabels: Label[] = [];
+  public sentimentExtremaLabels: Label[] = [];
 
-  private facetDistributionType: ChartType = 'bar';
-  private facetDistributionOptions: ChartOptions = {
+  public facetDistributionType: ChartType = 'bar';
+  public facetDistributionOptions: ChartOptions = {
     legend: {
       display: false
     },
@@ -106,7 +106,7 @@ export class StatisticsComponent implements OnInit, OnDestroy {
       }],
     }
   };
-  private facetRankingOptions: ChartOptions = {
+  public facetRankingOptions: ChartOptions = {
     legend: {
       display: false
     },
@@ -127,14 +127,14 @@ export class StatisticsComponent implements OnInit, OnDestroy {
       }
     }
   };
-  private maxRankingDisplayItems = 10;
+  public maxRankingDisplayItems = 10;
 
-  private aspectRankingData: ChartDataSets[] = [];
-  private aspectRankingLabels: Label[] = [];
-  private attributeRankingData: ChartDataSets[] = [];
-  private attributeRankingLabels: Label[] = [];
-  private aspectDistributionData: ChartDataSets[] = [];
-  private aspectDistributionLabels: Label[] = [];
+  public aspectRankingData: ChartDataSets[] = [];
+  public aspectRankingLabels: Label[] = [];
+  public attributeRankingData: ChartDataSets[] = [];
+  public attributeRankingLabels: Label[] = [];
+  public aspectDistributionData: ChartDataSets[] = [];
+  public aspectDistributionLabels: Label[] = [];
 
   get tooManyAspects(): boolean {
     return this.valueCounts.aspect.length > this.maxRankingDisplayItems;
@@ -143,7 +143,11 @@ export class StatisticsComponent implements OnInit, OnDestroy {
     return this.valueCounts.attribute.length > this.maxRankingDisplayItems;
   }
 
-  constructor(private stateService: StateService, private router: Router, private route: ActivatedRoute, private filterService: FilterService) {
+  constructor(
+    private stateService: StateService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private filterService: FilterService) {
     this.stateService.loadSafe();
     this.stateService.model.state.updateExtractions();
     this.extractions = stateService.model.state.extractions;

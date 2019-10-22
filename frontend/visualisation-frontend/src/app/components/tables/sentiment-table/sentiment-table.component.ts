@@ -1,12 +1,10 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild, Output, EventEmitter } from '@angular/core';
-import {MatPaginator, MatSnackBar, MatTableDataSource} from '@angular/material';
-import { Router } from '@angular/router';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { MatPaginator, MatSnackBar, MatTableDataSource } from '@angular/material';
 import { SortOption, SortOptions } from 'src/app/components/controls/filters/sort-filter/sort';
-import {Extraction, ExtractionGroup, Extractions, FacetProperty, FacetType, ExtractionProperty, FacetTypes} from 'src/app/models/canonical';
-import { SentimentCount } from 'src/app/models/sentiment';
-import {StateService} from '../../../services/state.service';
-import {CdkDragDrop} from '@angular/cdk/drag-drop';
-import {Model} from '../../../models/canonical';
+import { Extraction, ExtractionGroup, FacetProperty, FacetType, FacetTypes } from 'src/app/models/canonical';
+import { Model } from '../../../models/canonical';
+import { StateService } from '../../../services/state.service';
 
 export class SentimentCountRow {
   public id: string;
@@ -33,14 +31,14 @@ export class SentimentTableComponent implements OnInit, OnChanges {
    */
   @Input() links = true;
   @Input() extractions: Extraction[];
-  @Input('facetType') facetType: FacetType;
+  @Input() facetType: FacetType;
   @Input() facetProperty: FacetProperty = 'group';
   @ViewChild('paginator') paginator: MatPaginator;
   @Input() protected groups: ExtractionGroup[];
 
   @Output() merge: EventEmitter<void> = new EventEmitter<void>();
-  protected displayGroups: ExtractionGroup[];
-  protected tableData: MatTableDataSource<SentimentCountRow>;
+  public displayGroups: ExtractionGroup[];
+  public tableData: MatTableDataSource<SentimentCountRow>;
   protected positiveSort: SortOption = SortOptions.options.positiveSentiments;
   protected negativeSort: SortOption = SortOptions.options.negativeSentiments;
   protected neutralSort: SortOption = SortOptions.options.neutralSentiments;

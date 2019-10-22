@@ -1,16 +1,16 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatSnackBar, PageEvent, MatSliderChange } from '@angular/material';
+import { MatSliderChange, MatSnackBar, PageEvent } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Subscription } from 'rxjs';
 import { SortState } from 'src/app/components/controls/filters/sort-filter/sort';
 import { Extraction, ExtractionGroup, ExtractionProperty, FacetType, FacetTypes, Model } from 'src/app/models/canonical';
 import { SentimentCount } from 'src/app/models/sentiment';
 import { PaginatorConfig } from 'src/app/models/utils';
+import { FilterGenerator, FilterOption, FilterOptions } from 'src/app/services/filter';
 import { FilterService } from 'src/app/services/filter.service';
 import { StateService } from 'src/app/services/state.service';
 import { SearchFilterComponent } from '../../../components/controls/filters/search-filter/search-filter.component';
-import { FilterOptions, FilterOption, FilterGenerator } from 'src/app/services/filter';
 
 
 export class PieExtractionGroup implements ExtractionGroup {
@@ -45,54 +45,53 @@ export class PieExtractionGroup implements ExtractionGroup {
 })
 export class CompareComponent implements OnInit, OnDestroy {
 
-  private dragging = false;
-  private facetGroups: ExtractionGroup[];
+  public dragging = false;
+  public facetGroups: ExtractionGroup[];
   private sortedFacetGroups: ExtractionGroup[];
   private searchedFacetGroups: ExtractionGroup[];
-  private displayedFacetGroups: PieExtractionGroup[];
-  private comparisonGroups: ExtractionGroup[] = [];
+  public displayedFacetGroups: PieExtractionGroup[];
+  public comparisonGroups: ExtractionGroup[] = [];
   private subscription = new Subscription();
   private totalExtractionCount: number;
-  private maximumMentions: number;
-  private minimumMentions: number;
-  private availableFilters = [
-    { name: 'Topics', filters: FilterOptions.groups.topics},
+  public maximumMentions: number;
+  public minimumMentions: number;
+  public availableFilters = [
     { name: 'Sentiment', filters: FilterOptions.groups.sentiment}
   ];
 
   private _pageConfig: PaginatorConfig;
   private _facetType: FacetType;
-  private _facetTypeVisibleName: string;
+  public _facetTypeVisibleName: string;
 
-  private get breadCrumbPaths() {
+  public get breadCrumbPaths() {
     return [
       { name: 'Upload', path: ['/']},
       { name: 'Statistics', path: ['/stats'], queryParams: {} },
       { name: FacetTypes.getVisibleName(this.facetType) + 's', path: ['/vis/pie'], queryParams: {} }
     ];
   }
-  private get pageSizes() {
+  public get pageSizes() {
     return this._pageConfig.pageSizes;
   }
-  private set pageSizes(sizes) {
+  public set pageSizes(sizes) {
     this._pageConfig.pageSizes = sizes;
   }
-  private get currentPageSize() {
+  public get currentPageSize() {
     return this._pageConfig.pageSize;
   }
-  private set currentPageSize(size) {
+  public set currentPageSize(size) {
     this._pageConfig.pageSize = size;
   }
-  private get currentPageIndex() {
+  public get currentPageIndex() {
     return this._pageConfig.pageIndex;
   }
-  private set currentPageIndex(index) {
+  public set currentPageIndex(index) {
     this._pageConfig.pageIndex = index;
   }
-  private get groupCount() {
+  public get groupCount() {
     return this._pageConfig.length;
   }
-  private set groupCount(length) {
+  public set groupCount(length) {
     this._pageConfig.length = length;
   }
   private get model(): Model {
@@ -127,11 +126,11 @@ export class CompareComponent implements OnInit, OnDestroy {
   public searchReference: SearchFilterComponent;
 
   constructor(
-    private stateService: StateService,
+    public stateService: StateService,
     private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private filterService: FilterService)
+    public filterService: FilterService)
   { }
 
   ngOnInit() {

@@ -4,8 +4,8 @@
     placeholder="Sort by..."
     [(ngModel)]="sortOption"
     (selectionChange)="onSortStateChange($event)">
-    <mat-option [value]="_noSortOption">{{ _noSortOption.viewValue }}</mat-option>
-    <mat-optgroup *ngFor="let group of _sortOptions" [label]="group.name">
+    <mat-option [value]="noSortOption">{{ noSortOption.viewValue }}</mat-option>
+    <mat-optgroup *ngFor="let group of sortOptions" [label]="group.name">
       <mat-option *ngFor="let option of group.members" [value]="option">
         {{ option.viewValue }}
       </mat-option>
@@ -18,7 +18,7 @@
     [disabled]="noSort || disabled"
     [(ngModel)]="sortOrderOption"
     (selectionChange)="onSortStateChange($event)">
-    <mat-option *ngFor="let option of _sortOrderOptions" [value]="option">
+    <mat-option *ngFor="let option of sortOrderOptions" [value]="option">
       {{ option.viewValue }}
     </mat-option>
   </mat-select>

@@ -14,14 +14,15 @@ export class FilterOption {
 }
 
 export enum DefaultFilterName {
+  Contains = 'Contains',
   StartsWith = 'starts_with',
   IdEquals = 'id_equals',
   MoreThan = 'more_than',
   LessThan = 'less_than',
-  OverallPositive = 'overall_positive',
-  OverallNegative = 'overall_negative',
-  CompletelyPositive = 'completely_positive',
-  CompletelyNegative = 'completely_negative'
+  OverallPositive = 'Overall Positive',
+  OverallNegative = 'Overall Negative',
+  CompletelyPositive = 'Completely Positive',
+  CompletelyNegative = 'Completely Negative'
 }
 
 export class FilterGenerator {
@@ -53,18 +54,24 @@ export class FilterGenerator {
 
   private static _registry: Map<string, (value: any) => FilterOption>;
 
+  public static contains(term: string, id: string = FilterGenerator.id()): FilterOption {
+    const name = `Contains "${term}"`;
+    const pattern = new RegExp(term, 'gi');
+    const filter = (group: ExtractionGroup) => pattern.exec(group.name) !== null;
+    return new FilterOption(id, name, term, filter);
+  }
   public static startsWith(start: string, id: string = FilterGenerator.id()): FilterOption {
     const name = DefaultFilterName.StartsWith;
     const filter = (group: ExtractionGroup) => group.name.startsWith(start);
     return new FilterOption(id, name, start, filter);
   }
-  public static idEquals(groupId: string, id: string = FilterGenerator.id()): FilterOption {
+  public static idEquals(value: ExtractionGroup, id: string = FilterGenerator.id()): FilterOption {
     const name = DefaultFilterName.IdEquals;
-    const filter = (group: ExtractionGroup) => group.id === groupId;
-    return new FilterOption(id, name, groupId, filter);
+    const filter = (group: ExtractionGroup) => group.id === value.id;
+    return new FilterOption(id, name, value, filter);
   }
   public static moreThanXMentions(x = 1, id: string = FilterGenerator.id()) {
-    const name = DefaultFilterName.MoreThan + '_x_mentions';
+    const name = `More than ${x} mentions`;
     const filter = (group: ExtractionGroup) => group.extractions.length > x;
     return new FilterOption(id, name, x, filter);
   }

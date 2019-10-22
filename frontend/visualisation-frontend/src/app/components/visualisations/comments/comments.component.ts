@@ -10,7 +10,7 @@ export interface CommentRow { group: string; aspects: string[]; attributes: stri
   styleUrls: ['./comments.component.scss']
 })
 export class CommentsComponent implements OnInit {
-  private tableData: MatTableDataSource<CommentRow>;
+  public tableData: MatTableDataSource<CommentRow>;
   private _comments: ExtractionGroup[] = [];
 
   public get comments(): ExtractionGroup[] {

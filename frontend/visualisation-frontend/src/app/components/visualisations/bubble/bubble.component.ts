@@ -1,16 +1,15 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChartDataSets, ChartPoint } from 'chart.js';
 import 'chartjs-plugin-dragdata';
 import { default as Color } from 'color';
 import { BaseChartDirective } from 'ng2-charts';
-import { combineLatest, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
+import { Coordinate, LayoutService } from 'src/app/services/layout.service';
 import { StateService } from 'src/app/services/state.service';
 import { Extraction, ExtractionGroup, FacetType, Model, sentimentDifferential } from '../../../models/canonical';
 import { controversy, getMixedWeightedSentimentColor } from '../../../models/sentiment';
-import { Chart } from 'chart.js';
-import { Coordinate, LayoutService, LayoutName } from 'src/app/services/layout.service';
 
 @Component({
   selector: 'app-bubble',
@@ -26,10 +25,10 @@ export class BubbleComponent implements OnInit, OnDestroy, OnChanges {
   private sub: Subscription = new Subscription();
   private model: Model = null;
   private bubbles: Bubble[] = [];
-  private chartData: ChartDataSets[] = [];
+  public chartData: ChartDataSets[] = [];
   private dragState: DragState = new DragState();
   private chartPoints: ChartPoint[] = []
-  private chartOptions = {
+  public chartOptions = {
     legend: { display: false },
     responsive: true,
     dragData: true,

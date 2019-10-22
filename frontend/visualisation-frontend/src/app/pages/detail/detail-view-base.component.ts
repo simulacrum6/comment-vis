@@ -4,18 +4,14 @@ import { map, tap } from 'rxjs/operators';
 import { Extraction, ExtractionGroup, Extractions, FacetType, FacetTypes, StringMap, Model, ViewExtractionGroup } from 'src/app/models/canonical';
 import { StateService } from 'src/app/services/state.service';
 
-
-@Component({
-
-})
 export class DetailViewBaseComponent implements OnInit {
-    protected extractions$: Observable<Extraction[]>;
-    protected facetExists$: Observable<boolean> = new BehaviorSubject(true);
-    protected group$: Observable<ExtractionGroup>;
-    protected subGroups$: Observable<ExtractionGroup[]>;
-    protected subGroupType$: Observable<FacetType>;
-    protected faceTypeVisibleName$: Observable<string>;
-    protected updateEvent$: BehaviorSubject<void>;
+    public extractions$: Observable<Extraction[]>;
+    public facetExists$: Observable<boolean> = new BehaviorSubject(true);
+    public group$: Observable<ExtractionGroup>;
+    public subGroups$: Observable<ExtractionGroup[]>;
+    public subGroupType$: Observable<FacetType>;
+    public faceTypeVisibleName$: Observable<string>;
+    public updateEvent$: BehaviorSubject<void>;
 
     protected get model(): Model{
         return this.stateService.model.state;

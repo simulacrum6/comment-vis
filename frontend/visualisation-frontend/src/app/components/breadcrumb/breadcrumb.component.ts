@@ -14,8 +14,8 @@ export interface BreadCrumbElement {
 export class BreadcrumbComponent implements OnInit, OnChanges {
   @Input() paths: BreadCrumbElement[];
 
-  private current: BreadCrumbElement;
-  private previous: BreadCrumbElement[];
+  public current: BreadCrumbElement;
+  public previous: BreadCrumbElement[];
 
   constructor() {
   }
