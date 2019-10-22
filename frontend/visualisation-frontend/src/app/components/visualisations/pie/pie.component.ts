@@ -19,6 +19,7 @@ export class PieComponent implements OnInit, OnChanges {
   @Input() by: ExtractionProperty = 'sentiment';
   @Input() enableTooltips = true;
   @Input() animate = true;
+  @Input() clickable = true;
 
   @Output() public clicked: EventEmitter<string> = new EventEmitter();
 
@@ -62,7 +63,7 @@ export class PieComponent implements OnInit, OnChanges {
       tooltips: { enabled: this.enableTooltips },
       hover: {
       onHover: (event: any, chartElement) => {
-        event.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+        event.target.style.cursor = this.clickable ? 'pointer' : 'default';
       }
     }
     };

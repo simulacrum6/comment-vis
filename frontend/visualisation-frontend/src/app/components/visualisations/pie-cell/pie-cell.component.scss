@@ -2,24 +2,38 @@
 
 .label {
     text-align: center;
+    vertical-align: center;
     font-weight: 500;
+    cursor: pointer;
+    padding: 5px;
+
+    background-color: transparent;
+    transition-property: background-color;
+    transition-duration: 0.33s;
+    transition-timing-function: ease-in-out;
+
+    &:hover {
+        background-color: rgba(0,0,0,0.14);
+    }
 }
 
 .cell-wrapper {
     padding: 5px;
-    cursor: pointer;
     @include mat-elevation-transition;
     @include mat-elevation(0);
 
     &:hover {
       @include mat-elevation(1);
+
+      & .show-on-hover {
+          visibility: visible;
+      }
     }
 }
 
 .chart-wrapper {
     margin: 0 auto;
     padding: 5px;
-    padding-top: 10px;
 }
 
 .mini-button {
@@ -31,7 +45,6 @@
     min-height: 24px;
 }
 
-.label {
-    text-align: center;
-    vertical-align: center;
+.show-on-hover {
+    visibility: hidden;
 }

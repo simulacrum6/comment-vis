@@ -1,33 +1,46 @@
-<mat-card class="content">
+<mat-card [ngClass]="{ 'content': !print }">
   <mat-card-title>Statistics</mat-card-title>
-  <mat-card-subtitle>
+  <mat-card-subtitle *ngIf="!print">
     <app-breadcrumb [paths]="breadCrumbPaths"></app-breadcrumb>
   </mat-card-subtitle>
 
   <mat-card-content>
-    <h3>Dataset</h3>
-    This dataset consists of <strong>{{ uniqueValues.comment.size }}</strong> comments.<br>
-    The mood is <strong>{{ mood }}</strong> with <strong>{{ moodPercent }}</strong>.<br>
-    We extracted <strong>{{ uniqueValues.attribute.size }}</strong> traits for <strong>{{ uniqueValues.aspect.size
-    }}</strong> topics.
+    <div>
+      <h3>Distribution of Sentiment values</h3>
+      <p>This pie chart shows how often certain sentiments occured in comments.</p>
+      <div fxLayout="row" fxLayoutAlign="start">
+        <canvas baseChart height="380vh"
+          [data]="sentimentDistributionData"
+          [labels]="sentimentDistributionLabels"
+          [options]="sentimentDistributionOptions"
+          [chartType]="sentimentDistributionType"
+          [colors]="sentimentDistributionColors">
+      </canvas>
+     </div>
+     This dataset consists of <strong>{{ uniqueValues.comment.size }} comments</strong>, containing <strong>{{ extractions.length }} opinions</strong>.<br>
+     The mood is <strong>{{ mood }}</strong> with <strong>{{ moodPercent }}</strong>.<br>
+     <strong>{{ uniqueValues.attribute.size }} traits</strong> and <strong>{{ uniqueValues.aspect.size
+     }} topics</strong> were extracted.
+    </div>
 
     <div>
-      <h3>Sentiment Distribution</h3>
-      <p>This pie chart shows how often certain sentiments occured in comments.</p>
+      <h3>Distribution of Topic mentions</h3>
+      <p>This histogram shows how often topics of a certain mention count occured.</p>
       <canvas baseChart height="50vh"
-              [data]="sentimentDistributionData"
-              [labels]="sentimentDistributionLabels"
-              [options]="sentimentDistributionOptions"
-              [chartType]="sentimentDistributionType"
-              [colors]="sentimentDistributionColors"
-      >
+              [datasets]="aspectDistributionData"
+              [labels]="aspectDistributionLabels"
+              [options]="facetDistributionOptions"
+              [chartType]="facetDistributionType">
       </canvas>
     </div>
 
     <div>
       <h3>Sentiment Extrema</h3>
 
-      <div #toggle fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+      <div #toggle *ngIf="!print"
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        fxLayoutGap="5px">
         <label>Trait</label>
         <mat-slide-toggle
           color="primary"
@@ -36,7 +49,10 @@
           Topic
         </mat-slide-toggle>
       </div>
-      <div>
+      <div *ngIf="!print"
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        fxLayoutGap="5px">
         <label>Negative</label>
         <mat-slide-toggle
           color="primary"
@@ -56,18 +72,7 @@
     </div>
 
     <div>
-      <h3>Distribution of Topic mentions</h3>
-      <p>This histogram shows how often topics of a certain mention count occured.</p>
-      <canvas baseChart height="50vh"
-              [datasets]="aspectDistributionData"
-              [labels]="aspectDistributionLabels"
-              [options]="facetDistributionOptions"
-              [chartType]="facetDistributionType">
-      </canvas>
-    </div>
-
-    <div>
-      <h3>Topic Ranking</h3>
+      <h3>Most frequently mentioned topics</h3>
       <canvas baseChart height="50vh"
               [datasets]="aspectRankingData"
               [labels]="aspectRankingLabels"
@@ -81,7 +86,7 @@
     </div>
 
     <div>
-      <h3>Traits Ranking</h3>
+      <h3>Most frequently mentioned traits</h3>
       <canvas baseChart height="50vh"
               [datasets]="attributeRankingData"
               [labels]="attributeRankingLabels"
@@ -93,7 +98,7 @@
             matTooltip="There are too many elements to display, so only the most frequent ones are shown.">Displaying {{ maxRankingDisplayItems }} of {{ valueCounts.attribute.length }} traits</span>
     </div>
 
-    <div *ngIf="warnings.length > 0" class="warnings">
+    <div *ngIf="warnings.length > 0 && !print" class="warnings">
       <h3 class="warnings_title">Warnings</h3>
       <ul>
         <li *ngFor="let warning of warnings">
@@ -103,9 +108,10 @@
     </div>
   </mat-card-content>
 
-  <mat-card-actions>
+  <mat-card-actions *ngIf="!print">
     <a class="visualisations" mat-raised-button color="primary" (click)="router.navigate(['vis'])">To Visualisations</a>
     <button mat-raised-button (click)="exportModel()">Export</button>
+    <button mat-raised-button (click)="printPage()">Print</button>
   </mat-card-actions>
 
 </mat-card>

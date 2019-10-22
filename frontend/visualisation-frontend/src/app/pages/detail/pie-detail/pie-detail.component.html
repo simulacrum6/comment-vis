@@ -13,6 +13,11 @@
     </a>
   </div>
   <mat-card-content>
+    <p>
+      Here you can see details about {{ facet$ | async }}.<br>
+      Drag and drop items in the sentiment table to merge these.<br>
+    </p>
+
     <div>
       The overall mood of the Dataset is <strong>{{ overallMood | async }}</strong> with <strong>{{ overallMoodPercent | async }}</strong>.<br>
       The mood of this {{ faceTypeVisibleName$ | async }} {{ facet$ | async }} is <strong>{{ facetMood | async }}</strong> with <strong>{{ facetMoodPercent | async }}</strong>.<br>

@@ -19,6 +19,7 @@ import {FacetTypes} from '../../models/canonical';
 })
 export class StatisticsComponent implements OnInit, OnDestroy {
 
+  private print = false;
   private subscription = new Subscription();
 
   private extremaFacetType: FacetType = FacetTypes.Aspect;
@@ -51,7 +52,7 @@ export class StatisticsComponent implements OnInit, OnDestroy {
   private sentimentDistributionLabels: Label[] = [];
   private sentimentDistributionOptions: any = {
     animation: { animateRotate: true, animateScale: true },
-    responsive: true,
+    responsive: false,
     aspectRatio: 1,
     legend: { display: false },
     tooltips: { enabled: true}
@@ -345,5 +346,13 @@ export class StatisticsComponent implements OnInit, OnDestroy {
   public toggleExtremaSentiment() {
     this.extremaSentiment = this.extremaSentiment === Sentiment.Positive ? Sentiment.Negative : Sentiment.Positive;
     this.initializeExtremaBarChart();
+  }
+
+  public printPage() {
+    this.print = true;
+    setTimeout(() => {
+      window.print();
+      this.print = false;
+    }, 66)
   }
 }

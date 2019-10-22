@@ -3,11 +3,17 @@
     <th mat-header-cell *matHeaderCellDef> {{ _facetTypeVisibleName }} </th>
     <td mat-cell *matCellDef="let row">
       <div cdkDropList [cdkDropListData]="row" (cdkDropListDropped)="onDragAndDrop($event)">
-        <a cdkDrag *ngIf="links; else plain"
-          [routerLink]="['/detail']"
-          [queryParams]="{ facet: row.group, facetType: facetType }">
-          {{ row.group }}
-        </a>
+        <div cdkDrag fxLayout fxLayoutAlign="start center">
+          <mat-icon cdkDragHandle
+            class="draggable"
+            matTooltip="Drag onto another row to merge them.">
+            drag_indicator</mat-icon>
+          <a *ngIf="links; else plain"
+            [routerLink]="['/detail']"
+            [queryParams]="{ facet: row.group, facetType: facetType }">
+            {{ row.group }}
+          </a>
+        </div>
       </div>
       <ng-template #plain>{{ row.group }}</ng-template>
     </td>
