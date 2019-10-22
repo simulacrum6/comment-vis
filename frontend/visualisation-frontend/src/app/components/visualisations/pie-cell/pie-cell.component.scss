@@ -24,6 +24,10 @@
 
     &:hover {
       @include mat-elevation(1);
+
+      & .show-on-hover {
+          visibility: visible;
+      }
     }
 }
 
@@ -39,4 +43,8 @@
     margin: 0px;
     min-width: 24px;
     min-height: 24px;
+}
+
+.show-on-hover {
+    visibility: hidden;
 }

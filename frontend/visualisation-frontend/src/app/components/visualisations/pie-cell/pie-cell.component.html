@@ -5,8 +5,8 @@
     <div fxLayout="row"
       fxLayoutAlign="center center"
       fxLayoutGap="10px">
-      <mat-icon *ngIf="hover"
-        class="draggable"
+      <mat-icon
+        class="draggable show-on-hover"
         matTooltip="Drag facet onto another to merge them or drag it into the comparison area to compare.">
         drag_indicator
       </mat-icon>
@@ -14,8 +14,8 @@
         [routerLink]="['/detail']"
         [queryParams]="{ facet: group.name, facetType: group.type }">
         {{ group.name }}</p>
-      <button mat-button *ngIf="hover"
-        class="mini-button"
+      <button mat-button
+        class="mini-button show-on-hover"
         matTooltip="{{pinned ? 'Unpin' : 'Pin'}} this facet. Pinned facets will always be in your current selection"
         (click)="togglePinned($event)">
         <mat-icon *ngIf="!pinned; else remove">add</mat-icon>
@@ -24,6 +24,6 @@
     </div>
   </div>
   <div #chartWrapper class="chart-wrapper">
-    <app-pie [extractions]="group.extractions" [animate]="false"></app-pie>
+    <app-pie [extractions]="group.extractions" [animate]="false" [clickable]="false"></app-pie>
   </div>
 </div>

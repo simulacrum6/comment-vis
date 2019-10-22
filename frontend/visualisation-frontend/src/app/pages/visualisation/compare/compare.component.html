@@ -81,9 +81,6 @@
           (cdkDropListDropped)="onDrop($event)"
           (cdkDragStarted)="dragging = true"
           (cdkDragReleased)="dragging = false">
-          <ng-template cdkDragPlaceholder>
-            <div></div>
-          </ng-template>
           <app-pie-cell
             [group]="group"
             >
