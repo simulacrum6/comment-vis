@@ -7,7 +7,7 @@ COPY layout/* layout/
 COPY layout_service.environment.yml layout_service.environment.yml
 
 RUN conda env create -f layout_service.environment.yml
-RUN activate layout_service
+RUN conda activate layout_service
 RUN export FLASK_APP=service.py
 
 CMD python -m flask run
