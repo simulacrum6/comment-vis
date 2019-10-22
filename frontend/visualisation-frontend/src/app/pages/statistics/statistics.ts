@@ -52,7 +52,7 @@ export class StatisticsComponent implements OnInit, OnDestroy {
   private sentimentDistributionLabels: Label[] = [];
   private sentimentDistributionOptions: any = {
     animation: { animateRotate: true, animateScale: true },
-    responsive: true,
+    responsive: false,
     aspectRatio: 1,
     legend: { display: false },
     tooltips: { enabled: true}
