@@ -10,11 +10,11 @@ import { ModelTransformation } from './modeltransformation';
   styleUrls: ['./bar.component.scss']
 })
 export class BarComponent implements OnInit {
-  @Input('aspectname') aspectname: string = 'FOOD';
+  @Input() aspectname = 'FOOD';
   private modelTransformation: ModelTransformation;
 
-  private sortValue: string;
-  private sortOrderValue: string;
+  public sortValue: string;
+  public sortOrderValue: string;
 
   public chartData: ChartDataSets[] = [];
   public chartType: ChartType = 'horizontalBar';

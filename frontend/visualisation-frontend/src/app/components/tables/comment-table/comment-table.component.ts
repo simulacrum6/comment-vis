@@ -14,7 +14,7 @@ export class CommentTableComponent implements OnInit {
 
   @ViewChild('paginator') paginator: MatPaginator;
 
-  private tableData: MatTableDataSource<CommentRow>;
+  public tableData: MatTableDataSource<CommentRow>;
 
   constructor() { }
 

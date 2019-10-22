@@ -19,21 +19,21 @@ import {
 })
 export class SortFilterComponent implements OnInit {
 
-  private _noSortOption: SortOption = SortOptions.options.noSort;
+  public noSortOption: SortOption = SortOptions.options.noSort;
 
-  private _sortOptions: SortOptionGroup[] = [
+  public sortOptions: SortOptionGroup[] = [
     SortOptionGroups.sentiment,
     SortOptionGroups.topics
   ];
 
-  private _sortOrderOptions: SortOrderOption[] = [
+  public sortOrderOptions: SortOrderOption[] = [
     SortOrderOptions.descending,
     SortOrderOptions.ascending,
   ];
 
   private _sortState: SortState = { sort: SortOptions.options.noSort, order: SortOrderOptions.descending };
 
-  private get noSort(): boolean {
+  public get noSort(): boolean {
     return this.sortFunction === SortFunctions.noSort;
   }
 

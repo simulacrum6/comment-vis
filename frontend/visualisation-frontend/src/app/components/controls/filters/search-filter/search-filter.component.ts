@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatAutocompleteSelectedEvent } from '@angular/material';
 import { Subscription } from 'rxjs';
-import { debounceTime, map, mapTo } from 'rxjs/internal/operators';
+import { debounceTime, map } from 'rxjs/internal/operators';
 import { ExtractionGroup } from 'src/app/models/canonical';
-import { FilterGenerator, FilterOption } from 'src/app/services/filter';
+import { FilterGenerator } from 'src/app/services/filter';
 import { FilterService } from 'src/app/services/filter.service';
 import { StateService } from 'src/app/services/state.service';
-import { MatAutocompleteSelectedEvent } from '@angular/material';
 
 @Component({
   selector: 'app-search-filter',
@@ -36,7 +36,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   @Input()
   public disabled = false;
 
-  private inputForm = new FormControl('');
+  public inputForm = new FormControl('');
   private subscription: Subscription = new Subscription();
   private searchFilter = FilterGenerator.startsWith('');
 
@@ -85,7 +85,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getAutocompleteUIOutput(selectedOption: ExtractionGroup | string): string {
+  public getAutocompleteUIOutput(selectedOption: ExtractionGroup | string): string {
     if (selectedOption === null) {
       return '';
     }

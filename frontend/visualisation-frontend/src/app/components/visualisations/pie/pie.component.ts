@@ -24,12 +24,12 @@ export class PieComponent implements OnInit, OnChanges {
   @Output() public clicked: EventEmitter<string> = new EventEmitter();
 
   private sentimentGroups: StringMap<Extraction[]>;
-  private chartLabels: Label[];
-  private chartData: number[] = [];
-  private chartType: ChartType = 'pie';
-  private chartLegend = false;
-  private chartOptions: ChartOptions;
-  private chartColors;
+  public chartLabels: Label[];
+  public chartData: number[] = [];
+  public chartType: ChartType = 'pie';
+  public chartLegend = false;
+  public chartOptions: ChartOptions;
+  public chartColors;
 
   ngOnInit() {
     this.update();
@@ -69,7 +69,7 @@ export class PieComponent implements OnInit, OnChanges {
     };
   }
 
-  public chartClicked(event: any, facetType: FacetType): void {
+  public chartClicked(event: any, facetType?: FacetType): void {
     if (event.active.length > 0) {
       const chart = event.active[0]._chart;
       const activePoints = chart.getElementAtEvent(event.event);

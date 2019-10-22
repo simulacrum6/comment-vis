@@ -47,7 +47,7 @@ export class TreeMapComponent implements OnInit {
    * E.g., if there is no Facet, which is mostly positive or mostly negative,
    * this visualisation makes no sense to show.
    */
-  private dataIsVisualisable = false;
+  public dataIsVisualisable = false;
 
   constructor(private stateService: StateService) { }
 

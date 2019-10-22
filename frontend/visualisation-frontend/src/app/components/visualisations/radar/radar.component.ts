@@ -49,9 +49,9 @@ export class RadarComponent implements OnInit {
   }
 
   private _groups = [];
-  private datasets = [];
-  private options: RadialChartOptions = { responsive: true };
-  private radarLabels = [ 'popularity', 'sentiment', 'controversy', 'diversity' ];
+  public datasets = [];
+  public options: RadialChartOptions = { responsive: true };
+  public radarLabels = [ 'popularity', 'sentiment', 'controversy', 'diversity' ];
 
   constructor(private stateService: StateService) {
     const model = stateService.model.state;

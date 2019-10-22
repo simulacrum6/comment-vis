@@ -1,11 +1,11 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { MatIconRegistry } from '@angular/material';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Model } from 'src/app/models/canonical';
 import { DemoModel, DemoModels } from 'src/app/models/demo';
 import { FilterService } from 'src/app/services/filter.service';
 import { StateService } from 'src/app/services/state.service';
-import {MatIconRegistry} from '@angular/material';
-import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-upload',
@@ -16,20 +16,26 @@ export class UploadComponent implements OnInit {
 
   @ViewChild('upload') upload: ElementRef;
 
-  private readonly demoDatasets = [
+  public readonly demoDatasets = [
     { viewValue: '--', file: '', value: ''},
     { viewValue: 'Foursquare Reviews', value: 'foursquare' },
     { viewValue: 'Amazon, Yelp, IMDB Reviews', value: 'reviews' },
     { viewValue: 'Lecture Evaluations', value: 'evaluations' }
   ];
 
-  private uploadedInvalidDataset: boolean;
-  private noDatasetSelected: boolean;
-  private demoValue = this.demoDatasets[0].value;
+  public uploadedInvalidDataset: boolean;
+  public noDatasetSelected: boolean;
+  public demoValue = this.demoDatasets[0].value;
   private uploadJson: any = '';
 
 
-  constructor(private router: Router, private ar: ActivatedRoute, private stateService: StateService, private filterService: FilterService, private matIconRegistry: MatIconRegistry, private domSanitizer: DomSanitizer) {
+  constructor(
+    private router: Router,
+    private ar: ActivatedRoute,
+    private stateService: StateService,
+    private filterService: FilterService,
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer) {
     this.stateService.loadSafe();
 
     this.matIconRegistry.addSvgIcon(
@@ -74,7 +80,7 @@ export class UploadComponent implements OnInit {
     }
   }
 
-  private resetUpload() {
+  public resetUpload() {
     this.upload.nativeElement.value = '';
     this.uploadJson = '';
     this.uploadedInvalidDataset = false;

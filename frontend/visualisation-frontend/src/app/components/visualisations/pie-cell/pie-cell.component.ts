@@ -1,6 +1,5 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { Extraction } from 'src/app/models/canonical';
-import { Interpolator, makeInterpolator } from 'src/app/models/utils';
+import { Interpolator } from 'src/app/models/utils';
 import { PieExtractionGroup } from 'src/app/pages/visualisation/compare/compare.component';
 import { FilterGenerator, FilterOption } from 'src/app/services/filter';
 import { FilterService } from 'src/app/services/filter.service';
@@ -28,8 +27,8 @@ export class PieCellComponent implements OnInit {
   @ViewChild('chartWrapper')
   public chartWrapper: ElementRef;
 
-  private hover = false;
-  private pinned = false;
+  public hover = false;
+  public pinned = false;
   private filter: FilterOption;
 
   /**
@@ -51,7 +50,7 @@ export class PieCellComponent implements OnInit {
     this.pinned = this.filterService.has(this.filter, 'keep');
   }
 
-  private togglePinned(event: MouseEvent) {
+  public togglePinned(event: MouseEvent) {
     event.stopPropagation();
     this.pinned = !this.pinned;
     if (this.pinned === true) {

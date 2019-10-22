@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { ExtractionGroup, Extractions } from 'src/app/models/canonical';
-import { flatten } from 'src/app/models/utils';
-import { FilterService } from 'src/app/services/filter.service';
-import { FilterOption, FilterOptions, FilterGenerator } from 'src/app/services/filter';
 import { MatSliderChange } from '@angular/material';
+import { Observable } from 'rxjs';
+import { ExtractionGroup } from 'src/app/models/canonical';
+import { FilterGenerator, FilterOption, FilterOptions } from 'src/app/services/filter';
+import { FilterService } from 'src/app/services/filter.service';
 import { StateService } from 'src/app/services/state.service';
 
 @Component({
@@ -15,23 +13,22 @@ import { StateService } from 'src/app/services/state.service';
 })
 export class InspectComponent implements OnInit {
 
-  private comments: Observable<ExtractionGroup[]>;
+  public comments: Observable<ExtractionGroup[]>;
 
-  private breadCrumbPaths = [
+  public breadCrumbPaths = [
     { name: 'Upload', path: ['/']},
     { name: 'Statistics', path: ['/stats']},
     { name: 'Inspect', path: ['/vis/inspect/']}
   ];
 
-  private availableFilters = [
+  public availableFilters = [
     { name: 'Sentiment', filters: FilterOptions.groups.sentiment}
   ];
 
-  private maximumMentions: number;
-  private minimumMentions: number;
+  public maximumMentions: number;
+  public minimumMentions: number;
 
-  constructor(private filterService: FilterService, private stateService: StateService) {
-   }
+  constructor(public filterService: FilterService, private stateService: StateService) {}
 
   ngOnInit() {
     this.comments = this.filterService.filteredDataChange;
