@@ -64,7 +64,7 @@ export class FilterGenerator {
     return new FilterOption(id, name, value, filter);
   }
   public static moreThanXMentions(x = 1, id: string = FilterGenerator.id()) {
-    const name = DefaultFilterName.MoreThan + '_x_mentions';
+    const name = `More than ${x} mentions`;
     const filter = (group: ExtractionGroup) => group.extractions.length > x;
     return new FilterOption(id, name, x, filter);
   }
