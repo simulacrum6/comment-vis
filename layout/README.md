@@ -26,7 +26,7 @@ Just for testing if the service is running.
 + [GloVe Embeddings](https://nlp.stanford.edu/projects/glove/) (preferably _840b, 300d_ variant)
 
 1. Install _Anaconda_ for the platform of your choice. 
-2. Install environment, using `conda env -f layout_service.environment.yml`. 
+2. Install environment, using `conda env create -f layout_service.environment.yml`. 
 3. Download and store embeddings in `./embeddings`
 
 ***NOTE:*** In case you are not using the GloVe 840b, 300d variant of embeddings, you may need to change the path to the embeddings loaded in `./service.py`.
@@ -35,7 +35,7 @@ Just for testing if the service is running.
 
 To run the service in a development environment, follow these steps:
 
-1. Activate the environment, using `activate layout_service.yml`
+1. Activate the environment, using `activate layout_service`
 2. Set Flask App environment variable, using `export FLASK_APP=service.py`.
 3. Start the service, run `python -m flask run`.
 

@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+  frontend:
+    container_name: frontend
+    restart: always
+    build:
+      context: ./frontend/visualisation-frontend/
+    ports:
+      - '8080:8080'
+  layout:
+    container_name: layout
+    restart: always
+    build:
+      context: ./layout/
+    ports:
+      - '4203:5000'
