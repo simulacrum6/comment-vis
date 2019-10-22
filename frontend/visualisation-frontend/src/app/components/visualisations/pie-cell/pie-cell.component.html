@@ -2,11 +2,21 @@
   (mouseenter)="hover = true;"
   (mouseleave)="hover = false;">
   <div>
-    <div fxLayout="row" fxLayoutAlign="center">
-      <p class="label">{{ group.name }}</p>
-      <button mat-button
-        *ngIf="hover || pinned"
+    <div fxLayout="row"
+      fxLayoutAlign="center center"
+      fxLayoutGap="10px">
+      <mat-icon *ngIf="hover"
+        class="draggable"
+        matTooltip="Drag facet onto another to merge them or drag it into the comparison area to compare.">
+        drag_indicator
+      </mat-icon>
+      <p class="label"
+        [routerLink]="['/detail']"
+        [queryParams]="{ facet: group.name, facetType: group.type }">
+        {{ group.name }}</p>
+      <button mat-button *ngIf="hover"
         class="mini-button"
+        matTooltip="{{pinned ? 'Unpin' : 'Pin'}} this facet. Pinned facets will always be in your current selection"
         (click)="togglePinned($event)">
         <mat-icon *ngIf="!pinned; else remove">add</mat-icon>
         <ng-template #remove><mat-icon>clear</mat-icon></ng-template>
