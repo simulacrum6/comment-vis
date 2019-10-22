@@ -18,10 +18,10 @@ export enum DefaultFilterName {
   IdEquals = 'id_equals',
   MoreThan = 'more_than',
   LessThan = 'less_than',
-  OverallPositive = 'overall_positive',
-  OverallNegative = 'overall_negative',
-  CompletelyPositive = 'completely_positive',
-  CompletelyNegative = 'completely_negative'
+  OverallPositive = 'Overall Positive',
+  OverallNegative = 'Overall Negative',
+  CompletelyPositive = 'Completely Positive',
+  CompletelyNegative = 'Completely Negative'
 }
 
 export class FilterGenerator {
@@ -58,10 +58,10 @@ export class FilterGenerator {
     const filter = (group: ExtractionGroup) => group.name.startsWith(start);
     return new FilterOption(id, name, start, filter);
   }
-  public static idEquals(groupId: string, id: string = FilterGenerator.id()): FilterOption {
+  public static idEquals(value: ExtractionGroup, id: string = FilterGenerator.id()): FilterOption {
     const name = DefaultFilterName.IdEquals;
-    const filter = (group: ExtractionGroup) => group.id === groupId;
-    return new FilterOption(id, name, groupId, filter);
+    const filter = (group: ExtractionGroup) => group.id === value.id;
+    return new FilterOption(id, name, value, filter);
   }
   public static moreThanXMentions(x = 1, id: string = FilterGenerator.id()) {
     const name = DefaultFilterName.MoreThan + '_x_mentions';

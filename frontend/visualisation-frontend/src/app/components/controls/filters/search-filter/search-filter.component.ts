@@ -68,7 +68,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
 
   public pinOption(event: MatAutocompleteSelectedEvent) {
     const group: ExtractionGroup = event.option.value;
-    const filter = FilterGenerator.idEquals(group.id, group.id);
+    const filter = FilterGenerator.idEquals(group, group.id);
     this.filterService.add(filter, 'keep');
   }
 

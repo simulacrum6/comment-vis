@@ -1,11 +1,20 @@
 <div fxLayout="column row" fxLayoutAlign="center start" fxLayoutGap="5px" class="wrapper">
   <label class="material-like-label">Active Filters</label>
-  <span *ngIf="activeFilters.shuns.length === 0"> No filters active... </span>
+  <span *ngIf="activeFilters.shuns.length === 0 && activeFilters.keeps.length === 0"> No filters active... </span>
   <mat-chip-list>
+    <mat-chip *ngFor="let opt of activeFilters.keeps"
+      color="primary"
+      matTooltip="This facet is pinned. Pinned facets will always be included, regardless of other filters."
+      [removable]="true"
+      (removed)="remove(opt, 'keep')"
+      selected>
+      {{ opt.value.name }}
+      <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+    </mat-chip>
     <mat-chip *ngFor="let opt of activeFilters.shuns"
       [removable]="true"
       (removed)="remove(opt, 'shun')">
-      {{ opt.name }}='{{ opt.value }}'
+      {{ opt.name }}
       <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
     </mat-chip>
   </mat-chip-list>

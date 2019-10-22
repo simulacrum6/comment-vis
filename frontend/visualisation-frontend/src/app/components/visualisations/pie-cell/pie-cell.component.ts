@@ -47,7 +47,7 @@ export class PieCellComponent implements OnInit {
 
   ngOnInit() {
     this.updateSize();
-    this.filter = FilterGenerator.idEquals(this.group.id, this.group.id);
+    this.filter = FilterGenerator.idEquals(this.group, this.group.id);
     this.pinned = this.filterService.has(this.filter, 'keep');
   }
 

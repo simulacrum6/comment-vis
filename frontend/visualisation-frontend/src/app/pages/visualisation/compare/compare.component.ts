@@ -56,7 +56,6 @@ export class CompareComponent implements OnInit, OnDestroy {
   private maximumMentions: number;
   private minimumMentions: number;
   private availableFilters = [
-    { name: 'Topics', filters: FilterOptions.groups.topics},
     { name: 'Sentiment', filters: FilterOptions.groups.sentiment}
   ];
 
