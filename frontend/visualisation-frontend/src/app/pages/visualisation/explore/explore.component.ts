@@ -24,7 +24,6 @@ export class ExploreComponent implements OnInit, OnDestroy {
   ];
 
   private availableFilters = [
-    { name: 'Topics', filters: FilterOptions.groups.topics},
     { name: 'Sentiment', filters: FilterOptions.groups.sentiment}
   ];
 

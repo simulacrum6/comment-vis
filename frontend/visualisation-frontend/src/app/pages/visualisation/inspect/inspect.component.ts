@@ -24,20 +24,18 @@ export class InspectComponent implements OnInit {
   ];
 
   private availableFilters = [
-    { name: 'Topics', filters: FilterOptions.groups.topics},
     { name: 'Sentiment', filters: FilterOptions.groups.sentiment}
   ];
 
   private maximumMentions: number;
   private minimumMentions: number;
 
-  constructor(private filterService: FilterService, private stateService: StateService) { }
+  constructor(private filterService: FilterService, private stateService: StateService) {
+   }
 
   ngOnInit() {
-    this.comments = this.filterService.filteredDataChange.pipe(
-      map(filtered => flatten(filtered.map(group => group.extractions))),
-      map(extractions => Extractions.toViewGroups(extractions, 'comment'))
-    );
+    this.comments = this.filterService.filteredDataChange;
+    this.filterService.data = this.stateService.model.model.getGroupsFor('comment');
 
     // calculate maximum mentions
     const type = this.stateService.facetType.state;

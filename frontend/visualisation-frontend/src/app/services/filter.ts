@@ -14,6 +14,7 @@ export class FilterOption {
 }
 
 export enum DefaultFilterName {
+  Contains = 'Contains',
   StartsWith = 'starts_with',
   IdEquals = 'id_equals',
   MoreThan = 'more_than',
@@ -53,6 +54,12 @@ export class FilterGenerator {
 
   private static _registry: Map<string, (value: any) => FilterOption>;
 
+  public static contains(term: string, id: string = FilterGenerator.id()): FilterOption {
+    const name = `Contains "${term}"`;
+    const pattern = new RegExp(term, 'gi');
+    const filter = (group: ExtractionGroup) => pattern.exec(group.name) !== null;
+    return new FilterOption(id, name, term, filter);
+  }
   public static startsWith(start: string, id: string = FilterGenerator.id()): FilterOption {
     const name = DefaultFilterName.StartsWith;
     const filter = (group: ExtractionGroup) => group.name.startsWith(start);
