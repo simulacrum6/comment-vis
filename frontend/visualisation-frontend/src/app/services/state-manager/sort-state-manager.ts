@@ -37,8 +37,8 @@ export class SortStateManager extends StateManager<SortState> {
   constructor(registry: SortOptionRegistry = SortOptions.options) {
     const key = 'sort';
     const defaultValue = {
-      order: SortOrderOptions.descending,
-      sort: SortOptions.options.noSort
+      order: SortOrderOptions.ascending,
+      sort: SortOptions.options.alphabetically
     };
     super(key, defaultValue, DefaultStorage);
     this.SortOptionRegistry = Object.freeze(registry);

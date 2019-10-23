@@ -23,8 +23,13 @@
     </div>
     <!-- Search, Sort and Filter -->
     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
-      <app-search-filter #searchReference [filterService]="filterService"></app-search-filter>
-      <app-filter [groups]="availableFilters" (filterChange)="onFilterChange($event)" (clear)="onFilterClear()"></app-filter>
+      <app-search-filter #searchReference
+        [filterService]="filterService">
+      </app-search-filter>
+      <app-filter [groups]="availableFilters"
+        (filterChange)="onFilterChange($event)"
+        (clear)="onFilterClear()">
+      </app-filter>
       <div fxLayout="column" fxLayoutAlign="start">
         <label class="material-like-label">Minimum Mentions</label>
         <mat-slider #minimumMentionsSlider

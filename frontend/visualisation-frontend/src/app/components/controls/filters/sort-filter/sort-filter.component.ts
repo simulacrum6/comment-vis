@@ -22,8 +22,8 @@ export class SortFilterComponent implements OnInit {
   public noSortOption: SortOption = SortOptions.options.noSort;
 
   public sortOptions: SortOptionGroup[] = [
+    SortOptionGroups.topics,
     SortOptionGroups.sentiment,
-    SortOptionGroups.topics
   ];
 
   public sortOrderOptions: SortOrderOption[] = [
