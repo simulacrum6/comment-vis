@@ -1,4 +1,4 @@
-version: '3.7'
+version: '2.0'
 
 services:
   frontend:
@@ -14,4 +14,4 @@ services:
     build:
       context: ./layout/
     ports:
-      - '4203:5000'
+      - '5000:5000'
