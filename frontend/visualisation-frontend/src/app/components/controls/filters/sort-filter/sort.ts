@@ -1,4 +1,4 @@
-import { ExtractionGroup, Extractions } from 'src/app/models/canonical';
+import { ExtractionGroup, Extractions, diversity } from 'src/app/models/canonical';
 import { controversy, Sentiment } from 'src/app/models/sentiment';
 
 export interface SortOption {
@@ -49,6 +49,15 @@ function sortByControversy(a: ExtractionGroup, b: ExtractionGroup): number {
   return controversy(a.sentimentCount) - controversy(b.sentimentCount);
 }
 
+function sortByDiversity(a: ExtractionGroup, b: ExtractionGroup): number {
+  return diversity(a) - diversity(b);
+}
+
+function sortByLength(a: ExtractionGroup, b: ExtractionGroup): number {
+  return a.name.length - b.name.length;
+}
+
+
 function noSort(a: ExtractionGroup, b: ExtractionGroup): number { return 0; }
 
 const noSortOption: SortOption = { value: 'noSort', viewValue: '--', sortFunction: noSort };
@@ -95,6 +104,8 @@ function sortByGroupName(a: ExtractionGroup, b: ExtractionGroup): number {
 const extractionOptions: SortOption[] = [
   { value: 'alphabetically', viewValue: 'alphabetically', sortFunction: sortByGroupName },
   { value: 'popularity', viewValue: 'most talked about', sortFunction: sortByExtractionLength },
+  { value: 'diversity', viewValue: 'most diverse', sortFunction: sortByDiversity},
+  { value: 'length', viewValue: 'longest', sortFunction: sortByLength }
 ];
 
 export const SortFunctions = {
@@ -103,6 +114,8 @@ export const SortFunctions = {
     byAttributes: sortByAttributes,
     byComments: sortByComments,
     byControversy: sortByControversy,
+    byDiversity: sortByDiversity,
+    byLength: sortByLength,
     byPopularity: sortByExtractionLength,
     noSort
 };
