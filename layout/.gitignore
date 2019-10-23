@@ -1,4 +1,5 @@
 .vscode*
 __*__
 embeddings/*.txt
+!embeddings/test.txt
 layout/
