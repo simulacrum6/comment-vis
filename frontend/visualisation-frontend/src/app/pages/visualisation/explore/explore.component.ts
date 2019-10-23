@@ -4,7 +4,7 @@ import { FilterOption, FilterType, FilterOptions, FilterGenerator } from 'src/ap
 import { Subscription, combineLatest, Observable, BehaviorSubject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { StateService } from 'src/app/services/state.service';
-import { ExtractionGroup, Model } from 'src/app/models/canonical';
+import { ExtractionGroup, Model, FacetType, FacetTypes } from 'src/app/models/canonical';
 import { Coordinate, LayoutService, LayoutName } from 'src/app/services/layout.service';
 import { map} from 'rxjs/operators';
 import { occurencePercentage } from 'src/app/components/controls/size-scaling/size-scaling.component';
@@ -37,23 +37,23 @@ export class ExploreComponent implements OnInit, OnDestroy {
   public scalingFunction: (g: ExtractionGroup) => number;
   public maximumMentions: number;
   public minimumMentions: number;
+  public facetType: FacetType = 'aspect';
 
   constructor(
     public filterService: FilterService,
     private route: ActivatedRoute,
     public stateService: StateService,
     private layoutService: LayoutService,
-    private snackBar: MatSnackBar) {
-
-      if (this.filterService.data === undefined) {
-        this.filterService.data = this.stateService.model.state.getGroupsFor(this.stateService.facetType.state);
-      }
-
-      this.scalingFunction = occurencePercentage(this.stateService.model.state.extractions.length);
-      this.model = this.stateService.model.state;
-  }
+    private snackBar: MatSnackBar) { }
 
   ngOnInit() {
+    if (this.filterService.data === undefined) {
+      this.filterService.data = this.stateService.model.state.getGroupsFor(this.stateService.facetType.state);
+    }
+    this.scalingFunction = occurencePercentage(this.stateService.model.state.extractions.length);
+    this.model = this.stateService.model.state;
+    this.facetType = this.stateService.facetType.state;
+
     // set up url for return from detail page.
     this.subs = combineLatest(this.route.url, this.route.params).subscribe(
       ([url, params]) => {
@@ -89,6 +89,12 @@ export class ExploreComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subs.unsubscribe();
+  }
+
+  public onFacetTypeChange() {
+    this.facetType = FacetTypes.other(this.facetType);
+    this.stateService.facetType.state = this.facetType;
+    this.ngOnInit();
   }
 
   public onFilterRemoval(removeEvent: { option: FilterOption, type: FilterType }) {

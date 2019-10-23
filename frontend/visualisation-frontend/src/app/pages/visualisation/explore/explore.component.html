@@ -9,6 +9,15 @@
       The position of each topic, meaning also the distance between the topics, are defined by the selected layout.<br>
       Drag and drop bubbles onto other bubbles to merge these.<br>
     </p>
+    <div #toggle fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+      <label>Trait</label>
+      <mat-slide-toggle
+        color="primary"
+        [checked]="facetType === 'aspect'"
+        (change)="onFacetTypeChange()">
+        Topic
+      </mat-slide-toggle>
+    </div>
     <!-- Search, Filter, Sort -->
     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
       <!-- Temporary fake search -->
