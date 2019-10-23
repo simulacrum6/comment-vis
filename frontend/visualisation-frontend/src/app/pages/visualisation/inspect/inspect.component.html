@@ -9,8 +9,13 @@
     </p>
 
     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
-      <app-search-filter [filterService]="filterService"></app-search-filter>
-      <app-filter [groups]="availableFilters" (filterChange)="onFilterChange($event)" (clear)="onFilterClear()"></app-filter>
+      <app-search-filter [filterService]="filterService">
+      </app-search-filter>
+      <app-filter
+        [groups]="availableFilters"
+        (filterChange)="onFilterChange($event)"
+        (clear)="onFilterClear()">
+      </app-filter>
       <div fxLayout="column" fxLayoutAlign="start">
         <label class="material-like-label">Minimum Mentions</label>
         <mat-slider #minimumMentionsSlider
@@ -21,7 +26,11 @@
           (change)="onMinimumMentionsChange($event)">
         </mat-slider>
       </div>
-      <app-sort-filter [data]="[]" [disabled]="true"></app-sort-filter>
+      <app-sort-filter
+        [data]="(filterService.filteredDataChange | async)"
+        [disabled]="false"
+        (sort)="onSort($event)">
+      </app-sort-filter>
     </div>
     <app-active-filters
       [activeFilters]="filterService.activeFilters"

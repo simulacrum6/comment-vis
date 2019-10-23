@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatSliderChange } from '@angular/material';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { ExtractionGroup } from 'src/app/models/canonical';
 import { FilterGenerator, FilterOption, FilterOptions } from 'src/app/services/filter';
 import { FilterService } from 'src/app/services/filter.service';
@@ -13,7 +13,7 @@ import { StateService } from 'src/app/services/state.service';
 })
 export class InspectComponent implements OnInit {
 
-  public comments: Observable<ExtractionGroup[]>;
+  public comments: BehaviorSubject<ExtractionGroup[]> = new BehaviorSubject([]);
 
   public breadCrumbPaths = [
     { name: 'Upload', path: ['/']},
@@ -31,7 +31,6 @@ export class InspectComponent implements OnInit {
   constructor(public filterService: FilterService, private stateService: StateService) {}
 
   ngOnInit() {
-    this.comments = this.filterService.filteredDataChange;
     this.filterService.data = this.stateService.model.model.getGroupsFor('comment');
 
     // calculate maximum mentions
@@ -44,8 +43,8 @@ export class InspectComponent implements OnInit {
     this.minimumMentions = filter !== null ? filter.value : 0;
   }
 
-  public onFilterChange($event: FilterOption) {
-    this.filterService.add($event);
+  public onFilterChange(event: FilterOption) {
+    this.filterService.add(event);
   }
 
   public onFilterClear() {
@@ -59,5 +58,9 @@ export class InspectComponent implements OnInit {
     } else {
       this.filterService.remove(filter);
     }
+  }
+
+  public onSort(event: ExtractionGroup[]) {
+    this.comments.next(event);
   }
 }
