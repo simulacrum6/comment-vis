@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material';
+import { environment } from 'src/environments/environment';
 
 export class Coordinate {
   constructor(public x = 0, public y = 0) { }
@@ -18,7 +19,7 @@ export type LayoutName = 'random' | 'meaning' | 'clustered';
   providedIn: 'root'
 })
 export class LayoutService {
-  static readonly APIUrl = 'http://127.0.0.1:5000/';
+  static readonly APIUrl = environment.layoutService.url;
   static readonly Meaning = 'layout/embeddings';
   static readonly Clustered = 'layout/clustered';
 
@@ -36,7 +37,14 @@ export class LayoutService {
   }
 
   constructor(private http: HttpClient, private snackBar: MatSnackBar) {
-    this.checkService();
+    this.checkService()
+      .subscribe(
+        success => console.log(`Layout Service available under ${LayoutService.APIUrl}`),
+        error => {
+          console.error(`Layout Service NOT available under ${LayoutService.APIUrl}`);
+          snackBar.open(`No layout service available. Only random layout is available in explore view.`, ':(', { duration: 3500});
+        }
+      );
   }
 
   /**
@@ -44,7 +52,7 @@ export class LayoutService {
    */
   static randomLayout(n: number): Coordinate[] {
     const layout = [];
-    while(layout.length < n) {
+    while (layout.length < n) {
       layout.push({ x: Math.random() * 100, y: Math.random() * 100 });
     }
     return layout;
