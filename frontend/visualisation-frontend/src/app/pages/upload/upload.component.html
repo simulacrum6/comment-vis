@@ -1,7 +1,14 @@
 <mat-card class="content">
   <mat-card-title>Dataset Selection</mat-card-title>
+  <mat-card-subtitle><app-breadcrumb [paths]="[{ name: 'Upload', path: ['/']}]"></app-breadcrumb></mat-card-subtitle>
 
   <mat-card-content>
+    <p>
+      This is <strong>CommentVis</strong>, a tool that helps you understand large comment collections without having to read every single one of them. <br>
+      To get started, select one of the demo datasets and press the <strong>Start</strong> Button.
+      Alternatively, you can upload your own dataset and analyse it.<br>
+      Click on the help icon to learn more about the required data format.
+    </p>
     <div>
       <div class="upload_description">
         <h3>Upload your own Dataset</h3>

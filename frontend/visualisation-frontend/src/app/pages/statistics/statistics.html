@@ -5,6 +5,10 @@
   </mat-card-subtitle>
 
   <mat-card-content>
+    <p *ngIf="!print">
+      This is the <strong>Statistics Page</strong>. It summarizes some of the most important facts about your dataset. If you find something interesting, try clicking on it to get more information.<br>
+      On the bottom of the page, you can navigate to the visualisations, print a report and export the dataset, in case you have made some changes to it on one of the other pages.
+    </p>
     <div>
       <h3>Distribution of Sentiment values</h3>
       <p>This pie chart shows how often certain sentiments occured in comments.</p>
@@ -17,9 +21,9 @@
           [colors]="sentimentDistributionColors">
       </canvas>
      </div>
-     This dataset consists of <strong>{{ uniqueValues.comment.size }} comments</strong>, containing <strong>{{ extractions.length }} opinions</strong>.<br>
+     This dataset consists of <strong matTooltip="A comment is a text written by a person.">{{ uniqueValues.comment.size }} comments</strong>, containing <strong matTooltip="An opinion is a statement in a comment.">{{ extractions.length }} opinions</strong>.<br>
      The mood is <strong>{{ mood }}</strong> with <strong>{{ moodPercent }}</strong>.<br>
-     <strong>{{ uniqueValues.attribute.size }} traits</strong> and <strong>{{ uniqueValues.aspect.size
+     <strong matTooltip="A trait is a specific quality of a topic, such as 'stale' for 'food'.">{{ uniqueValues.attribute.size }} traits</strong> and <strong matTooltip="A topic is something people talked about, for instance 'food'.">{{ uniqueValues.aspect.size
      }} topics</strong> were extracted.
     </div>
 
@@ -61,12 +65,14 @@
           Positive
         </mat-slide-toggle>
       </div>
-      <p>This bar char shows the {{isExtremaAspect? 'topic' : 'trait'}}s with the most {{isExtremaPositive? 'positive' : 'negative'}} mentions.</p>
+      <p>This bar chart shows the {{isExtremaAspect? 'topic' : 'trait'}}s with the most {{isExtremaPositive? 'positive' : 'negative'}} reception.</p>
+      <p *ngIf="!print">Click on any bar to get more information.</p>
       <canvas baseChart height="50vh"
               [datasets]="sentimentExtremaData"
               [labels]="sentimentExtremaLabels"
               [options]="sentimentExtremaOptions"
               [chartType]="sentimentExtremaType"
+              (chartClick)="handleRankingClick($event, (isExtremaAspect ? 'aspect' : 'attribute'))"
       >
       </canvas>
     </div>

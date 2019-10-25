@@ -75,6 +75,11 @@ export class StatisticsComponent implements OnInit, OnDestroy {
           beginAtZero: true
         }
       }],
+    },
+    hover: {
+      onHover: (event: any, chartElement) => {
+        event.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+      }
     }
   };
   public sentimentExtremaLabels: Label[] = [];
@@ -177,9 +182,9 @@ export class StatisticsComponent implements OnInit, OnDestroy {
     this.mood = mapToSentimentStatement(sentimentDiff);
 
     if (sentimentDiff <= - 0.5) {
-      this.moodPercent = Math.round((this.sentimentCounts.negative / this.sentimentCounts.total) * 100) + '% negative comments';
+      this.moodPercent = Math.round((this.sentimentCounts.negative / this.sentimentCounts.total) * 100) + '% negative opinions';
     } else {
-      this.moodPercent = Math.round((this.sentimentCounts.positive / this.sentimentCounts.total) * 100) + '% positive comments';
+      this.moodPercent = Math.round((this.sentimentCounts.positive / this.sentimentCounts.total) * 100) + '% positive opinions';
     }
 
     /** Warnings **/

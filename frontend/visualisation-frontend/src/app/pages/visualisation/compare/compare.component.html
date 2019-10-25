@@ -1,15 +1,15 @@
 <mat-card class="content">
-  <mat-card-title>{{ _facetTypeVisibleName }} - Overview</mat-card-title>
+  <mat-card-title>Compare {{ _facetTypeVisibleName }}s</mat-card-title>
   <mat-card-subtitle>
     <app-breadcrumb [paths]="breadCrumbPaths"></app-breadcrumb>
   </mat-card-subtitle>
   <mat-card-content>
     <p>
-      Here you can compare and merge {{ _facetTypeVisibleName | lowercase }}s. Use filters to modify which {{ _facetTypeVisibleName | lowercase }}s are shown. Use the toggle to switch between topics and traits.<br>
+      This is the <strong>Comparison Page</strong>. You can compare and merge {{ _facetTypeVisibleName | lowercase }}s. Use filters to modify which {{ _facetTypeVisibleName | lowercase }}s are shown. Use the toggle to switch between topics and traits.<br>
       Drag and drop {{ _facetTypeVisibleName | lowercase }}s onto the compare area to compare the sentiment of these.<br>
       Click on pies to get more details about the corresponding {{ _facetTypeVisibleName | lowercase }}.<br>
       Drag and drop one of the pies onto the other to merge these.<br>
-      Hover over a pie and press the X Button to pin this pie in this view.
+      Hover over a pie and press the + Button to pin this pie in this view.
     </p>
     <!-- Toolbar -->
     <div #toggle fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">

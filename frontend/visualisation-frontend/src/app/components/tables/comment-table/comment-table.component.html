@@ -6,12 +6,26 @@
 
   <ng-container cdkColumnDef="aspects">
     <th mat-header-cell *matHeaderCellDef> Topics </th>
-    <td mat-cell *matCellDef="let row"> {{ row.aspects }} </td>
+    <td mat-cell *matCellDef="let row">
+      <div *ngFor="let aspect of row.aspects">
+        <a [routerLink]="['/detail']"
+           [queryParams]="{ facet: aspect, facetType: 'aspect' }">
+          {{ aspect }}
+        </a>
+      </div>
+    </td>
   </ng-container>
 
   <ng-container cdkColumnDef="attributes">
     <th mat-header-cell *matHeaderCellDef> Traits </th>
-    <td mat-cell *matCellDef="let row"> {{ row.attributes }} </td>
+    <td mat-cell *matCellDef="let row">
+      <div *ngFor="let attribute of row.attributes">
+        <a [routerLink]="['/detail']"
+           [queryParams]="{ facet: attribute, facetType: 'attribute' }">
+          {{ attribute }}
+        </a>
+      </div>
+    </td>
   </ng-container>
 
   <ng-container cdkColumnDef="sentiment">
