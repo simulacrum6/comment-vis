@@ -28,6 +28,7 @@
       </div>
       <app-sort-filter
         [data]="(filterService.filteredDataChange | async)"
+        [(sortState)]="stateService.sort.state"
         [disabled]="false"
         (sort)="onSort($event)">
       </app-sort-filter>
