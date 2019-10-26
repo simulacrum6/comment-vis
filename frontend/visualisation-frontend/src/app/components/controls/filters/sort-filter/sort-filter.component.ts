@@ -110,6 +110,7 @@ export class SortFilterComponent implements OnInit, OnChanges {
       data.reverse();
     }
 
+    this.sort.emit(data);
     return data;
   }
 

@@ -28,7 +28,7 @@ export class InspectComponent implements OnInit {
   public maximumMentions: number;
   public minimumMentions: number;
 
-  constructor(public filterService: FilterService, private stateService: StateService) {}
+  constructor(public filterService: FilterService, public stateService: StateService) {}
 
   ngOnInit() {
     this.filterService.data = this.stateService.model.model.getGroupsFor('comment');
