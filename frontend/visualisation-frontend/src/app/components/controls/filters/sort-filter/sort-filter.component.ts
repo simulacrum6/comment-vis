@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { MatSelectChange } from '@angular/material';
 import { ExtractionGroup } from 'src/app/models/canonical';
 import {
@@ -17,7 +17,7 @@ import {
   templateUrl: './sort-filter.component.html',
   styleUrls: ['./sort-filter.component.scss']
 })
-export class SortFilterComponent implements OnInit {
+export class SortFilterComponent implements OnInit, OnChanges {
 
   public noSortOption: SortOption = SortOptions.options.noSort;
 
@@ -96,7 +96,12 @@ export class SortFilterComponent implements OnInit {
     this.sort.emit(this.sortData());
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    this.sortData();
+  }
+
   sortData(): ExtractionGroup[] {
+    console.log(`sorting data based on ${this.sortOption.viewValue}`)
     const data = this.data.slice();
 
     data.sort(this.sortFunction);

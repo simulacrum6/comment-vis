@@ -11,6 +11,7 @@ import { FilterGenerator, FilterOption, FilterOptions } from 'src/app/services/f
 import { FilterService } from 'src/app/services/filter.service';
 import { StateService } from 'src/app/services/state.service';
 import { SearchFilterComponent } from '../../../components/controls/filters/search-filter/search-filter.component';
+import { SortFilterComponent } from 'src/app/components/controls/filters/sort-filter/sort-filter.component';
 
 
 export class PieExtractionGroup implements ExtractionGroup {
@@ -45,6 +46,8 @@ export class PieExtractionGroup implements ExtractionGroup {
 })
 export class CompareComponent implements OnInit, OnDestroy {
 
+  @ViewChild('sortComponent')
+  public sortComponent: SortFilterComponent;
   public dragging = false;
   public facetGroups: ExtractionGroup[];
   private sortedFacetGroups: ExtractionGroup[];
@@ -248,7 +251,7 @@ export class CompareComponent implements OnInit, OnDestroy {
       return;
     }
     console.log(`${receiver.name} gobbled up ${mergee.name}`);
-    this.model.merge(receiver, mergee).map(this.toPieGroup(this.model.extractions.length));
+    this.model.merge(receiver, mergee);
     this.initialize();
     const snackRef = this.snackBar.open(`Merged '${mergee.name}' into '${receiver.name}'`, 'undo', { duration: 5000 });
     snackRef.onAction()
@@ -256,7 +259,13 @@ export class CompareComponent implements OnInit, OnDestroy {
         console.log(`disentangling ${mergee.name} from ${receiver.name}`);
         this.model.split(receiver, mergee);
         this.initialize();
+        this.searchedFacetGroups = this.filterService.applyFilters(this.facetGroups, false);
+        this.sortedFacetGroups = this.sortComponent.sortData();
+        this.updateDisplayedFacetGroups();
       });
+    this.searchedFacetGroups = this.filterService.applyFilters(this.facetGroups, false);
+    this.sortedFacetGroups = this.sortComponent.sortData();
+    this.updateDisplayedFacetGroups();
   }
 
   public onComparisonListDrop($event: CdkDragDrop<ExtractionGroup[]>) {

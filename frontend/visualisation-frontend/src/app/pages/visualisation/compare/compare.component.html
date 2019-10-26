@@ -40,8 +40,8 @@
           (change)="onMinimumMentionsChange($event)">
         </mat-slider>
       </div>
-      <app-sort-filter
-        [data]="facetGroups"
+      <app-sort-filter #sortComponent
+        [data]="searchedFacetGroups"
         [(sortState)]="stateService.sort.state"
         (sort)="onSort($event)">
       </app-sort-filter>
