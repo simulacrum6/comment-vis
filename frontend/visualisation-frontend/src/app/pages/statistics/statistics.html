@@ -9,8 +9,9 @@
       This is the <strong>Statistics Page</strong>. It summarizes some of the most important facts about your dataset. If you find something interesting, try clicking on it to get more information.<br>
       On the bottom of the page, you can navigate to the visualisations, print a report and export the dataset, in case you have made some changes to it on one of the other pages.
     </p>
+
     <div>
-      <h3>Distribution of Sentiment values</h3>
+      <h3>Distribution of Sentiment Values</h3>
       <p>This pie chart shows how often certain sentiments occured in comments.</p>
       <div fxLayout="row" fxLayoutAlign="start">
         <canvas baseChart height="380vh"
@@ -22,13 +23,14 @@
       </canvas>
      </div>
      This dataset consists of <strong matTooltip="A comment is a text written by a person.">{{ uniqueValues.comment.size }} comments</strong>, containing <strong matTooltip="An opinion is a statement in a comment.">{{ extractions.length }} opinions</strong>.<br>
+     On average, a comment contains <strong>{{ (extractions.length/uniqueValues.comment.size).toFixed(2) }}</strong> opinions. <br>
      The mood is <strong>{{ mood }}</strong> with <strong>{{ moodPercent }}</strong>.<br>
      <strong matTooltip="A trait is a specific quality of a topic, such as 'stale' for 'food'.">{{ uniqueValues.attribute.size }} traits</strong> and <strong matTooltip="A topic is something people talked about, for instance 'food'.">{{ uniqueValues.aspect.size
      }} topics</strong> were extracted.
     </div>
 
     <div>
-      <h3>Distribution of Topic mentions</h3>
+      <h3>Distribution of Topic Mentions</h3>
       <p>This histogram shows how often topics of a certain mention count occured.</p>
       <canvas baseChart height="50vh"
               [datasets]="aspectDistributionData"
@@ -38,9 +40,36 @@
       </canvas>
     </div>
 
+
+    <div>
+      <h3>Most Frequently Mentioned Topics</h3>
+      <canvas baseChart height="50vh"
+              [datasets]="aspectRankingData"
+              [labels]="aspectRankingLabels"
+              [options]="facetRankingOptions"
+              [chartType]="facetDistributionType"
+              (chartClick)="handleRankingClick($event, 'aspect')"
+      >
+      </canvas>
+      <span *ngIf="tooManyAspects" class="light"
+            matTooltip="There are too many elements to display, so only the most frequent ones are shown.">Displaying {{ maxRankingDisplayItems }} of {{ valueCounts.aspect.length }} topics</span>
+    </div>
+
+    <div>
+      <h3>Most Frequently mentioned Traits</h3>
+      <canvas baseChart height="50vh"
+              [datasets]="attributeRankingData"
+              [labels]="attributeRankingLabels"
+              [options]="facetRankingOptions"
+              [chartType]="facetDistributionType"
+              (chartClick)="handleRankingClick($event, 'attribute')">
+      </canvas>
+      <span *ngIf="tooManyAttributes" class="light"
+            matTooltip="There are too many elements to display, so only the most frequent ones are shown.">Displaying {{ maxRankingDisplayItems }} of {{ valueCounts.attribute.length }} traits</span>
+    </div>
+
     <div>
       <h3>Sentiment Extrema</h3>
-
       <div #toggle *ngIf="!print"
         fxLayout="row"
         fxLayoutAlign="start center"
@@ -65,7 +94,8 @@
           Positive
         </mat-slide-toggle>
       </div>
-      <p>This bar chart shows the {{isExtremaAspect? 'topic' : 'trait'}}s with the most {{isExtremaPositive? 'positive' : 'negative'}} reception.</p>
+      <p>The graph below shows the most frequently {{ isExtremaPositive ? 'positively' : 'negatively' }} mentioned {{ isExtremaAspect ? 'topics' : 'traits' }}. Values correspond to the number of times the facet was evaluated positively or negatively.</p>
+
       <p *ngIf="!print">Click on any bar to get more information.</p>
       <canvas baseChart height="50vh"
               [datasets]="sentimentExtremaData"
@@ -77,32 +107,6 @@
       </canvas>
     </div>
 
-    <div>
-      <h3>Most frequently mentioned topics</h3>
-      <canvas baseChart height="50vh"
-              [datasets]="aspectRankingData"
-              [labels]="aspectRankingLabels"
-              [options]="facetRankingOptions"
-              [chartType]="facetDistributionType"
-              (chartClick)="handleRankingClick($event, 'aspect')"
-      >
-      </canvas>
-      <span *ngIf="tooManyAspects" class="light"
-            matTooltip="There are too many elements to display, so only the most frequent ones are shown.">Displaying {{ maxRankingDisplayItems }} of {{ valueCounts.aspect.length }} topics</span>
-    </div>
-
-    <div>
-      <h3>Most frequently mentioned traits</h3>
-      <canvas baseChart height="50vh"
-              [datasets]="attributeRankingData"
-              [labels]="attributeRankingLabels"
-              [options]="facetRankingOptions"
-              [chartType]="facetDistributionType"
-              (chartClick)="handleRankingClick($event, 'attribute')">
-      </canvas>
-      <span *ngIf="tooManyAttributes" class="light"
-            matTooltip="There are too many elements to display, so only the most frequent ones are shown.">Displaying {{ maxRankingDisplayItems }} of {{ valueCounts.attribute.length }} traits</span>
-    </div>
 
     <div *ngIf="warnings.length > 0 && !print" class="warnings">
       <h3 class="warnings_title">Warnings</h3>

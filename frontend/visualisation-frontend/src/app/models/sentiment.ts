@@ -151,8 +151,11 @@ export function getMixedWeightedSentimentColor(sentimentRatio: number): Color {
   return SentimentColors.neutral.mix(sentimentRatio > 0 ? SentimentColors.positive : SentimentColors.negative, Math.abs(sentimentRatio));
 }
 
-export function controversy(counts: SentimentCount) {
+export function controversy(counts: SentimentCount, normalized = true) {
     const difference = counts.positive - counts.negative;
     const sum = counts.positive + counts.negative;
-    return 1 / ((Math.abs(difference) + 1) / (sum));
+    if (!normalized) {
+        return 1 / ((Math.abs(difference) + 1) / (sum));
+    }
+    return 1 - difference / counts.total;
 }

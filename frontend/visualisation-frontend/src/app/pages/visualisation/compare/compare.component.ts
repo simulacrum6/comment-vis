@@ -51,7 +51,7 @@ export class CompareComponent implements OnInit, OnDestroy {
   public dragging = false;
   public facetGroups: ExtractionGroup[];
   private sortedFacetGroups: ExtractionGroup[];
-  private searchedFacetGroups: ExtractionGroup[];
+  public searchedFacetGroups: ExtractionGroup[];
   public displayedFacetGroups: PieExtractionGroup[];
   public comparisonGroups: ExtractionGroup[] = [];
   private subscription = new Subscription();

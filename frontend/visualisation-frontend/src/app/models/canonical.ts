@@ -279,7 +279,7 @@ function makeIdGenerator() {
   let start = -1;
   return () => {
     start++;
-    return start.toString()
+    return start.toString();
   }
 }
 
@@ -288,19 +288,20 @@ function makeIdGenerator() {
  * Calculates the difference in Sentiment for the given extractions.
  */
 export function sentimentDifferential(extractions: Extraction[], normalized: boolean = true): number {
-  const differential = extractions
+  const difference = extractions
     .map(extraction => extraction.sentiment)
     .map(mapToNumber)
     .reduce(sum);
-  return normalized ? differential / extractions.length : differential;
+  return normalized ? difference / extractions.length : difference;
 }
 
 /**
  * Returns the number groups of given types under the given ExtractionGroup.
  */
-export function diversity(group: ExtractionGroup) {
+export function diversity(group: ExtractionGroup, normalized = true) {
   const type = group.type === FacetTypes.Aspect ? FacetTypes.Attribute : FacetTypes.Aspect;
-  return groupAsEntries(group.extractions, type).length;
+  const score = groupAsEntries(group.extractions, type).length;
+  return normalized ? 1 - score / group.extractions.length : score;
 }
 
 export class Model {

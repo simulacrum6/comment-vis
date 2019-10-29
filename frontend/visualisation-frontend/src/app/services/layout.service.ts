@@ -36,16 +36,7 @@ export class LayoutService {
     return this._isAvailable.getValue();
   }
 
-  constructor(private http: HttpClient, private snackBar: MatSnackBar) {
-    this.checkService()
-      .subscribe(
-        success => console.log(`Layout Service available under ${LayoutService.APIUrl}`),
-        error => {
-          console.error(`Layout Service NOT available under ${LayoutService.APIUrl}`);
-          snackBar.open(`No layout service available. Only random layout is available in explore view.`, ':(', { duration: 3500});
-        }
-      );
-  }
+  constructor(private http: HttpClient, private snackBar: MatSnackBar) {}
 
   /**
    * Returns n random points between 0 and 100.

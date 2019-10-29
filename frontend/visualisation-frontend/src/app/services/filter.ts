@@ -19,8 +19,8 @@ export enum DefaultFilterName {
   IdEquals = 'id_equals',
   MoreThan = 'more_than',
   LessThan = 'less_than',
-  OverallPositive = 'Overall Positive',
-  OverallNegative = 'Overall Negative',
+  OverallPositive = 'Mostly Positive',
+  OverallNegative = 'Mostly Negative',
   CompletelyPositive = 'Completely Positive',
   CompletelyNegative = 'Completely Negative'
 }

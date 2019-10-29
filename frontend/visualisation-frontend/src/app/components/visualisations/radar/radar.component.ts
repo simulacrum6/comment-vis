@@ -3,6 +3,7 @@ import { RadialChartOptions } from 'chart.js';
 import { StateService } from 'src/app/services/state.service';
 import { ExtractionGroup, sentimentDifferential, diversity } from 'src/app/models/canonical';
 import { controversy } from 'src/app/models/sentiment';
+import { sum } from 'src/app/models/utils';
 
 class RadarPoint {
   public group: ExtractionGroup;
@@ -12,15 +13,14 @@ class RadarPoint {
   public controversy: number;
   public diversity: number;
 
-  public static fromGroup(group: ExtractionGroup) {
+  public static fromGroup(group: ExtractionGroup, scalingFactor = 100) {
     const point = new RadarPoint();
     point.group = group;
     point.name = group.name;
     point.popularity = group.extractions.length;
-    // TODO: scale all values
-    point.sentiment = sentimentDifferential(group.extractions) * 100;
-    point.controversy = controversy(group.sentimentCount) * 60;
-    point.diversity = diversity(group) * 30;
+    point.sentiment = sentimentDifferential(group.extractions) * scalingFactor;
+    point.controversy = controversy(group.sentimentCount) * scalingFactor;
+    point.diversity = diversity(group) * scalingFactor;
     return point;
   }
 
@@ -64,6 +64,12 @@ export class RadarComponent implements OnInit {
   }
 
   public update() {
-    this.datasets = this.groups.map(RadarPoint.fromGroup).map(RadarPoint.asDataSet);
+    const maxPopularity = this.groups
+      .map(group => group.extractions.length)
+      .reduce((a, b) => Math.max(a, b));
+    const scalingFactor = Math.max(100, maxPopularity);
+    this.datasets = this.groups
+      .map(group => RadarPoint.fromGroup(group, scalingFactor))
+      .map(RadarPoint.asDataSet);
   }
 }
