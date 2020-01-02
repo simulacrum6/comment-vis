@@ -7,8 +7,16 @@ A layout is simply a list of 2d points, one for each word.
 
 `POST /layout/embeddings`
 
-The service endpoint. Takes the words under the `words` property, converts them into coordinates and returns an array of coordinates.
-Currently, only [t-SNE](https://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html#examples-using-sklearn-manifold-tsne) is supported as layouting function.
+Takes the words under the `words` property, converts them into coordinates and returns an array of coordinates, using [t-SNE](https://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html#examples-using-sklearn-manifold-tsne).
+
+* _Required Request Headers_: `Content-Type: application/json`
+* _Request Payload_: JSON Object, must contain property `words` (array of strings), may contain `range` (array of two numbers). If `range` is provided, the returned points are constrained to the minimum and maximum values in the range (default `[0,100]`).
+* _Response_ string, representing a JSON array of `points`. Each point is an array, containing two numbers (`x` and `y` coordinates).  
+
+
+`POST /layout/embeddings`
+
+Takes the words under the `words` property, converts them into coordinates and returns an array of coordinates, using [Hierarchical Clustering](https://scikit-learn.org/stable/modules/clustering.html#hierarchical-clustering) with a hard-coded threshold for cluster similarity.
 
 * _Required Request Headers_: `Content-Type: application/json`
 * _Request Payload_: JSON Object, must contain property `words` (array of strings), may contain `range` (array of two numbers). If `range` is provided, the returned points are constrained to the minimum and maximum values in the range (default `[0,100]`).
@@ -22,7 +30,7 @@ Just for testing if the service is running.
 
 # Requirements & Setup
 
-+ [Anaconda](https://www.anaconda.com/distribution/)
++ [Anaconda3](https://www.anaconda.com/distribution/)
 + [GloVe Embeddings](https://nlp.stanford.edu/projects/glove/) (preferably _840b, 300d_ variant)
 
 1. Install _Anaconda_ for the platform of your choice. 

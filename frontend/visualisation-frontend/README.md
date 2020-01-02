@@ -1,27 +1,28 @@
-# VisualisationFrontend
+# Visualisation Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.8.
+The frontend of the visualisation tool.
 
-## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+# Requirements & Setup
 
-## Code scaffolding
++ [NodeJs](https://nodejs.org/en/download/)
++ ([Docker](https://docs.docker.com/))
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+1. Install _NodeJs_. 
+2. Install all node dependencies, using `npm install`. 
 
-## Build
+# Running the Tool
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+To run the tool in a development environment, simply run 
 
-## Running unit tests
+```bash
+ng serve
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+The tool will be available under http://localhost:4200.
 
-## Running end-to-end tests
+To run the tool in a production environment, follow these steps:
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+1. build the tool, using `ng build --prod`
+2. build the docker image, using `docker image build`
+3. start the docker container, using `docker container run -d`
